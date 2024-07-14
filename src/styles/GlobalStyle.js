@@ -9,11 +9,9 @@ const GlobalStyle = createGlobalStyle`
         margin: 0;
         padding: 0;
         border: 0;
-        font-size: 10px;
         text-decoration: none;
         box-sizing: border-box;
-        font-weight: 500;
-        font-size: 20px;
+        ${(props) => props.theme.fonts.default};
         &:visited{
         text-decoration: none;
         color: black;
