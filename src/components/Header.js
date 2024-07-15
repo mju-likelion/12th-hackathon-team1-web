@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import logo from "../assets/images/logo.svg";
 import menu from "../assets/images/Menu.svg";
 import search from "../assets/images/search.svg";
+import Heart from "../assets/images/Heart.svg";
 
 const Header = () => {
   const navigate = useNavigate();
@@ -41,11 +42,17 @@ const Header = () => {
             <Search placeholder="레시피 검색" />
             <img src={search} alt="검색 돋보기 이미지" />
           </SearchBox>
+          <HeartImg src={Heart} alt="마음에 드는 레시피 탭" />
         </FunctionContainer>
       </FunctionHeader>
     </HeaderContent>
   );
 };
+
+const HeartImg = styled.img`
+  height: 3vh;
+  margin-left: 3vw;
+`;
 
 const MenuImg = styled.img`
   height: 4vh;
