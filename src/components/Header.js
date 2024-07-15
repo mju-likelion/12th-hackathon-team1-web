@@ -65,7 +65,6 @@ const HeartImg = styled.img`
 
 const MenuImg = styled.img`
   height: 4vh;
-  width: 4vw;
   cursor: pointer;
 `;
 
@@ -92,6 +91,7 @@ const Search = styled.input`
 
 const FunctionContainer = styled.div`
   display: flex;
+  background-color: aqua;
   align-items: center;
 `;
 
