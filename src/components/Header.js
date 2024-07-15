@@ -21,6 +21,10 @@ const Header = () => {
     navigate("/signup");
   };
 
+  const goToWishRecipe = () => {
+    navigate("/wish");
+  };
+
   return (
     <HeaderContent>
       <MainHeader>
@@ -42,7 +46,11 @@ const Header = () => {
             <Search placeholder="레시피 검색" />
             <img src={search} alt="검색 돋보기 이미지" />
           </SearchBox>
-          <HeartImg src={Heart} alt="마음에 드는 레시피 탭" />
+          <HeartImg
+            src={Heart}
+            alt="마음에 드는 레시피 탭"
+            onClick={goToWishRecipe}
+          />
         </FunctionContainer>
       </FunctionHeader>
     </HeaderContent>
@@ -52,6 +60,7 @@ const Header = () => {
 const HeartImg = styled.img`
   height: 3vh;
   margin-left: 3vw;
+  cursor: pointer;
 `;
 
 const MenuImg = styled.img`
