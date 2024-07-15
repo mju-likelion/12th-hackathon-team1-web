@@ -10,10 +10,23 @@ const Header = () => {
     navigate("/");
   };
 
+  const goToLogin = () => {
+    navigate("/login");
+  };
+
+  const goToSignUp = () => {
+    navigate("/signup");
+  };
+
   return (
     <HeaderContent>
       <MainHeader>
         <LogoImg src={logo} alt="헤더 로고" onClick={goToMainPage} />
+        <AccountContainer>
+          <PageText onClick={goToLogin}>로그인</PageText>
+          <ColumnBar />
+          <PageText onClick={goToSignUp}>회원가입</PageText>
+        </AccountContainer>
       </MainHeader>
     </HeaderContent>
   );
@@ -40,6 +53,23 @@ const HeaderContent = styled.div`
 const LogoImg = styled.img`
   height: 5vh;
   cursor: pointer;
+`;
+
+const PageText = styled.text`
+  font-size: 13px;
+  margin-left: 20px;
+  cursor: pointer;
+`;
+
+const ColumnBar = styled.div`
+  height: 20px;
+  margin-left: 20px;
+  border: 1px solid #c3c3c3;
+`;
+
+const AccountContainer = styled.div`
+  display: flex;
+  align-items: center;
 `;
 
 export default Header;
