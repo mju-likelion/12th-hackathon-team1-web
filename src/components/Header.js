@@ -2,6 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import logo from "../assets/images/logo.svg";
+import menu from "../assets/images/Menu.svg";
 
 const Header = () => {
   const navigate = useNavigate();
@@ -28,9 +29,26 @@ const Header = () => {
           <PageText onClick={goToSignUp}>회원가입</PageText>
         </AccountContainer>
       </MainHeader>
+      <FunctionHeader>
+        <MenuImg src={menu} alt="메뉴 버튼" onClick={goToLogin} />
+        <PageText>냉장고 관리</PageText>
+        <PageText>레시피</PageText>
+      </FunctionHeader>
     </HeaderContent>
   );
 };
+
+const MenuImg = styled.img`
+  height: 4vh;
+  width: 4vw;
+  cursor: pointer;
+`;
+
+const FunctionHeader = styled.div`
+  display: flex;
+  height: 6vh;
+  justify-content: space-between;
+`;
 
 const MainHeader = styled.div`
   display: flex;
