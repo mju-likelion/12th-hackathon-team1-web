@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import logo from "../assets/images/logo.svg";
 import menu from "../assets/images/Menu.svg";
+import search from "../assets/images/search.svg";
 
 const Header = () => {
   const navigate = useNavigate();
@@ -30,9 +31,17 @@ const Header = () => {
         </AccountContainer>
       </MainHeader>
       <FunctionHeader>
-        <MenuImg src={menu} alt="메뉴 버튼" onClick={goToLogin} />
-        <PageText>냉장고 관리</PageText>
-        <PageText>레시피</PageText>
+        <FunctionContainer>
+          <MenuImg src={menu} alt="메뉴 버튼" onClick={goToLogin} />
+          <PageText>냉장고 관리</PageText>
+          <PageText>레시피</PageText>
+        </FunctionContainer>
+        <FunctionContainer>
+          <SearchBox>
+            <Search placeholder="레시피 검색" />
+            <img src={search} alt="검색 돋보기 이미지" />
+          </SearchBox>
+        </FunctionContainer>
       </FunctionHeader>
     </HeaderContent>
   );
@@ -42,6 +51,32 @@ const MenuImg = styled.img`
   height: 4vh;
   width: 4vw;
   cursor: pointer;
+`;
+
+const SearchBox = styled.div`
+  display: flex;
+  align-items: center;
+  height: 4vh;
+  border: 1px solid #c3c3c3;
+  border-radius: 25px;
+  img {
+    height: 2vh;
+    margin: 10px;
+  }
+`;
+
+const Search = styled.input`
+  font-size: 13px;
+  width: 15vw;
+  color: #2c2c2c;
+  margin: 10px 15px;
+  border: none;
+  outline: none;
+`;
+
+const FunctionContainer = styled.div`
+  display: flex;
+  align-items: center;
 `;
 
 const FunctionHeader = styled.div`
