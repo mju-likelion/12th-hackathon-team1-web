@@ -128,6 +128,9 @@ const PageText = styled.text`
   font-size: 13px;
   margin-left: 20px;
   cursor: pointer;
+  &:hover {
+    font-weight: 600;
+  }
 `;
 
 const ColumnBar = styled.div`
