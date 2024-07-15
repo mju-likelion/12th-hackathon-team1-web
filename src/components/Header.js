@@ -91,7 +91,6 @@ const Search = styled.input`
 
 const FunctionContainer = styled.div`
   display: flex;
-  background-color: aqua;
   align-items: center;
 `;
 
