@@ -48,7 +48,7 @@ const SearchBox = styled.div`
   display: flex;
   align-items: center;
   height: 4vh;
-  border: 1px solid #c3c3c3;
+  border: 1px solid ${({ theme }) => theme.colors.helperText};
   border-radius: 25px;
   img {
     height: 2vh;
@@ -59,7 +59,7 @@ const SearchBox = styled.div`
 const Search = styled.input`
   font-size: 13px;
   width: 15vw;
-  color: #2c2c2c;
+  color: ${({ theme }) => theme.colors.helperText};
   margin: 10px 15px;
   border: none;
   outline: none;
@@ -91,8 +91,8 @@ const HeaderContent = styled.div`
   height: 16vh;
   width: 100%;
   padding: 0 12vw;
-  background-color: white;
-  border: 1px solid #c3c3c3;
+  background-color: ${({ theme }) => theme.colors.white};
+  border: 1px solid ${({ theme }) => theme.colors.helperText};
 `;
 
 const LogoImg = styled.img`
@@ -100,8 +100,8 @@ const LogoImg = styled.img`
   cursor: pointer;
 `;
 
-const PageText = styled.text`
-  font-size: 13px;
+const PageText = styled.p`
+  font-size: ${({ theme }) => theme.fonts.helpText14};
   margin-left: 20px;
   cursor: pointer;
   &:hover {
