@@ -6,8 +6,8 @@ const MainBigBox = () => {
 };
 
 const BigBox = styled.div`
-  width: 1284px;
-  height: 458px;
+  width: 1150px;
+  height: 514px;
   background-color: ${({ theme }) => theme.colors.green200};
   border-radius: 10px;
 `;
