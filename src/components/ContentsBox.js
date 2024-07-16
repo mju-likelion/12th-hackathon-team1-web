@@ -12,19 +12,19 @@ const ContentsBox = () => {
 const Wrapper = styled.div`
     background-color: ${({theme}) => theme.colors.green200};
     width: 40vw;
-    height: calc(40vw * 1.1);
+    height: 44vw;
     display: flex;
     justify-content: center;
     align-items: center;
 
-    @media screen and (max-width: 1100px){
+    @media screen and (max-width: 1200px){
         width: 50vw;
-        height: calc(50vw * 1.1);
+        height: 55vw;
     }
 
     @media screen and (max-width: 800px){
         width: 70vw;
-        height: calc(70vw * 1.1);
+        height: 77vw;
     }
     `;
     
