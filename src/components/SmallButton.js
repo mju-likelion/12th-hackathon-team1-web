@@ -8,7 +8,7 @@ const SmallButton = () => {
 const Container = styled.button`
   height: 56px;
   width: 9.375vw;
-  border-radius: 20px;
+  border-radius: 1.1vw;
   background-color: ${({ theme }) => theme.colors.white};
 `;
 
