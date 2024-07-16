@@ -7,7 +7,7 @@ const SmallButton = () => {
 
 const Container = styled.button`
   height: 56px;
-  width: 180px;
+  width: 9.375vw;
   border-radius: 20px;
   background-color: ${({ theme }) => theme.colors.white};
 `;
