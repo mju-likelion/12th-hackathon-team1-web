@@ -5,7 +5,7 @@ const SmallButton = () => {
   return <Container></Container>;
 };
 
-const Container = styled.div`
+const Container = styled.button`
   height: 56px;
   width: 180px;
   border-radius: 20px;
