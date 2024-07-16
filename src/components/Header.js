@@ -48,7 +48,7 @@ const SearchBox = styled.div`
   display: flex;
   align-items: center;
   height: 4vh;
-  border: 1px solid ${({ theme }) => theme.colors.helperText};
+  border: 1px solid ${({ theme }) => theme.colors.headerLine};
   border-radius: 25px;
   img {
     height: 2vh;
@@ -92,7 +92,7 @@ const HeaderContent = styled.div`
   width: 100%;
   padding: 0 12vw;
   background-color: ${({ theme }) => theme.colors.white};
-  border: 1px solid ${({ theme }) => theme.colors.helperText};
+  border: 1px solid ${({ theme }) => theme.colors.headerLine};
 `;
 
 const LogoImg = styled.img`
