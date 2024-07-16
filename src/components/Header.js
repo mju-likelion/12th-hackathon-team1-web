@@ -1,43 +1,23 @@
 import React from "react";
 import styled from "styled-components";
-import { useNavigate } from "react-router-dom";
 import logo from "../assets/images/logo.svg";
 import menu from "../assets/images/Menu.svg";
 import search from "../assets/images/search.svg";
 import Heart from "../assets/images/Heart.svg";
 
 const Header = () => {
-  const navigate = useNavigate();
-
-  const goToMainPage = () => {
-    navigate("/");
-  };
-
-  const goToLogin = () => {
-    navigate("/login");
-  };
-
-  const goToSignUp = () => {
-    navigate("/signup");
-  };
-
-  const goToWishRecipe = () => {
-    navigate("/wish");
-  };
-
   return (
     <HeaderContent>
       <MainHeader>
-        <LogoImg src={logo} alt="헤더 로고" onClick={goToMainPage} />
+        <LogoImg src={logo} alt="헤더 로고" />
         <AccountContainer>
-          <PageText onClick={goToLogin}>로그인</PageText>
-          <ColumnBar />
-          <PageText onClick={goToSignUp}>회원가입</PageText>
+          <PageText>로그인</PageText>
+          <PageText>회원가입</PageText>
         </AccountContainer>
       </MainHeader>
       <FunctionHeader>
         <FunctionContainer>
-          <MenuImg src={menu} alt="메뉴 버튼" onClick={goToLogin} />
+          <MenuImg src={menu} alt="메뉴 버튼" />
           <PageText>냉장고 관리</PageText>
           <PageText>레시피</PageText>
         </FunctionContainer>
@@ -46,11 +26,7 @@ const Header = () => {
             <Search placeholder="레시피 검색" />
             <img src={search} alt="검색 돋보기 이미지" />
           </SearchBox>
-          <HeartImg
-            src={Heart}
-            alt="마음에 드는 레시피 탭"
-            onClick={goToWishRecipe}
-          />
+          <HeartImg src={Heart} alt="마음에 드는 레시피 탭" />
         </FunctionContainer>
       </FunctionHeader>
     </HeaderContent>
@@ -103,7 +79,7 @@ const FunctionHeader = styled.div`
 const MainHeader = styled.div`
   display: flex;
   width: 100%;
-  margin-top: 2vh;
+  margin-top: 1vh;
   height: 8vh;
   padding: 2vh 0;
   justify-content: space-between;
@@ -113,7 +89,7 @@ const MainHeader = styled.div`
 const HeaderContent = styled.div`
   height: 16vh;
   width: 100%;
-  padding: 0 17vw;
+  padding: 0 12vw;
   background-color: white;
   border: 1px solid #c3c3c3;
 `;
@@ -130,12 +106,6 @@ const PageText = styled.text`
   &:hover {
     font-weight: 600;
   }
-`;
-
-const ColumnBar = styled.div`
-  height: 20px;
-  margin-left: 20px;
-  border: 1px solid #c3c3c3;
 `;
 
 const AccountContainer = styled.div`
