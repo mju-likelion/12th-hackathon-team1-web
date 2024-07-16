@@ -87,6 +87,7 @@ const MainHeader = styled.div`
 `;
 
 const HeaderContent = styled.div`
+  position: fixed;
   height: 16vh;
   width: 100%;
   padding: 0 12vw;
