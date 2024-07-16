@@ -57,7 +57,7 @@ const SearchBox = styled.div`
 `;
 
 const Search = styled.input`
-  font-size: 13px;
+  font-size: ${({ theme }) => theme.fonts.helpText14};
   width: 15vw;
   color: ${({ theme }) => theme.colors.helperText};
   margin: 10px 15px;
