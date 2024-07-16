@@ -53,7 +53,7 @@ export const Theme = {
   colors: {
     backgroundColor: "#F7F7F7",
     helperText: "#9B9B9B",
-    headerLink: "#C3C3C3",
+    headerLine: "#C3C3C3",
     greenButton: "#B7E899",
     black: "#000000",
     white: "#FFFFFF",
