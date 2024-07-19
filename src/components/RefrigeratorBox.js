@@ -3,11 +3,25 @@ import styled from 'styled-components';
 import FoodBox from './FoodBox';
 import arrow from '../assets/images/next.svg';
 
-const RefrigeratorBox = (props) => {
+const RefrigeratorBox = () => {
     const [ButtonText, setButtonText] = useState('편집');
+
+    const [FoodData, setFoodData] = useState([
+        {id: 'date', key: 1},
+        {id: 'date', key: 2},
+        {id: 'date', key: 3},
+        {id: 'date' ,key: 4},
+        {id: 'date' ,key: 5},
+        {id: 'date', key: 6},
+        {id: 'date', key: 7},
+    ]);
 
     const toggleButton = () => {
         setButtonText(preText => (preText === '편집' ? '저장' : '편집'));
+    }
+
+    const removeFoodBox = (key) => {
+        setFoodData(FoodData.filter(box => box.key !== key));
     }
 
     return (
@@ -28,13 +42,14 @@ const RefrigeratorBox = (props) => {
                                         <VerticalLine />
                                     </LineBox>
                                     <FoodBoxWrapper>
-                                        <FoodBox id = "date"/>
-                                        <FoodBox id="date" />
-                                        <FoodBox id="date" />
-                                        <FoodBox id="date" />
-                                        <FoodBox id="date"/>
-                                        <FoodBox id="date"/>
-                                        <FoodBox id="date"/>
+                                        {FoodData.map(box =>(
+                                            <FoodBox 
+                                            key = {box.key}
+                                            id = {box.id}
+                                            ButtonText={ButtonText}
+                                            removeFoodBox={()=>removeFoodBox(box.key)}
+                                            />
+                                        ))}
                                     </FoodBoxWrapper>
                                 </AllTextWrapper>
                             </Section>
@@ -55,13 +70,13 @@ const RefrigeratorBox = (props) => {
                                         <VerticalLine />
                                     </LineBox>
                                     <FoodBoxWrapper>
-                                        <FoodBox />
-                                        <FoodBox />
-                                        <FoodBox />
-                                        <FoodBox />
-                                        <FoodBox />
-                                        <FoodBox />
-                                        <FoodBox />
+                                        <FoodBox ButtonText={ButtonText}/>
+                                        <FoodBox ButtonText={ButtonText}/>
+                                        <FoodBox ButtonText={ButtonText}/>
+                                        <FoodBox ButtonText={ButtonText}/>
+                                        <FoodBox ButtonText={ButtonText}/>
+                                        <FoodBox ButtonText={ButtonText}/>
+                                        <FoodBox ButtonText={ButtonText}/>
                                     </FoodBoxWrapper>
                                 </AllTextWrapper>
                             </Section>
@@ -82,13 +97,13 @@ const RefrigeratorBox = (props) => {
                                         <VerticalLine />
                                     </LineBox>
                                     <FoodBoxWrapper>
-                                        <FoodBox />
-                                        <FoodBox />
-                                        <FoodBox />
-                                        <FoodBox />
-                                        <FoodBox />
-                                        <FoodBox />
-                                        <FoodBox />
+                                        <FoodBox ButtonText={ButtonText}/>
+                                        <FoodBox ButtonText={ButtonText}/>
+                                        <FoodBox ButtonText={ButtonText}/>
+                                        <FoodBox ButtonText={ButtonText}/>
+                                        <FoodBox ButtonText={ButtonText}/>
+                                        <FoodBox ButtonText={ButtonText}/>
+                                        <FoodBox ButtonText={ButtonText}/>
                                     </FoodBoxWrapper>
                                 </AllTextWrapper>
                             </Section>
@@ -109,13 +124,13 @@ const RefrigeratorBox = (props) => {
                                         <VerticalLine />
                                     </LineBox>
                                     <FoodBoxWrapper>
-                                        <FoodBox />
-                                        <FoodBox />
-                                        <FoodBox />
-                                        <FoodBox />
-                                        <FoodBox />
-                                        <FoodBox />
-                                        <FoodBox />
+                                        <FoodBox ButtonText={ButtonText}/>
+                                        <FoodBox ButtonText={ButtonText}/>
+                                        <FoodBox ButtonText={ButtonText}/>
+                                        <FoodBox ButtonText={ButtonText}/>
+                                        <FoodBox ButtonText={ButtonText}/>
+                                        <FoodBox ButtonText={ButtonText}/>
+                                        <FoodBox ButtonText={ButtonText}/>
                                     </FoodBoxWrapper>
                                 </AllTextWrapper>
                             </Section>
@@ -209,26 +224,41 @@ const SectionBox = styled.div`
 
 const WrapperWrapper = styled.div`
     display: flex;
-    width: 100%;
-    height: 100%;
+    width: 1058px;
+    height: 118px;
+
+    @media screen and (max-width: 1200px){
+        width: 73.5vw;
+        height: 8.5vw;
+    }
 `;
 
 const Section = styled.div`
     background-color: ${({theme})=> theme.colors.green100};
-    width: 100%;
-    height: 100%;
+    width: 1058px;
+    height: 118px;
     border-radius: 10px;
+
+    @media screen and (max-width: 1200px){
+        width: 73.5vw;
+        height: 8.5vw;
+    }
 `;
 
 const AllTextWrapper = styled.div`
-    width: 100%;
-    height: 100%;
     display: flex;
     flex-direction: row;
+    width: 1058px;
+    height: 118px;
+
+    @media screen and (max-width: 1200px){
+        width: 73.5vw;
+        height: 8.5vw;
+    }
 `;
 
 const TextBox = styled.div`
-    width: 230px;
+    width: 120px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -261,6 +291,7 @@ const VerticalLine = styled.div`
 `;
 
 const FoodBoxWrapper = styled.div`
+    width: 935px;
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -306,5 +337,6 @@ const Arrow = styled.img`
         margin: 0.9vw;
     }
 `;
+
 
 export default RefrigeratorBox;

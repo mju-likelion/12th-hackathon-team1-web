@@ -1,24 +1,29 @@
 import React from 'react';
 import styled from 'styled-components';
+import remove from '../assets/images/delateIcon.svg'
 
 const FoodBox = (props) => {
     return (
-        <Box>
+        <Wrapper>
             <TextWrapper>
                 <IngredientName isDate={props.id === "date"}>사과</IngredientName>
                 <IngredientDate isDate={props.id === "date"}>유통기한: 2024.08.07</IngredientDate>
             </TextWrapper>
-        </Box>
+            <ImgBox>
+                {props.ButtonText === '저장' && <DeleteImg onClick={props.removeFoodBox} src={remove}/>}
+            </ImgBox>
+        </Wrapper>
     );
 };
 
-const Box = styled.div`
+const Wrapper = styled.div`
+    position: relative;
     background-color: ${({theme})=>theme.colors.white};
+    display: flex;
+    flex-direction: row;
     width: 172px;
     height: 100px;
     border-radius: 23px;
-    display: flex;
-    justify-content: center;
     flex-shrink: 0;
 
     @media screen and (max-width: 1200px) {
@@ -29,10 +34,14 @@ const Box = styled.div`
 `;
 
 const TextWrapper = styled.div`
+    width: 100%;
+    height: 100%;
+    margin-left: 10px;
     display: flex;
     flex-direction: column;
     justify-content: center;
     gap: 20%;
+
 `;
 
 const IngredientName = styled.p`
@@ -50,6 +59,26 @@ const IngredientDate = styled.p`
 
     @media screen and (max-width:1200px){
         font-size: 0.8vw;
+    }
+`;
+
+const ImgBox = styled.div`
+    width: 100%;
+    position: absolute;
+    display: flex;
+    justify-content: end;
+    margin-top: 5px;
+
+`;
+
+const DeleteImg = styled.img`
+    width: 40px;
+    height: 40px;
+    cursor: pointer;
+
+    @media screen and (max-width: 1200px){
+        width: 3vw;
+        height: 3vw;
     }
 `;
 
