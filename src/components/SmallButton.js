@@ -6,10 +6,16 @@ const SmallButton = () => {
 };
 
 const Container = styled.button`
-  height: 56px;
-  width: 9.375vw;
-  border-radius: 1.1vw;
+  width: 167px;
+  height: 52px;
+  border-radius: 20px;
   background-color: ${({ theme }) => theme.colors.white};
+
+  @media screen and (max-width: 1200px){
+    width: 10vw;
+    height: 3.5vw;
+    border-radius: 1vw;
+  }
 `;
 
 export default SmallButton;

@@ -14,7 +14,7 @@ const IngredientBox = styled.button`
     width: 250px;
     height: 25px;
     border-radius: 7px;
-    margin-top: 2vw;
+    margin-top: 15px;
 `;
 
 export default Ingredient;

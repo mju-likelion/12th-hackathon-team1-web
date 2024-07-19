@@ -31,15 +31,15 @@ const SearchBox = styled.div`
 
 
 const SearchInput = styled.input`
-    width: 70%;
+    width: 205px;
     background-color: transparent;
     border: none;
     outline: none;
-    margin-left: 5vw;
+    margin-left: 35px;
 `;
 
 const Exit = styled.img`
-    margin-left: 2vw;
+    margin-left: 10px;
     cursor: pointer;
 `;
 
