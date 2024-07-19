@@ -22,8 +22,8 @@ const Box = styled.div`
     flex-shrink: 0;
 
     @media screen and (max-width: 1200px) {
-        width: 10vw;
-        height: 5.5vw;
+        width: 12vw;
+        height: 7vw;
         border-radius: 1.5vw;
     }
 `;
@@ -33,7 +33,6 @@ const TextWrapper = styled.div`
     flex-direction: column;
     justify-content: center;
     gap: 20%;
-
 `;
 
 const IngredientName = styled.p`

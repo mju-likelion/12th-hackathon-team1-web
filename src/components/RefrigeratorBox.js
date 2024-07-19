@@ -228,10 +228,14 @@ const AllTextWrapper = styled.div`
 `;
 
 const TextBox = styled.div`
-    width: 120px;
+    width: 230px;
     display: flex;
     align-items: center;
     justify-content: center;
+
+    @media screen and (max-width: 1200px){
+        width: 15vw;
+    }
 `;
 
 const Text = styled.p`
@@ -261,7 +265,7 @@ const FoodBoxWrapper = styled.div`
     flex-direction: row;
     align-items: center;
     gap: 50px;
-    margin-left: 50px;
+    margin-left: 30px;
     overflow-x: auto;
     white-space: nowrap;
 
