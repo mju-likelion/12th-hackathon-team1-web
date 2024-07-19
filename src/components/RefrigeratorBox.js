@@ -1,10 +1,13 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import FoodBox from './FoodBox';
+import IngredientBox from './IngredientBox'
 import arrow from '../assets/images/next.svg';
+import plus from '../assets/images/circlePlus.svg';
 
 const RefrigeratorBox = () => {
     const [ButtonText, setButtonText] = useState('편집');
+    const [showIngredientBox, setShowIngredientBox] = useState(false);
 
     const [FoodData, setFoodData] = useState([
         {id: 'date', key: 1},
@@ -22,6 +25,14 @@ const RefrigeratorBox = () => {
 
     const removeFoodBox = (key) => {
         setFoodData(FoodData.filter(box => box.key !== key));
+    }
+
+    const openIngredientBox = () => {
+        setShowIngredientBox(true);
+    }
+
+    const closeIngredientBox = () => {
+        setShowIngredientBox(false);
     }
 
     return (
@@ -50,6 +61,7 @@ const RefrigeratorBox = () => {
                                             removeFoodBox={()=>removeFoodBox(box.key)}
                                             />
                                         ))}
+                                        {ButtonText === '저장' && <PlusImg src={plus} alt="추가 이미지" onClick={openIngredientBox}/>}
                                     </FoodBoxWrapper>
                                 </AllTextWrapper>
                             </Section>
@@ -77,6 +89,7 @@ const RefrigeratorBox = () => {
                                         <FoodBox ButtonText={ButtonText}/>
                                         <FoodBox ButtonText={ButtonText}/>
                                         <FoodBox ButtonText={ButtonText}/>
+                                        {ButtonText === '저장' && <PlusImg src={plus} alt="추가 이미지" onClick={openIngredientBox}/>}
                                     </FoodBoxWrapper>
                                 </AllTextWrapper>
                             </Section>
@@ -104,6 +117,7 @@ const RefrigeratorBox = () => {
                                         <FoodBox ButtonText={ButtonText}/>
                                         <FoodBox ButtonText={ButtonText}/>
                                         <FoodBox ButtonText={ButtonText}/>
+                                        {ButtonText === '저장' && <PlusImg src={plus} alt="추가 이미지" onClick={openIngredientBox}/>}
                                     </FoodBoxWrapper>
                                 </AllTextWrapper>
                             </Section>
@@ -131,7 +145,13 @@ const RefrigeratorBox = () => {
                                         <FoodBox ButtonText={ButtonText}/>
                                         <FoodBox ButtonText={ButtonText}/>
                                         <FoodBox ButtonText={ButtonText}/>
+                                        {ButtonText === '저장' && <PlusImg src={plus} alt="추가 이미지" onClick={openIngredientBox}/>}
                                     </FoodBoxWrapper>
+                                    <IngredientWrapper>
+                                        {showIngredientBox  && <IngredientBox 
+                                        closeIngredientBox = {closeIngredientBox}
+                                        />}
+                                    </IngredientWrapper>
                                 </AllTextWrapper>
                             </Section>
                             <ArrowBox>
@@ -308,6 +328,25 @@ const FoodBoxWrapper = styled.div`
         margin-left: 2.5vw;
         gap: 2.5vw;
     }
+`;
+
+const PlusImg = styled.img`
+    margin-right: 60px;
+    margin-left: 10px;
+    cursor: pointer;
+
+    @media screen and (max-width: 1200px){
+        margin-right: 3.5vw;
+        margin-left: 1.3vw;
+        width: 2.5vw;
+        height: 2.5vw;
+    }
+`;
+
+const IngredientWrapper = styled.div`
+    position: absolute;
+    display: flex;
+    flex-direction: column;
 `;
 
 const Line = styled.div`

@@ -3,12 +3,12 @@ import styled from 'styled-components';
 import exit from '../assets/images/x.svg'
 import Ingredient from './Ingredient';
 
-const IngredientBox = () => {
+const IngredientBox = ({closeIngredientBox}) => {
     return (
         <>
             <SearchBox>
                 <SearchInput placeholder="재료 검색하기" />
-                <Exit src={exit} alt = "나가기" />
+                <Exit src={exit} alt = "나가기" onClick={closeIngredientBox}/>
             </SearchBox>
             <BottomBox>
                 <Ingredient />
