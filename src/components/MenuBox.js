@@ -15,7 +15,7 @@ const MenuBox = () => {
 
 const Grayline = styled.div`
   width: 100%;
-  border-bottom: 1px solid #d9d9d9;
+  border-bottom: 1px solid ${({theme})=>theme.colors.lineGray};
   margin-bottom: 10px;
 `;
 
@@ -40,7 +40,8 @@ const MainContainer = styled.div`
   width: 300px;
   padding: 23px;
   border-radius: 10px;
-  border: 1px solid #d9d9d9;
+  border: 1px solid ${({theme})=>theme.colors.lineGray};
+  background-color: ${({theme})=>theme.colors.white};
 `;
 
 export default MenuBox;

@@ -2,7 +2,13 @@ import React from "react";
 import styled from "styled-components";
 
 const MainSmallBox = () => {
-  return <SmallBox />;
+  return (
+    <>
+      <SmallBox>
+      </SmallBox>
+    </>
+  );
+  
 };
 
 const SmallBox = styled.div`
@@ -10,6 +16,12 @@ const SmallBox = styled.div`
   height: 220px;
   background-color: ${({ theme }) => theme.colors.green200};
   border-radius: 10px;
+
+  @media screen and (max-width: 1200px){
+    width: 39vw;
+    height: 16vw;
+    border-radius: 1vw;
+  }
 `;
 
 export default MainSmallBox;

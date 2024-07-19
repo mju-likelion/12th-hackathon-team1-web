@@ -14,11 +14,17 @@ const FoodBox = () => {
 
 const Box = styled.div`
     background-color: ${({theme})=>theme.colors.white};
-    width: 10vw;
-    height: 5.5vw;
-    border-radius: 2vw;
+    width: 172px;
+    height: 100px;
+    border-radius: 23px;
     display: flex;
     justify-content: center;
+
+    @media screen and (max-width: 1200px) {
+        width: 10vw;
+        height: 5.5vw;
+        border-radius: 1.5vw;
+    }
 `;
 
 const TextWrapper = styled.div`
@@ -29,11 +35,18 @@ const TextWrapper = styled.div`
 `;
 
 const IngredientName = styled.p`
-    font-size: 1.3vw;
+    ${({theme})=>theme.fonts.default18}
+    @media screen and (max-width: 1200px){
+        font-size: 1.3vw;
+    }
 `;
 
 const IngredientDate = styled.p`
-    font-size: 0.8vw;
+    ${({theme})=>theme.fonts.default12}
+
+    @media screen and (max-width:1200px){
+        font-size: 0.8vw;
+    }
 `;
 
 export default FoodBox;

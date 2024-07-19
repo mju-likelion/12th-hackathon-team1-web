@@ -11,7 +11,7 @@ const GlobalStyle = createGlobalStyle`
         border: 0;
         text-decoration: none;
         box-sizing: border-box;
-        ${(props) => props.theme.fonts.default};
+        ${(props) => props.theme.fonts.default16};
         &:visited{
         text-decoration: none;
         color: black;

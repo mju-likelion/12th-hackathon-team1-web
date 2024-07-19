@@ -63,6 +63,7 @@ export const Theme = {
     green200: "#D7EFC8",
     percentRed: "#FF9797",
     dateGray: "#B6B6B6",
+    lineGray: "#d9d9d9",
     ingredient: "#FCFDDA",
   },
 };

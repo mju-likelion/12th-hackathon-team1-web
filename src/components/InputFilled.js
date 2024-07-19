@@ -14,7 +14,7 @@ const InputBox = styled.input`
     border-radius: 10px;
     border: none;
     border-bottom: 1px solid ${({ theme }) => theme.colors.helperText};
-    background-color: white;
+    background-color: ${({theme})=>theme.colors.white};
 `;
 
 export default InputFilled;
