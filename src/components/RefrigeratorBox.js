@@ -10,13 +10,13 @@ const RefrigeratorBox = () => {
     const [showIngredientBox, setShowIngredientBox] = useState(false);
 
     const [FoodData, setFoodData] = useState([
-        {id: 'date', key: 1},
-        {id: 'date', key: 2},
-        {id: 'date', key: 3},
-        {id: 'date' ,key: 4},
-        {id: 'date' ,key: 5},
-        {id: 'date', key: 6},
-        {id: 'date', key: 7},
+        {id: 'date', key: 1, title: "사과"},
+        {id: 'date', key: 2, title: "자두"},
+        {id: 'date', key: 3, title: "양파"},
+        {id: 'date' ,key: 4, title: "대파"},
+        {id: 'date' ,key: 5, title: "고기"},
+        {id: 'date', key: 6, title: "바나나"},
+        {id: 'date', key: 7, title: "간장"},
     ]);
 
     const toggleButton = () => {
@@ -58,6 +58,7 @@ const RefrigeratorBox = () => {
                                             key = {box.key}
                                             id = {box.id}
                                             ButtonText={ButtonText}
+                                            title = {box.title}
                                             removeFoodBox={()=>removeFoodBox(box.key)}
                                             />
                                         ))}

@@ -1,16 +1,32 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import remove from '../assets/images/delateIcon.svg'
+import ShowIngredient from '../pages/ShowIngredient'
 
-const FoodBox = (props) => {
+const FoodBox = ({id, title, ButtonText, removeFoodBox}) => {
+    const [showFoodBox, setShowFoodBox] = useState(false);
+
+    const openShowModal = () => {
+        setShowFoodBox(true);
+    }
+
+    const closeShowModal = () => {
+        setShowFoodBox(false);
+    }
+
     return (
-        <Wrapper>
+        <Wrapper onClick={openShowModal}>
+            {showFoodBox && 
+            <ShowIngredient 
+            closeShowModal={closeShowModal}
+            title = {title}
+            />}
             <TextWrapper>
-                <IngredientName isDate={props.id === "date"}>사과</IngredientName>
-                <IngredientDate isDate={props.id === "date"}>유통기한: 2024.08.07</IngredientDate>
+                <IngredientName isDate={id === "date"}>{title}</IngredientName>
+                <IngredientDate isDate={id === "date"}>유통기한: 2024.08.07</IngredientDate>
             </TextWrapper>
             <ImgBox>
-                {props.ButtonText === '저장' && <DeleteImg onClick={props.removeFoodBox} src={remove}/>}
+                {ButtonText === '저장' && <DeleteImg onClick={removeFoodBox} src={remove}/>}
             </ImgBox>
         </Wrapper>
     );
@@ -25,6 +41,7 @@ const Wrapper = styled.div`
     height: 100px;
     border-radius: 23px;
     flex-shrink: 0;
+    cursor: pointer;
 
     @media screen and (max-width: 1200px) {
         width: 12vw;
