@@ -1,26 +1,11 @@
-import React, { useState } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import remove from '../assets/images/delateIcon.svg'
-import ShowIngredient from '../pages/ShowIngredient'
 
 const FoodBox = ({id, title, ButtonText, removeFoodBox}) => {
-    const [showFoodBox, setShowFoodBox] = useState(false);
-
-    const openShowModal = () => {
-        setShowFoodBox(true);
-    }
-
-    const closeShowModal = () => {
-        setShowFoodBox(false);
-    }
 
     return (
-        <Wrapper onClick={openShowModal}>
-            {showFoodBox && 
-            <ShowIngredient 
-            closeShowModal={closeShowModal}
-            title = {title}
-            />}
+        <Wrapper>
             <TextWrapper>
                 <IngredientName isDate={id === "date"}>{title}</IngredientName>
                 <IngredientDate isDate={id === "date"}>유통기한: 2024.08.07</IngredientDate>
