@@ -8,8 +8,8 @@ function Sidebar() {
 
   const menus = [
     { name: "내 레시피 보기", path: "/" },
-    { name: "좋아요 누른 레시피 보기", path: "/liked" },
-    { name: "내 냉장고 재료로 레시피 검색", path: "/myrefresh" },
+    { name: "좋아요 누른 레시피 보기", path: "/" },
+    { name: "내 냉장고 재료로 레시피 검색", path: "/" },
   ];
 
   return (
