@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import Heart from "../assets/images/Heart.svg";
 import FullHeart from "../assets/images/fullHeart.svg";
 
 const RecipeBox = ({ menuName, countHeart }) => {
   const [isClicked, setIsClicked] = useState(false);
+  const [maxLength, setMaxLength] = useState(14);
 
   const handlerHeartClick = () => {
     setIsClicked(!isClicked);
@@ -18,9 +19,27 @@ const RecipeBox = ({ menuName, countHeart }) => {
     return text;
   };
 
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth <= 1200) {
+        setMaxLength(6);
+      } else {
+        setMaxLength(14);
+      }
+    };
+
+    window.addEventListener("resize", handleResize);
+
+    handleResize();
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+
   return (
     <Container>
-      <MenuName title={menuName}>{truncateText(menuName, 6)}</MenuName>
+      <MenuName title={menuName}>{truncateText(menuName, maxLength)}</MenuName>
       <PhotoWrapper />
       <HeartContainer>
         <HeartImg
