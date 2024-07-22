@@ -5,7 +5,7 @@ import PopularRecipeBox from "../PopularRecipeBox";
 const PopularRecipe = () => {
   return (
     <PopularContainer>
-      <PopularRecipeBox />
+      <PopularRecipeBox menuName={"돼지고기김치찌개"} countHeart={10} />
       <PopularRecipeBox />
       <PopularRecipeBox />
     </PopularContainer>
