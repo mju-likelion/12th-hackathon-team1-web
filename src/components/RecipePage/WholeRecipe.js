@@ -6,7 +6,7 @@ const WholeRecipe = () => {
   return (
     <WholeContainer>
       <Line>
-        <RecipeBox />
+        <RecipeBox menuName={"마파 두부"} countHeart={5} />
         <RecipeBox />
         <RecipeBox />
       </Line>
@@ -21,6 +21,7 @@ const WholeRecipe = () => {
 
 const Line = styled.div`
   display: flex;
+  justify-content: space-between;
 `;
 
 const WholeContainer = styled.div`
