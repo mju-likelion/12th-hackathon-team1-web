@@ -45,9 +45,13 @@ const TabContainer = styled.div`
 const TextContainer = styled.div`
   display: flex;
   justify-content: space-between;
-  width: 46.875vw;
+  width: 900px;
   min-width: 630px;
   padding: 0 3px;
+
+  @media screen and (max-width: 1200px) {
+    width: 46.875vw;
+  }
 `;
 
 const RecipeContainer = styled.div`
