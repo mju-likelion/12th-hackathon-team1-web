@@ -10,9 +10,17 @@ const RecipeBox = ({ menuName, countHeart }) => {
     setIsClicked(!isClicked);
   };
 
+  const truncateText = (text, maxLength) => {
+    if (!text) return "";
+    if (text.length > maxLength) {
+      return text.slice(0, maxLength) + "...";
+    }
+    return text;
+  };
+
   return (
     <Container>
-      <MenuName>{menuName}</MenuName>
+      <MenuName title={menuName}>{truncateText(menuName, 6)}</MenuName>
       <PhotoWrapper />
       <HeartContainer>
         <HeartImg
@@ -39,7 +47,12 @@ const MenuName = styled.p`
   ${({ theme }) => theme.fonts.default16};
   margin: 0.8vw;
   text-align: center;
+  white-space: nowrap;
   max-width: 217px;
+
+  @media screen and (max-width: 1200px) {
+    max-width: 11.3vw;
+  }
 `;
 
 const Container = styled.div`
