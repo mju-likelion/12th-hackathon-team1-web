@@ -71,8 +71,14 @@ const Login = () => {
               type="text"
               value={userId}
               onChange={(e) => {
-                setUserId(e.target.value);
-                validateUserId(e.target.value);
+                const value = e.target.value;
+                setUserId(value);
+                if (value === "") {
+                  setUserIdError("");
+                  setIsUserIdValid(false);
+                } else {
+                  validateUserId(value);
+                }
               }}
               hint={
                 userIdError ? "" : "사용하실 아이디(이메일)를 입력하여 주세요."
@@ -84,8 +90,14 @@ const Login = () => {
               type="password"
               value={password}
               onChange={(e) => {
-                setPassword(e.target.value);
-                validatePassword(e.target.value);
+                const value = e.target.value;
+                setPassword(value);
+                if (value === "") {
+                  setPasswordError("");
+                  setIsPasswordValid(false);
+                } else {
+                  validatePassword(value);
+                }
               }}
               hint={
                 passwordError
@@ -150,7 +162,7 @@ const FormContainer = styled.div`
 
 const Title = styled.p`
   ${({ theme }) => theme.fonts.title32};
-  margin-bottom: 65px;
+  margin: 30px;
 `;
 
 const Button = styled.div`
@@ -165,7 +177,14 @@ const SignUp = styled.div`
 
 const SignUpLink = styled.a`
   ${({ theme }) => theme.fonts.default16};
+  color: ${({ theme }) => theme.colors.black};
   text-decoration: none;
+  &:visited {
+    color: ${({ theme }) => theme.colors.black};
+  }
+  &:active {
+    color: ${({ theme }) => theme.colors.black};
+  }
   &:hover {
     text-decoration: underline;
   }

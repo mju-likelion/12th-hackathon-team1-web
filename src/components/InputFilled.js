@@ -35,8 +35,7 @@ const InputContainer = styled.div`
 const Filled = styled.input`
   width: 400px;
   min-height: 60px;
-  border: 1px solid
-    ${({ isValid, theme }) => (isValid ? theme.colors.green : "white")};
+  border: 1px solid ${({ theme }) => theme.colors.white};
   border-radius: 10px;
   ${({ theme }) => theme.fonts.default};
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);

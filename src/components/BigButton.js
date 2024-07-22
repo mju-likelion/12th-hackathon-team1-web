@@ -14,7 +14,7 @@ const Btn = styled.button`
   height: 60px;
   border-radius: 10px;
   background-color: ${({ disabled, theme }) =>
-    disabled ? theme.colors.dateGray : theme.colors.greenButton};
+    disabled ? theme.colors.green100 : theme.colors.greenButton};
   color: ${({ theme }) => theme.colors.white};
   ${({ theme }) => theme.fonts.bigButtonText};
 `;
