@@ -13,9 +13,11 @@ function SidebarItem({ menu, isSelected }) {
 
 const ItemContainer = styled.p`
   display: flex;
+  justify-content: space-between;
   align-items: center;
   font-size: ${({ theme }) => theme.fonts.default16};
-  margin: 15px 0;
+  margin: 10px 0;
+  font-weight: ${(props) => (props.isSelected ? 600 : 400)};
   cursor: pointer;
   &:hover {
     font-weight: 600;
