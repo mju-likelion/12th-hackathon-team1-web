@@ -1,13 +1,15 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import styled from "styled-components";
 import SidebarItem from "./SidebarItem";
 
 function Sidebar() {
+  const location = useLocation();
+
   const menus = [
     { name: "내 레시피 보기", path: "/" },
-    { name: "좋아요 누른 레시피 보기", path: "/" },
-    { name: "내 냉장고 재료로 레시피 검색", path: "/" },
+    { name: "좋아요 누른 레시피 보기", path: "/liked" },
+    { name: "내 냉장고 재료로 레시피 검색", path: "/myrefresh" },
   ];
 
   return (
@@ -15,9 +17,10 @@ function Sidebar() {
       <MenuText>Menu</MenuText>
       <Grayline />
       {menus.map((menu, index) => {
+        const isSelected = location.pathname === menu.path;
         return (
           <Link to={menu.path} key={index}>
-            <SidebarItem menu={menu} />
+            <SidebarItem menu={menu} isSelected={isSelected} />
           </Link>
         );
       })}
@@ -27,6 +30,7 @@ function Sidebar() {
 
 const MenuText = styled.p`
   font-size: ${({ theme }) => theme.fonts.menuText};
+  text-decoration: none;
   margin: 10px 0;
 `;
 
