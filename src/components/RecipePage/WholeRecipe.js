@@ -6,7 +6,10 @@ const WholeRecipe = () => {
   return (
     <WholeContainer>
       <Line>
-        <RecipeBox menuName={"마파 두부"} countHeart={5} />
+        <RecipeBox
+          menuName={"삐쓰까또레부르쥬미첼라햄페스츄리치즈나쵸스트링스파게티"}
+          countHeart={5}
+        />
         <RecipeBox />
         <RecipeBox />
       </Line>

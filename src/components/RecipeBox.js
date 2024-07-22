@@ -1,14 +1,25 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import Heart from "../assets/images/Heart.svg";
+import FullHeart from "../assets/images/fullHeart.svg";
 
 const RecipeBox = ({ menuName, countHeart }) => {
+  const [isClicked, setIsClicked] = useState(false);
+
+  const handlerHeartClick = () => {
+    setIsClicked(!isClicked);
+  };
+
   return (
     <Container>
       <MenuName>{menuName}</MenuName>
       <PhotoWrapper />
       <HeartContainer>
-        <HeartImg src={Heart} alt="좋아요 버튼" />
+        <HeartImg
+          onClick={handlerHeartClick}
+          src={isClicked ? FullHeart : Heart}
+          alt="좋아요 버튼"
+        />
         <CountHeart>{countHeart}</CountHeart>
       </HeartContainer>
     </Container>
@@ -21,13 +32,14 @@ const HeartContainer = styled.div`
 `;
 
 const CountHeart = styled.p`
-  font-size: ${({ theme }) => theme.fonts.default20};
-  margin: 1px;
+  ${({ theme }) => theme.fonts.default20};
 `;
 
 const MenuName = styled.p`
-  font-size: ${({ theme }) => theme.fonts.default16};
-  margin: 0.5vw;
+  ${({ theme }) => theme.fonts.default16};
+  margin: 0.8vw;
+  text-align: center;
+  max-width: 217px;
 `;
 
 const Container = styled.div`
@@ -58,7 +70,6 @@ const PhotoWrapper = styled.div`
     height: 9.5vw;
     width: 11.3vw;
     border-radius: 0.52vw;
-    margin-top: 1.9vw;
   }
 `;
 
@@ -66,11 +77,12 @@ const HeartImg = styled.img`
   height: 26px;
   width: 26px;
   margin: 12px 11px;
+  cursor: pointer;
 
   @media screen and (max-width: 1200px) {
-    height: 1.5vw;
-    width: 1.5vw;
-    margin-top: 0.52vw;
+    height: 2vw;
+    width: 2vw;
+    margin: 0.625vw;
   }
 `;
 

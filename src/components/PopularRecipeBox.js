@@ -13,8 +13,12 @@ const PopularRecipeBox = ({ menuName, countHeart }) => {
   return (
     <PopularContainer>
       <MenuName>{menuName}</MenuName>
-      <HeartContainer onClick={handlerHeartClick}>
-        <HeartImg src={isClicked ? FullHeart : Heart} alt="좋아요 버튼" />
+      <HeartContainer>
+        <HeartImg
+          onClick={handlerHeartClick}
+          src={isClicked ? FullHeart : Heart}
+          alt="좋아요 버튼"
+        />
         <CountHeart>{countHeart}</CountHeart>
       </HeartContainer>
     </PopularContainer>
@@ -30,12 +34,22 @@ const HeartImg = styled.img`
   height: 26px;
   width: 26px;
   cursor: pointer;
+
+  @media screen and (max-width: 1200px) {
+    height: 2vw;
+    width: 2vw;
+  }
 `;
 
 const MenuName = styled.p`
   ${({ theme }) => theme.fonts.default16};
   max-width: 3.125vw;
   margin: 10px 0 20px;
+  text-align: center;
+
+  @media screen and (max-width: 1200px) {
+    max-width: 7vw;
+  }
 `;
 
 const HeartContainer = styled.div`
