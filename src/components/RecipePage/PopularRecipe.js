@@ -14,7 +14,7 @@ const PopularRecipe = () => {
 
 const PopularContainer = styled.div`
   background-color: ${({ theme }) => theme.colors.green200};
-  width: 46.875vw;
+  width: 900px;
   min-width: 630px;
   height: 198px;
   display: flex;
@@ -22,6 +22,10 @@ const PopularContainer = styled.div`
   align-items: center;
   border-radius: 1vw;
   margin-bottom: 3px;
+
+  @media screen and (max-width: 1200px) {
+    width: 46.875vw;
+  }
 `;
 
 export default PopularRecipe;

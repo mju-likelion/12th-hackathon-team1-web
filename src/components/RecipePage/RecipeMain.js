@@ -7,7 +7,9 @@ const RecipeMain = () => {
   return (
     <RecipeContainer>
       <div>
-        <BoxTitle>인기 레시피</BoxTitle>
+        <TextContainer>
+          <BoxTitle>인기 레시피</BoxTitle>
+        </TextContainer>
         <PopularRecipe />
       </div>
       <div>
@@ -45,6 +47,7 @@ const TextContainer = styled.div`
   justify-content: space-between;
   width: 46.875vw;
   min-width: 630px;
+  padding: 0 3px;
 `;
 
 const RecipeContainer = styled.div`
@@ -57,7 +60,7 @@ const RecipeContainer = styled.div`
 
 const BoxTitle = styled.p`
   font-size: ${({ theme }) => theme.fonts.default18};
-  margin: 7px;
+  margin: 10px 0;
 `;
 
 export default RecipeMain;

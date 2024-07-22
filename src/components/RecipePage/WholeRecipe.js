@@ -29,7 +29,7 @@ const Line = styled.div`
 
 const WholeContainer = styled.div`
   background-color: ${({ theme }) => theme.colors.green200};
-  width: 46.875vw;
+  width: 900px;
   min-width: 630px;
   height: 580px;
   justify-content: space-evenly;
@@ -37,6 +37,10 @@ const WholeContainer = styled.div`
   border-radius: 1vw;
   margin-bottom: 3px;
   padding: 0 30px;
+
+  @media screen and (max-width: 1200px) {
+    width: 46.875vw;
+  }
 `;
 
 export default WholeRecipe;

@@ -2,10 +2,11 @@ import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import Heart from "../assets/images/Heart.svg";
 import FullHeart from "../assets/images/fullHeart.svg";
+import Delete from "../assets/images/delateIcon.svg";
 
-const RecipeBox = ({ menuName, countHeart }) => {
+const RecipeBox = ({ menuName, countHeart, isEditing }) => {
   const [isClicked, setIsClicked] = useState(false);
-  const [maxLength, setMaxLength] = useState(14);
+  const [maxLength, setMaxLength] = useState(12);
 
   const handlerHeartClick = () => {
     setIsClicked(!isClicked);
@@ -24,7 +25,7 @@ const RecipeBox = ({ menuName, countHeart }) => {
       if (window.innerWidth <= 1200) {
         setMaxLength(6);
       } else {
-        setMaxLength(14);
+        setMaxLength(12);
       }
     };
 
@@ -39,7 +40,12 @@ const RecipeBox = ({ menuName, countHeart }) => {
 
   return (
     <Container>
-      <MenuName title={menuName}>{truncateText(menuName, maxLength)}</MenuName>
+      <HeadContainer>
+        <MenuName title={menuName}>
+          {truncateText(menuName, maxLength)}
+        </MenuName>
+        {isEditing && <DeleteIcon src={Delete} alt="삭제 아이콘" />}
+      </HeadContainer>
       <PhotoWrapper />
       <HeartContainer>
         <HeartImg
@@ -52,6 +58,22 @@ const RecipeBox = ({ menuName, countHeart }) => {
     </Container>
   );
 };
+
+const HeadContainer = styled.div`
+  display: flex;
+  align-items: start;
+  position: relative;
+  justify-content: end;
+`;
+
+const DeleteIcon = styled.img`
+  width: 30px;
+  height: 30px;
+  position: absolute;
+  right: -15px;
+  top: -3px;
+  cursor: pointer;
+`;
 
 const HeartContainer = styled.div`
   display: flex;
