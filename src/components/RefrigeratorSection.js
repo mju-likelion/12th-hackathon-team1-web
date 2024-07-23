@@ -53,6 +53,7 @@ const RefrigeratorSection = ({title, ButtonText, dateRef}) => {
     }
 
     return (
+        <>
         <Section>
             <AllTextWrapper>
                 <TextBox>
@@ -160,15 +161,17 @@ const RefrigeratorSection = ({title, ButtonText, dateRef}) => {
                                 </>
                                 )}
                         </FoodBoxWrapper>
-                        <IngredientWrapper>
+                </LineBox>
+            </AllTextWrapper>
+        </Section>
+        <IngredientWrapper>
                             {showIngredientBox  && <IngredientBox 
                             closeIngredientBox = {closeIngredientBox}
                             storageName={storageName}
                         />}
                     </IngredientWrapper>
-                </LineBox>
-            </AllTextWrapper>
-        </Section>
+        </>
+        
     );
 };
 
@@ -276,6 +279,8 @@ const IngredientWrapper = styled.div`
     position: absolute;
     display: flex;
     flex-direction: column;
+    margin-top: 40px;
+    margin-left: 300px;
 `;
 
 export default RefrigeratorSection;
