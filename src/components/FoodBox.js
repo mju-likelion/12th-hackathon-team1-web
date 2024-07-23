@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import remove from '../assets/images/delateIcon.svg'
 import Modal from '../pages/Modal';
 
-const FoodBox = ({title, ButtonText, removeFoodBox, year, month, date, isDate, quantity, storage, memo, id, expiryDate}) => {
+const FoodBox = ({name, ButtonText, removeFoodBox, year, month, date, isDate, quantity, storage, memo, id, expiryDate}) => {
     const [showFoodBox, setShowFoodBox] = useState(false);
     const [maxLength, setMaxLength] = useState(5);
 
@@ -41,7 +41,13 @@ const FoodBox = ({title, ButtonText, removeFoodBox, year, month, date, isDate, q
     })
 
     return (
-      <AllWrapper>
+        <AllWrapper>
+            {expiryDate <=3 &&
+        (expiryDate === 1 ?
+            <DdayText>D-DAY</DdayText>
+            : <DdayText>D-{expiryDate -1 }</DdayText>
+            )
+        }
         <Wrapper expiryDate={expiryDate}>
             <TextWrapper onClick={isOpenShowFood}>
                 {showFoodBox && ButtonText === '편집' &&
@@ -51,50 +57,44 @@ const FoodBox = ({title, ButtonText, removeFoodBox, year, month, date, isDate, q
                     year={year}
                     month={month}
                     date={date}
-                    title={title}
+                    title={name}
                     quantity={quantity}
                     storage={storage}
                     memo={memo}
                     modal = "단건조회"
                     isDate={isDate}
                 />}
-                <IngredientName $isDate={isDate}>{truncateText(title, maxLength)}</IngredientName>
+                <HighWrapper>
+                <IngredientName $isDate={isDate}>{truncateText(name, maxLength)}</IngredientName>
+                <ImgBox>
+                    {ButtonText === '저장' && <DeleteImg onClick={removeFoodBox} src={remove} alt='삭제'/>}
+                </ImgBox>
+                </HighWrapper>
                 <IngredientDate $isDate={isDate}>유통기한: {year}.{month}.{date}</IngredientDate>
             </TextWrapper>
-            <ImgBox>
-                {ButtonText === '저장' && <DeleteImg onClick={removeFoodBox} src={remove}/>}
-            </ImgBox>
         </Wrapper>
-        {expiryDate <=2 &&
-        (expiryDate === 0 ?
-            <DdayText>D-DAY</DdayText>
-            : <DdayText>D-{expiryDate}</DdayText>
-            )
-        }
     </AllWrapper>
 
     );
 };
 
 const AllWrapper = styled.div`
-    width: 172px;
-    height: 140px;
     display: flex;
-    flex-direction: column;
-    align-items: center;
+    align-items : center;
+    justify-content: center;
+    height: 140px;
 
     @media screen and (max-width: 1200px){
-        width: 12vw;
-        height: 10vw;
+        height: 9.72vw;
     }
+
 `;
 
 const Wrapper = styled.div`
-//position: absolute;
     background-color: ${({ theme, expiryDate }) => 
-        expiryDate === 2 ? '#FFD8D9' :
-        expiryDate === 1 ? '#FFBAB7' :
-        expiryDate === 0 ? '#FF9F9F' :
+        expiryDate === 3 ? '#FFD8D9' :
+        expiryDate === 2 ? '#FFBAB7' :
+        expiryDate === 1 ? '#FF9F9F' :
         theme.colors.white};
     display: flex;
     flex-direction: row;
@@ -103,70 +103,98 @@ const Wrapper = styled.div`
     border-radius: 23px;
     flex-shrink: 0;
     cursor: pointer;
-    margin-top: 20px;
 
     @media screen and (max-width: 1200px) {
         width: 12vw;
         height: 7vw;
         border-radius: 1.5vw;
-        margin-top: 1.8vw;
     }
 `;
 
 const TextWrapper = styled.div`
-    width: 100%;
-    height: 100%;
+    width: 172px;
+    height: 100px;
     margin-left: 10px;
     display: flex;
     flex-direction: column;
     justify-content: center;
-    gap: 20%;
+    gap: 20px;
 
+    @media screen and (max-width: 1200px){
+        width: 12vw;
+        height: 7vw;
+        gap: 1.39vw;
+        margin-left: 0.7vw;
+    }
 `;
 
 const DdayText = styled.div`
-  position: absolute;
-  background-color: ${({theme})=>theme.colors.error};
-  width: 60px;
-  height: 40px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  border-radius: 30px;
-  color: ${({theme})=>theme.colors.white};
+    margin-bottom: 100px;
+    position: absolute;
+    background-color: ${({theme})=>theme.colors.error};
+    width: 60px;
+    height: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 30px;
+    color: ${({theme})=>theme.colors.white};
 
-  @media screen and (max-width: 1200px){
-    width: 5vw;
-    height: 3vw;
-    font-size: 1.5vw;
-  }
+    @media screen and (max-width: 1200px){
+        width: 5vw;
+        height: 3vw;
+        font-size: 1.5vw;
+        margin-bottom: 6.95vw;
+    }
+`;
+
+const HighWrapper = styled.div`
+    height: 40px;
+    width: 162px;
+    display: flex;
+    justify-content: space-between;
+
+    @media screen and (max-width: 1200px){
+        width: 11.25vw;
+        height: 2.78vw;
+    }
 `;
 
 const IngredientName = styled.p`
+    height: 40px;
+    display: flex;
+    margin-top: 20px;
     ${({theme})=>theme.fonts.default18}
     color: ${({theme, $isDate})=> ($isDate ? theme.colors.dateGray : 'initial')};
 
     @media screen and (max-width: 1200px){
         font-size: 1.3vw;
+        height: 2.78vw;
+        margin-top: 1.4vw;
     }
 `;
 
 const IngredientDate = styled.p`
+    margin-bottom: 10px;
     ${({theme})=>theme.fonts.default12}
     color: ${({theme, $isDate})=> ($isDate ? theme.colors.dateGray : 'initial')};
 
     @media screen and (max-width:1200px){
         font-size: 0.8vw;
+        margin-bottom: 0.7vw;
     }
 `;
 
 const ImgBox = styled.div`
-    width: 100%;
-    position: absolute;
-    display: flex;
-    justify-content: end;
-    margin-top: 5px;
+    width: 40px;
+    height: 40px;
+    margin-right: 5px;
 
+    @media screen and (max-width: 1200px){
+        width: 2.78vw;
+        height: 2.78vw;
+        margin-right: 0.35vw;
+    }
 `;
 
 const DeleteImg = styled.img`
@@ -175,8 +203,8 @@ const DeleteImg = styled.img`
     cursor: pointer;
 
     @media screen and (max-width: 1200px){
-        width: 3vw;
-        height: 3vw;
+        width: 2.78vw;
+        height: 2.78vw;
     }
 `;
 
