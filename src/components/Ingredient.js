@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import Modal from './Modal';
+import Modal from '../pages/Modal';
 
-const Ingredient = ({searchValue}) => {
+const Ingredient = ({searchValue, storageName, closeIngredientBox}) => {
     const[choseShowIngredient, setChoseShowIngredient] = useState(false);
     const [ingredientValue, setIngredientValue] = useState('');
 
@@ -19,6 +19,7 @@ const Ingredient = ({searchValue}) => {
 
     const closeModal = () => {
         setChoseShowIngredient(false);
+        closeIngredientBox();
     }
 
     return (
@@ -29,7 +30,11 @@ const Ingredient = ({searchValue}) => {
         {choseShowIngredient && 
         <Modal 
         closeModal={closeModal} 
-        ingredientValue={ingredientValue}/>}
+        ingredientValue={ingredientValue}
+        storageName={storageName}
+        closeIngredientBox={closeIngredientBox}
+        modal= "등록"
+        />}
         </IngredientWrapper>
         
     );

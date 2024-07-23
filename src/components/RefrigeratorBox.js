@@ -1,34 +1,60 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import styled from 'styled-components';
 import FoodBox from './FoodBox';
 import IngredientBox from './IngredientBox'
 import arrow from '../assets/images/next.svg';
 import plus from '../assets/images/circlePlus.svg';
+import { dataAtom } from '../Recoil/Atom';
+import { useRecoilValue, useSetRecoilState } from 'recoil';
 
 const RefrigeratorBox = () => {
+    const FoodData = useRecoilValue(dataAtom);
+    const setFoodData = useSetRecoilState(dataAtom);
     const [ButtonText, setButtonText] = useState('편집');
     const [showIngredientBox, setShowIngredientBox] = useState(false);
+    const [storageName, setStorageName] = useState('');
 
-    const [FoodData, setFoodData] = useState([
-        {id: 'date', key: 1, title: "사과"},
-        {id: 'date', key: 2, title: "자두"},
-        {id: 'date', key: 3, title: "양파"},
-        {id: 'date' ,key: 4, title: "대파"},
-        {id: 'date' ,key: 5, title: "고기"},
-        {id: 'date', key: 6, title: "바나나"},
-        {id: 'date', key: 7, title: "간장"},
-    ]);
+    const dateRefOne = useRef(null);
+    const dateRefTwo = useRef(null);
+    const dateRefThree = useRef(null);
+    const dateRefFour = useRef(null);
+    
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = today.getMonth() + 1;
+    const day = today.getDate();
+
+    const isDateExpired = (expiredDate) => {
+        const [foodYear, foodMonth, foodDay] = expiredDate.split('-').map(Number);
+        if (foodYear < year) return true;
+        if (foodYear > year) return false;
+        if (foodMonth < month) return true;
+        if (foodMonth > month) return false;
+        if (foodDay < day) return true;
+        return false;
+    }
+    const expiredFoodData = FoodData.filter(box => isDateExpired(box.expiredDate));
+    const freezerData = FoodData.filter(box => box.storage === "냉동" && !isDateExpired(box.expiredDate));
+    const fridgeData = FoodData.filter(box => box.storage === "냉장" && !isDateExpired(box.expiredDate));
+    const roomTempData = FoodData.filter(box => box.storage === "상온" && !isDateExpired(box.expiredDate));
+
+    const handleScroll = (ref) => {
+        if (ref.current) {
+            ref.current.scrollBy({ left: 220, behavior: 'smooth' });
+        }
+    };
 
     const toggleButton = () => {
-        setButtonText(preText => (preText === '편집' ? '저장' : '편집'));
-    }
+        setButtonText((prevText) => (prevText === '편집' ? '저장' : '편집'));
+    };
 
     const removeFoodBox = (key) => {
-        setFoodData(FoodData.filter(box => box.key !== key));
+        setFoodData((prevData) => prevData.filter(box => box.key !== key));
     }
 
-    const openIngredientBox = () => {
+    const openIngredientBox = (box) => {
         setShowIngredientBox(true);
+        setStorageName(box.storage);
     }
 
     const closeIngredientBox = () => {
@@ -52,21 +78,27 @@ const RefrigeratorBox = () => {
                                     <LineBox>
                                         <VerticalLine />
                                     </LineBox>
-                                    <FoodBoxWrapper>
-                                        {FoodData.map(box =>(
-                                            <FoodBox 
+                                    <FoodBoxWrapper ref={dateRefOne}>
+                                        {expiredFoodData.map(box =>(
+                                            <FoodBox
                                             key = {box.key}
-                                            id = {box.id}
-                                            ButtonText={ButtonText}
+                                            id = {box.key}
                                             title = {box.title}
+                                            year={box.expiredDate.split('-')[0]}
+                                            month={box.expiredDate.split('-')[1]}
+                                            date={box.expiredDate.split('-')[2]}
+                                            quantity={box.quantity}
+                                            storage={box.storage}
+                                            memo={box.memo}
                                             removeFoodBox={()=>removeFoodBox(box.key)}
+                                            isDate={isDateExpired(box.expiredDate)}
+                                            ButtonText={ButtonText}
                                             />
                                         ))}
-                                        {ButtonText === '저장' && <PlusImg src={plus} alt="추가 이미지" onClick={openIngredientBox}/>}
                                     </FoodBoxWrapper>
                                 </AllTextWrapper>
                             </Section>
-                            <ArrowBox>
+                            <ArrowBox onClick={() => handleScroll(dateRefOne)}>
                                 <Arrow src={arrow} alt="화살표"/>
                             </ArrowBox>
                         </WrapperWrapper>
@@ -82,19 +114,30 @@ const RefrigeratorBox = () => {
                                     <LineBox>
                                         <VerticalLine />
                                     </LineBox>
-                                    <FoodBoxWrapper>
-                                        <FoodBox ButtonText={ButtonText}/>
-                                        <FoodBox ButtonText={ButtonText}/>
-                                        <FoodBox ButtonText={ButtonText}/>
-                                        <FoodBox ButtonText={ButtonText}/>
-                                        <FoodBox ButtonText={ButtonText}/>
-                                        <FoodBox ButtonText={ButtonText}/>
-                                        <FoodBox ButtonText={ButtonText}/>
-                                        {ButtonText === '저장' && <PlusImg src={plus} alt="추가 이미지" onClick={openIngredientBox}/>}
+                                    <FoodBoxWrapper ref={dateRefTwo}>
+                                        {freezerData.map(box =>(
+                                            <FoodBox 
+                                            key = {box.key}
+                                            id = {box.key}
+                                            title = {box.title}
+                                            year={box.expiredDate.split('-')[0]}
+                                            month={box.expiredDate.split('-')[1]}
+                                            date={box.expiredDate.split('-')[2]}
+                                            quantity={box.quantity}
+                                            storage={box.storage}
+                                            memo={box.memo}
+                                            ButtonText = {ButtonText}
+                                            removeFoodBox={()=>removeFoodBox(box.key)}
+                                            />
+                                        ))}
+                                        {ButtonText === '저장' && <PlusImg src={plus} alt="추가 이미지" 
+                                        onClick={() => openIngredientBox({ storage: "냉동" })}
+                                        
+                                        />}
                                     </FoodBoxWrapper>
                                 </AllTextWrapper>
                             </Section>
-                            <ArrowBox>
+                            <ArrowBox onClick={() => handleScroll(dateRefTwo)}>
                                 <Arrow src={arrow} alt="화살표"/>
                             </ArrowBox>
                         </WrapperWrapper>
@@ -110,19 +153,28 @@ const RefrigeratorBox = () => {
                                     <LineBox>
                                         <VerticalLine />
                                     </LineBox>
-                                    <FoodBoxWrapper>
-                                        <FoodBox ButtonText={ButtonText}/>
-                                        <FoodBox ButtonText={ButtonText}/>
-                                        <FoodBox ButtonText={ButtonText}/>
-                                        <FoodBox ButtonText={ButtonText}/>
-                                        <FoodBox ButtonText={ButtonText}/>
-                                        <FoodBox ButtonText={ButtonText}/>
-                                        <FoodBox ButtonText={ButtonText}/>
-                                        {ButtonText === '저장' && <PlusImg src={plus} alt="추가 이미지" onClick={openIngredientBox}/>}
+                                    <FoodBoxWrapper ref={dateRefThree}>
+                                        {fridgeData.map(box =>(
+                                                <FoodBox 
+                                                key = {box.key}
+                                                id = {box.key}
+                                                title = {box.title}
+                                                year={box.expiredDate.split('-')[0]}
+                                                month={box.expiredDate.split('-')[1]}
+                                                date={box.expiredDate.split('-')[2]}
+                                                quantity={box.quantity}
+                                                storage={box.storage}
+                                                memo={box.memo}
+                                                ButtonText = {ButtonText}
+                                                removeFoodBox={()=>removeFoodBox(box.key)}
+                                                />
+                                            ))}
+                                        {ButtonText === '저장' && <PlusImg src={plus} alt="추가 이미지" 
+                                        onClick={() => openIngredientBox({ storage: "냉장" })}/>}
                                     </FoodBoxWrapper>
                                 </AllTextWrapper>
                             </Section>
-                            <ArrowBox>
+                            <ArrowBox onClick={() => handleScroll(dateRefThree)}>
                                 <Arrow src={arrow} alt="화살표"/>
                             </ArrowBox>
                         </WrapperWrapper>
@@ -138,24 +190,34 @@ const RefrigeratorBox = () => {
                                     <LineBox>
                                         <VerticalLine />
                                     </LineBox>
-                                    <FoodBoxWrapper>
-                                        <FoodBox ButtonText={ButtonText}/>
-                                        <FoodBox ButtonText={ButtonText}/>
-                                        <FoodBox ButtonText={ButtonText}/>
-                                        <FoodBox ButtonText={ButtonText}/>
-                                        <FoodBox ButtonText={ButtonText}/>
-                                        <FoodBox ButtonText={ButtonText}/>
-                                        <FoodBox ButtonText={ButtonText}/>
-                                        {ButtonText === '저장' && <PlusImg src={plus} alt="추가 이미지" onClick={openIngredientBox}/>}
+                                    <FoodBoxWrapper ref={dateRefFour}>
+                                        {roomTempData.map(box =>(
+                                                <FoodBox 
+                                                key = {box.key}
+                                                id = {box.key}
+                                                title = {box.title}
+                                                year={box.expiredDate.split('-')[0]}
+                                                month={box.expiredDate.split('-')[1]}
+                                                date={box.expiredDate.split('-')[2]}
+                                                quantity={box.quantity}
+                                                storage={box.storage}
+                                                memo={box.memo}
+                                                ButtonText = {ButtonText}
+                                                removeFoodBox={()=>removeFoodBox(box.key)}
+                                                />
+                                            ))}
+                                        {ButtonText === '저장' && <PlusImg src={plus} alt="추가 이미지" 
+                                        onClick={() => openIngredientBox({ storage: "상온" })}/>}
                                     </FoodBoxWrapper>
                                     <IngredientWrapper>
                                         {showIngredientBox  && <IngredientBox 
-                                        closeIngredientBox = {closeIngredientBox}
+                                            closeIngredientBox = {closeIngredientBox}
+                                            storageName={storageName}
                                         />}
                                     </IngredientWrapper>
                                 </AllTextWrapper>
                             </Section>
-                            <ArrowBox>
+                            <ArrowBox onClick={() => handleScroll(dateRefFour)}>
                                 <Arrow src={arrow} alt="화살표"/>
                             </ArrowBox>
                         </WrapperWrapper>
@@ -318,6 +380,7 @@ const FoodBoxWrapper = styled.div`
     align-items: center;
     gap: 50px;
     margin-left: 30px;
+    margin-right: 50px;
     overflow-x: auto;
     white-space: nowrap;
 
@@ -328,17 +391,18 @@ const FoodBoxWrapper = styled.div`
     @media screen and (max-width: 1200px){
         margin-left: 2.5vw;
         gap: 2.5vw;
+        margin-right: 2.5vw;
     }
 `;
 
 const PlusImg = styled.img`
-    margin-right: 60px;
-    margin-left: 10px;
+    margin-right: 80px;
+    margin-left: 50px;
     cursor: pointer;
 
     @media screen and (max-width: 1200px){
         margin-right: 3.5vw;
-        margin-left: 1.3vw;
+        margin-left: 3vw;
         width: 2.5vw;
         height: 2.5vw;
     }
