@@ -6,8 +6,11 @@ import Modal from '../pages/Modal';
 const FoodBox = ({title, ButtonText, removeFoodBox, year, month, date, isDate, quantity, storage, memo, id}) => {
     const [showFoodBox, setShowFoodBox] = useState(false);
     const [maxLength, setMaxLength] = useState(5);
+
     const isOpenShowFood = () => {
-        setShowFoodBox(true);
+        if (ButtonText === '편집') {
+            setShowFoodBox(true);
+        }
     }
     const isCloseShowFood = () => {
         setShowFoodBox(false);
