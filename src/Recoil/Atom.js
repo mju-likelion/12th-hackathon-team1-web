@@ -11,6 +11,6 @@ export const dataAtom = atom({
     { key: 6, title: "바나나", expiredDate: '2024-07-19', quantity: '6', storage: '상온', memo: '바'},
     { key: 7, title: "간장", expiredDate: '2024-07-22', quantity: '7', storage: '냉동', memo: '사'},
     { key: 8, title: "계란", expiredDate: '2024-07-10', quantity: '8', storage: '냉동', memo: '아'},
-    { key: 9, title: "마요네즈", expiredDate: '2024-07-12', quantity: '9', storage: '냉동', memo: '자'},
+    { key: 9, title: "양파버터볶음", expiredDate: '2024-07-31', quantity: '9', storage: '냉동', memo: '자'},
   ],
 });

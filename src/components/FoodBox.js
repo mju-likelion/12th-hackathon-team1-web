@@ -1,17 +1,41 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import remove from '../assets/images/delateIcon.svg'
 import Modal from '../pages/Modal';
 
 const FoodBox = ({title, ButtonText, removeFoodBox, year, month, date, isDate, quantity, storage, memo, id}) => {
     const [showFoodBox, setShowFoodBox] = useState(false);
-
+    const [maxLength, setMaxLength] = useState(5);
     const isOpenShowFood = () => {
         setShowFoodBox(true);
     }
     const isCloseShowFood = () => {
         setShowFoodBox(false);
     }
+
+    const truncateText = (text, maxLength) => {
+        if (!text) return "";
+        if (text.length > maxLength) {
+        return text.slice(0, maxLength) + "...";
+        }
+        return text;
+    };
+
+    useEffect(() => {
+        const handleResize = () => {
+            if(window.innerWidth <= 1200) {
+                setMaxLength(4);
+            }else {
+                setMaxLength(5);
+            }
+        };
+        window.addEventListener("resize", handleResize);
+        handleResize();
+
+        return () => {
+            window.removeEventListener("resize", handleResize);
+        }
+    })
 
     return (
         <Wrapper>
@@ -30,7 +54,7 @@ const FoodBox = ({title, ButtonText, removeFoodBox, year, month, date, isDate, q
                     modal = "단건조회"
                     isDate={isDate}
                 />}
-                <IngredientName $isDate={isDate}>{title}</IngredientName>
+                <IngredientName $isDate={isDate}>{truncateText(title, maxLength)}</IngredientName>
                 <IngredientDate $isDate={isDate}>유통기한: {year}.{month}.{date}</IngredientDate>
             </TextWrapper>
             <ImgBox>
