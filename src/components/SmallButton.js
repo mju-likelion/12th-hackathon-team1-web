@@ -1,11 +1,10 @@
 import React from "react";
 import styled from "styled-components";
 
-const SmallButton = ({Click, text, isClose, canSave}) => {
+const SmallButton = ({onClick, text, disabled}) => {
   return(
     <> 
-    <Container onClick={Click} disabled={canSave}>{text}</Container>
-    {isClose && <Container onClick={isClose}>{text}</Container>}
+    <Container onClick={onClick} disabled={disabled}>{text}</Container>
     </>
   );
 };

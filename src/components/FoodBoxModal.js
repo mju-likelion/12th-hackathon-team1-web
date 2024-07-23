@@ -6,9 +6,12 @@ import Modal from './ModifyModal';
 const FoodBoxModal = ({isCloseShowFood, title, year, month, date, quantity, storage, memo, id, isDate }) => {
   const [showModify, setShowModify] = useState(false);
 
+  const stopPropagation = (e) => {
+    e.stopPropagation();
+  };
+
   const openModifyModal = () => {
     setShowModify(true);
-    isCloseShowFood();
   }
 
   const closeModifyModal = () => {
@@ -17,7 +20,7 @@ const FoodBoxModal = ({isCloseShowFood, title, year, month, date, quantity, stor
 
   return (
         <div>
-        <WrapperBox>
+        <WrapperBox onClick={stopPropagation}>
             <Wrapper>
               <TitleBox>
                 <MainTitle>{title}</MainTitle>
@@ -51,8 +54,8 @@ const FoodBoxModal = ({isCloseShowFood, title, year, month, date, quantity, stor
                   </TextBoxWrapper>
                 </SmallWrapper>
                 <ButtonWrapper>
-                    <SmallButton text="닫기" Click={isCloseShowFood}/>
-                      {!isDate && <SmallButton text="수정하기" Click={openModifyModal}/>}
+                    <SmallButton text="닫기" onClick={isCloseShowFood}/>
+                      {!isDate && <SmallButton text="수정하기" onClick={openModifyModal}/>}
                     {showModify && (
                     <Modal 
                       title={title}

@@ -33,6 +33,14 @@ const RefrigeratorBox = () => {
         if (foodDay < day) return true;
         return false;
     }
+
+    const isDateDDay = (expiredDate) => {
+        const expiryDate = new Date(expiredDate);
+        const diffTime = expiryDate - today;
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+        return diffDays;
+    };
+
     const expiredFoodData = FoodData.filter(box => isDateExpired(box.expiredDate));
     const freezerData = FoodData.filter(box => box.storage === "냉동" && !isDateExpired(box.expiredDate));
     const fridgeData = FoodData.filter(box => box.storage === "냉장" && !isDateExpired(box.expiredDate));
@@ -115,21 +123,22 @@ const RefrigeratorBox = () => {
                                         <VerticalLine />
                                     </LineBox>
                                     <FoodBoxWrapper ref={dateRefTwo}>
-                                        {freezerData.map(box =>(
-                                            <FoodBox 
-                                            key = {box.key}
-                                            id = {box.key}
-                                            title = {box.title}
-                                            year={box.expiredDate.split('-')[0]}
-                                            month={box.expiredDate.split('-')[1]}
-                                            date={box.expiredDate.split('-')[2]}
-                                            quantity={box.quantity}
-                                            storage={box.storage}
-                                            memo={box.memo}
-                                            ButtonText = {ButtonText}
-                                            removeFoodBox={()=>removeFoodBox(box.key)}
+                                    {freezerData.map(box =>
+                                            <FoodBox
+                                                key={box.key}
+                                                id={box.key}
+                                                title={box.title}
+                                                year={box.expiredDate.split('-')[0]}
+                                                month={box.expiredDate.split('-')[1]}
+                                                date={box.expiredDate.split('-')[2]}
+                                                quantity={box.quantity}
+                                                storage={box.storage}
+                                                memo={box.memo}
+                                                expiryDate={isDateDDay(box.expiredDate)}
+                                                ButtonText={ButtonText}
+                                                removeFoodBox={() => removeFoodBox(box.key)}
                                             />
-                                        ))}
+                                        )}
                                         {ButtonText === '저장' && <PlusImg src={plus} alt="추가 이미지" 
                                         onClick={() => openIngredientBox({ storage: "냉동" })}
                                         
@@ -154,21 +163,22 @@ const RefrigeratorBox = () => {
                                         <VerticalLine />
                                     </LineBox>
                                     <FoodBoxWrapper ref={dateRefThree}>
-                                        {fridgeData.map(box =>(
-                                                <FoodBox 
-                                                key = {box.key}
-                                                id = {box.key}
-                                                title = {box.title}
+                                    {fridgeData.map(box =>
+                                            <FoodBox 
+                                                key={box.key}
+                                                id={box.key}
+                                                title={box.title}
                                                 year={box.expiredDate.split('-')[0]}
                                                 month={box.expiredDate.split('-')[1]}
                                                 date={box.expiredDate.split('-')[2]}
                                                 quantity={box.quantity}
                                                 storage={box.storage}
                                                 memo={box.memo}
-                                                ButtonText = {ButtonText}
-                                                removeFoodBox={()=>removeFoodBox(box.key)}
-                                                />
-                                            ))}
+                                                expiryDate={isDateDDay(box.expiredDate)}
+                                                ButtonText={ButtonText}
+                                                removeFoodBox={() => removeFoodBox(box.key)}
+                                            />
+                                        )}
                                         {ButtonText === '저장' && <PlusImg src={plus} alt="추가 이미지" 
                                         onClick={() => openIngredientBox({ storage: "냉장" })}/>}
                                     </FoodBoxWrapper>
@@ -191,21 +201,22 @@ const RefrigeratorBox = () => {
                                         <VerticalLine />
                                     </LineBox>
                                     <FoodBoxWrapper ref={dateRefFour}>
-                                        {roomTempData.map(box =>(
-                                                <FoodBox 
-                                                key = {box.key}
-                                                id = {box.key}
-                                                title = {box.title}
+                                    {roomTempData.map(box =>
+                                            <FoodBox 
+                                                key={box.key}
+                                                id={box.key}
+                                                title={box.title}
                                                 year={box.expiredDate.split('-')[0]}
                                                 month={box.expiredDate.split('-')[1]}
                                                 date={box.expiredDate.split('-')[2]}
                                                 quantity={box.quantity}
                                                 storage={box.storage}
                                                 memo={box.memo}
-                                                ButtonText = {ButtonText}
-                                                removeFoodBox={()=>removeFoodBox(box.key)}
-                                                />
-                                            ))}
+                                                expiryDate={isDateDDay(box.expiredDate)}
+                                                ButtonText={ButtonText}
+                                                removeFoodBox={() => removeFoodBox(box.key)}
+                                            />
+                                        )}
                                         {ButtonText === '저장' && <PlusImg src={plus} alt="추가 이미지" 
                                         onClick={() => openIngredientBox({ storage: "상온" })}/>}
                                     </FoodBoxWrapper>

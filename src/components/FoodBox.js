@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import remove from '../assets/images/delateIcon.svg'
 import Modal from '../pages/Modal';
 
-const FoodBox = ({title, ButtonText, removeFoodBox, year, month, date, isDate, quantity, storage, memo, id}) => {
+const FoodBox = ({title, ButtonText, removeFoodBox, year, month, date, isDate, quantity, storage, memo, id, expiryDate}) => {
     const [showFoodBox, setShowFoodBox] = useState(false);
     const [maxLength, setMaxLength] = useState(5);
 
@@ -41,7 +41,8 @@ const FoodBox = ({title, ButtonText, removeFoodBox, year, month, date, isDate, q
     })
 
     return (
-        <Wrapper>
+      <AllWrapper>
+        <Wrapper expiryDate={expiryDate}>
             <TextWrapper onClick={isOpenShowFood}>
                 {showFoodBox && ButtonText === '편집' &&
                 <Modal 
@@ -64,12 +65,37 @@ const FoodBox = ({title, ButtonText, removeFoodBox, year, month, date, isDate, q
                 {ButtonText === '저장' && <DeleteImg onClick={removeFoodBox} src={remove}/>}
             </ImgBox>
         </Wrapper>
+        {expiryDate <=2 &&
+        (expiryDate === 0 ?
+            <DdayText>D-DAY</DdayText>
+            : <DdayText>D-{expiryDate}</DdayText>
+            )
+        }
+    </AllWrapper>
+
     );
 };
 
+const AllWrapper = styled.div`
+    width: 172px;
+    height: 140px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    @media screen and (max-width: 1200px){
+        width: 12vw;
+        height: 10vw;
+    }
+`;
+
 const Wrapper = styled.div`
-    position: relative;
-    background-color: ${({theme})=>theme.colors.white};
+//position: absolute;
+    background-color: ${({ theme, expiryDate }) => 
+        expiryDate === 2 ? '#FFD8D9' :
+        expiryDate === 1 ? '#FFBAB7' :
+        expiryDate === 0 ? '#FF9F9F' :
+        theme.colors.white};
     display: flex;
     flex-direction: row;
     width: 172px;
@@ -77,11 +103,13 @@ const Wrapper = styled.div`
     border-radius: 23px;
     flex-shrink: 0;
     cursor: pointer;
+    margin-top: 20px;
 
     @media screen and (max-width: 1200px) {
         width: 12vw;
         height: 7vw;
         border-radius: 1.5vw;
+        margin-top: 1.8vw;
     }
 `;
 
@@ -94,6 +122,24 @@ const TextWrapper = styled.div`
     justify-content: center;
     gap: 20%;
 
+`;
+
+const DdayText = styled.div`
+  position: absolute;
+  background-color: ${({theme})=>theme.colors.error};
+  width: 60px;
+  height: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 30px;
+  color: ${({theme})=>theme.colors.white};
+
+  @media screen and (max-width: 1200px){
+    width: 5vw;
+    height: 3vw;
+    font-size: 1.5vw;
+  }
 `;
 
 const IngredientName = styled.p`

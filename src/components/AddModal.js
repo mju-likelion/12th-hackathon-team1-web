@@ -160,8 +160,8 @@ const AddModal = ({closeModal, ingredientValue, storageName, closeIngredientBox}
                   </TextBoxWrapper>
                 </SmallWrapper>
                 <ButtonWrapper>
-                    <SmallButton text="등록 취소" Click={closeModal}/>
-                    <SmallButton text="등록 완료" Click={handleSave} canSave={!canSave()}/>
+                    <SmallButton text="등록 취소" onClick={closeModal}/>
+                    <SmallButton text="등록 완료" onClick={handleSave} disabled={!canSave()}/>
                 </ButtonWrapper>
             </Wrapper>
         </WrapperBox>

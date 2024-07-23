@@ -46,8 +46,10 @@ const ModifyModal = ({ title, id, isCloseShowFood}) => {
         return item;
       });
     });
+    console.log("foodData: ", foodData);
     isCloseShowFood();
   };
+
 
   const years = [
     { value: "", label: "년 선택" },
@@ -100,8 +102,8 @@ const ModifyModal = ({ title, id, isCloseShowFood}) => {
   ]
   const methods = [
     {value: "", label: "저장 방법"},
-    {value: "냉동실", label: "냉동실"},
-    {value: "냉장실", label: "냉장실"},
+    {value: "냉동", label: "냉동"},
+    {value: "냉장", label: "냉장"},
     {value: "상온", label: "상온"},
   ]
 
@@ -182,8 +184,8 @@ const ModifyModal = ({ title, id, isCloseShowFood}) => {
                   </TextBoxWrapper>
                 </SmallWrapper>
                 <ButtonWrapper>
-                    <SmallButton text="닫기" Click={isCloseShowFood}/>
-                    <SmallButton text="수정 완료"Click={handleSave}/>
+                    <SmallButton text="닫기" onClick={isCloseShowFood}/>
+                    <SmallButton text="수정 완료"onClick={handleSave}/>
                 </ButtonWrapper>
             </Wrapper>
         </WrapperBox>
