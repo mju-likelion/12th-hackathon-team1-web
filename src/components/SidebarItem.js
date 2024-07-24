@@ -1,6 +1,6 @@
 import React from "react";
 import styled, { css } from "styled-components";
-import Arrow from "../../assets/images/next.svg";
+import Arrow from "../assets/images/next.svg";
 
 function SidebarItem({ menu, isSelected }) {
   return (
@@ -27,6 +27,11 @@ const ItemContainer = styled.p`
 
   &:hover {
     font-weight: 600;
+  }
+
+  @media screen and (max-width: 1200px){
+    font-size: 1.3vw;
+    margin: 0.7vw 0;
   }
 `;
 

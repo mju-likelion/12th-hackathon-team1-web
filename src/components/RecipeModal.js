@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
-import Heart from "../../assets/images/Heart.svg";
-import SmallButton from "../SmallButton";
+import Heart from "../assets/images/Heart.svg";
+import SmallButton from "./SmallButton";
 
 const RecipeModal = ({ closeModal }) => {
   return (

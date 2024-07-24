@@ -3,8 +3,8 @@ import styled from "styled-components";
 import Heart from "../assets/images/Heart.svg";
 import FullHeart from "../assets/images/fullHeart.svg";
 import Delete from "../assets/images/delateIcon.svg";
-import Dropdown from "./RecipePage/DropDown";
-import RecipeModal from "./RecipePage/RecipeModal";
+import Dropdown from "./DropDown";
+import RecipeModal from "./RecipeModal";
 
 const RecipeBox = ({
   menuName,

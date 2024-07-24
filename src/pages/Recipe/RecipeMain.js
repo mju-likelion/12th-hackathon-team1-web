@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
-import WholeRecipe from "./WholeRecipe";
-import PopularRecipe from "./PopularRecipe";
+import WholeRecipe from "../../components/WholeRecipe";
+import PopularRecipe from "../../components/PopularRecipe";
 
 const RecipeMain = () => {
   return (

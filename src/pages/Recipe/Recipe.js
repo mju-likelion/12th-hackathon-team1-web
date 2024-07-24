@@ -1,37 +1,35 @@
 import React from "react";
 import styled from "styled-components";
-import Sidebar from "../components/RecipePage/Sidebar";
-import RecipeMain from "../components/RecipePage/RecipeMain";
-import MyRecipe from "../components/RecipePage/MyRecipe";
+import Sidebar from "../../components/Sidebar";
+import RecipeMain from "./RecipeMain";
 
 const Recipe = () => {
   return (
-    <RecipeContainer>
+    <>
       <SidebarContainer>
         <Sidebar />
       </SidebarContainer>
+    <RecipeContainer>
       <PageContainer>
-        <MyRecipe />
         <RecipeMain />
       </PageContainer>
     </RecipeContainer>
+    </>
   );
 };
 
 const SidebarContainer = styled.div`
+position: absolute;
   display: flex;
-  padding: 1.8vw;
   justify-content: end;
-  width: 26vw;
-  min-width: 300px;
 
   @media screen and (max-width: 1200px) {
-    padding: 10px;
   }
 `;
 
 const RecipeContainer = styled.div`
   display: flex;
+  justify-content: center;
   width: 100%;
 `;
 
