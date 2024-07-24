@@ -20,6 +20,7 @@ const MyRecipe = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [showRecipeModal, setShowRecipeModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
+  const [currentRecipeId, setCurrentRecipeId] = useState(null);
   const [recipeData, setRecipeData] = useState([
     { id: 1, menuName: "스파게티", countHeart: 5 },
     { id: 2, menuName: "짜장면", countHeart: 3 },
@@ -49,7 +50,7 @@ const MyRecipe = () => {
   const setLike = useSetRecoilState(LikeAtom);
 
   const handleEditClick = () => {
-    setIsEditing(!isEditing);
+    setIsEditing((prev) => !prev);
   };
 
   // const handleContextMenu = (e) => {
@@ -61,7 +62,8 @@ const MyRecipe = () => {
   // const handleClickOutside = () => {
   //   setShowMenu(false);
   // };
-  const openRecipeModal = () => {
+  const openRecipeModal = (id) => {
+    setCurrentRecipeId(id);
     if (isEditing) {
       setShowEditModal(true);
     } else {
@@ -71,6 +73,7 @@ const MyRecipe = () => {
 
   const closeEditModal = () => {
     setShowEditModal(false);
+    setCurrentRecipeId(null);
   };
 
   const closeRecipeModal = () => {
@@ -78,7 +81,23 @@ const MyRecipe = () => {
   };
 
   const removeRecipeBox = (id) => {
-    setRecipeData((prevBox) => prevBox.filter((box) => box.id !== id));
+    setRecipeData((prevBox) => {
+      const newData = prevBox.filter((box) => box.id !== id);
+      if (currentRecipeId === id) {
+        setCurrentRecipeId(null);
+      }
+      setShowEditModal(false);
+      return newData;
+    });
+  };
+
+  const handleSave = (updatedRecipe) => {
+    setRecipeData((prevData) =>
+      prevData.map((recipe) =>
+        recipe.id === updatedRecipe.id ? updatedRecipe : recipe
+      )
+    );
+    closeEditModal();
   };
 
   const chunkedData = chunkArray(recipeData, 3);
@@ -110,7 +129,7 @@ const MyRecipe = () => {
                       countHeart={data.countHeart}
                       isEditing={isEditing}
                       removeRecipeBox={removeRecipeBox}
-                      onClick={openRecipeModal}
+                      onClick={() => openRecipeModal(data.id)}
                     />
                   ))}
                 </Line>
@@ -127,11 +146,15 @@ const MyRecipe = () => {
             </ModalContent>
           </>
         )}
-        {showEditModal && (
+        {showEditModal && currentRecipeId !== null && (
           <>
             <Overlay />
             <ModalContent>
-              <EditModal saveEditModal={closeEditModal} />
+              <EditModal
+                recipeId={currentRecipeId}
+                onSave={handleSave}
+                saveEditModal={closeEditModal}
+              />
             </ModalContent>
           </>
         )}

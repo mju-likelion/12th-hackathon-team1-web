@@ -5,20 +5,21 @@ import Plus from "../assets/images/plus.svg";
 import Folder from "../assets/images/imageFolder.svg";
 import { recipeData } from "../data/MockData";
 
-const EditModal = ({ saveEditModal }) => {
+const EditModal = ({ recipeId, onSave, saveEditModal }) => {
   const [title, setTitle] = useState("");
   const [ingredients, setIngredients] = useState([]);
   const [methods, setMethods] = useState([""]);
   const [image, setImage] = useState(null);
 
   useEffect(() => {
-    if (recipeData) {
-      setTitle(recipeData.title || "");
-      setIngredients(recipeData.ingredients || []);
-      setMethods(recipeData.methods || []);
-      setImage(recipeData.image || null);
+    const recipe = recipeData.find((item) => item.id === recipeId);
+    if (recipe) {
+      setTitle(recipe.title || "");
+      setIngredients(recipe.ingredients || []);
+      setMethods(recipe.methods || []);
+      setImage(recipe.image || null);
     }
-  }, []);
+  }, [recipeId]);
 
   const handleIngredientChange = (index, value) => {
     const newIngredients = [...ingredients];
@@ -47,6 +48,18 @@ const EditModal = ({ saveEditModal }) => {
 
   const handleImageChange = (e) => {
     setImage(URL.createObjectURL(e.target.files[0]));
+  };
+
+  const handleSave = () => {
+    const updatedRecipe = {
+      id: recipeId,
+      title,
+      ingredients,
+      methods,
+      image,
+    };
+    onSave(updatedRecipe);
+    saveEditModal();
   };
 
   return (
@@ -109,7 +122,7 @@ const EditModal = ({ saveEditModal }) => {
           </ContentContainer>
         </ModalContentBox>
         <ButtonContainer>
-          <SmallButton text="저장" onClick={saveEditModal} />
+          <SmallButton text="저장" onClick={handleSave} />
         </ButtonContainer>
       </ModalBackground>
     </RecipeModalContainer>
