@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import RecipeBox from "../../components/RecipeBox";
+import Sidebar from "../../components/Sidebar";
 
 const LikeRecipe = () => {
   const [showMenu, setShowMenu] = useState(false);
@@ -18,15 +19,17 @@ const LikeRecipe = () => {
 
   return (
     <Container onClick={handleClickOutside}>
-      <TitleEditContainer>
-        <BoxTitle>좋아요 누른 레시피</BoxTitle>
-      </TitleEditContainer>
+      <SidebarContainer>
+        <Sidebar />
+      </SidebarContainer>
+      <LikeContainer>
+        <TitleEditContainer>
+          <BoxTitle>좋아요 누른 레시피</BoxTitle>
+        </TitleEditContainer>
         <MyRecipeContainer>
           <Line>
             <RecipeBox
-              menuName={
-                "좋아요 레시피"
-              }
+              menuName={"좋아요 레시피"}
               countHeart={5}
               showMenu={showMenu}
               menuPosition={menuPosition}
@@ -61,9 +64,25 @@ const LikeRecipe = () => {
             />
           </Line>
         </MyRecipeContainer>
+      </LikeContainer>
     </Container>
   );
 };
+
+const LikeContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  align-items: center;
+`;
+
+const SidebarContainer = styled.div`
+  position: absolute;
+  display: flex;
+
+  @media screen and (max-width: 1200px) {
+  }
+`;
 
 const TitleEditContainer = styled.div`
   display: flex;
@@ -102,16 +121,14 @@ const MyRecipeContainer = styled.div`
 
 const Container = styled.div`
   display: flex;
-  flex: 1;
-  flex-direction: column;
-  align-items: center;
+  align-items: start;
 `;
 
 const BoxTitle = styled.p`
   ${({ theme }) => theme.fonts.default18};
   margin: 10px 0;
 
-  @media screen and (max-width: 1200px){
+  @media screen and (max-width: 1200px) {
     font-size: 1.5vw;
   }
 `;

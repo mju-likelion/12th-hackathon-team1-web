@@ -6,16 +6,23 @@ function SidebarItem({ menu, isSelected }) {
   return (
     <ItemContainer $isSelected={isSelected}>
       {menu.name}
-      {isSelected && <img src={Arrow} alt="화살표 아이콘" />}
+      {isSelected && <ArrowImg src={Arrow} alt="화살표 아이콘" />}
     </ItemContainer>
   );
 }
+
+const ArrowImg = styled.img`
+  height: 16px;
+  width: 16px;
+`;
 
 const ItemContainer = styled.p`
   display: flex;
   justify-content: space-between;
   align-items: center;
   font-size: ${({ theme }) => theme.fonts.default16};
+  text-decoration: none;
+  color: black;
   margin: 10px 0;
   cursor: pointer;
 
@@ -29,7 +36,7 @@ const ItemContainer = styled.p`
     font-weight: 600;
   }
 
-  @media screen and (max-width: 1200px){
+  @media screen and (max-width: 1200px) {
     font-size: 1.3vw;
     margin: 0.7vw 0;
   }

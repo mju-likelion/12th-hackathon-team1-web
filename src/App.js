@@ -1,11 +1,11 @@
 import { Navigate, Route, Routes } from "react-router-dom";
 import "./App.css";
 import Layout from "./components/Layout";
-import Main from './pages/Main';
-import Login from './pages/Login';
-import Join from './pages/Join';
+import Main from "./pages/Main";
+import Login from "./pages/Login";
+import Join from "./pages/Join";
 import Refrigerator from "./pages/Fridge";
-import Recipe from './pages/Recipe/Recipe';
+import Recipe from "./pages/Recipe/RecipeMain";
 import MyRecipe from "./pages/Recipe/MyRecipe";
 import LikeRecipe from "./pages/Recipe/LikeRecipe";
 import RecomRecipe from "./pages/Recipe/RecomRecipe";
@@ -15,7 +15,7 @@ function App() {
     <>
       <Layout />
       <Routes>
-        <Route path="/" element={<Navigate to="/main" />}/>
+        <Route path="/" element={<Navigate to="/main" />} />
         <Route path="/main" element={<Main />} />
         <Route path="/auth/login" element={<Login />} />
         <Route path="/auth/signin" element={<Join />} />
