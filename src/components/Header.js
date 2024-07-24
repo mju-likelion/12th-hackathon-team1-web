@@ -117,6 +117,7 @@ const LogoImg = styled.img`
 const PageText = styled.p`
   font-size: ${({ theme }) => theme.fonts.helpText14};
   margin-left: 20px;
+  color: black;
   cursor: pointer;
   &:hover {
     font-weight: 600;
