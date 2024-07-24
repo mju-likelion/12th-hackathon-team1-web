@@ -3,24 +3,10 @@ import styled from "styled-components";
 import Heart from "../assets/images/Heart.svg";
 import FullHeart from "../assets/images/fullHeart.svg";
 import Delete from "../assets/images/delateIcon.svg";
-import Dropdown from "./DropDown";
-import RecipeModal from "./RecipeModal";
 
-const RecipeBox = ({
-  menuName,
-  countHeart,
-  isEditing,
-  showMenu,
-  menuPosition,
-  handleContextMenu,
-}) => {
-  const [isClicked, setIsClicked] = useState(false);
+const RecipeBox = ({ menuName, isEditing, countHeart, onClick }) => {
   const [maxLength, setMaxLength] = useState(12);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-
-  const handlerHeartClick = () => {
-    setIsClicked(!isClicked);
-  };
+  const [isHearted, setIsHearted] = useState(false);
 
   const truncateText = (text, maxLength) => {
     if (!text) return "";
@@ -30,33 +16,16 @@ const RecipeBox = ({
     return text;
   };
 
-  const handleDelete = () => {
-    if (window.confirm("레시피를 정말 삭제하시겠습니까?")) {
-      console.log("레시피 삭제됨");
-      // 레시피 삭제 로직 추가 예정
-      alert("레시피가 삭제되었습니다.");
-    }
-  };
-
-  const handleEdit = () => {
-    setIsModalOpen(true);
-  };
-
-  const handleCloseModal = () => {
-    setIsModalOpen(false);
-  };
-
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth <= 1200) {
         setMaxLength(6);
       } else {
-        setMaxLength(10);
+        setMaxLength(12);
       }
     };
 
     window.addEventListener("resize", handleResize);
-
     handleResize();
 
     return () => {
@@ -65,62 +34,25 @@ const RecipeBox = ({
   }, []);
 
   return (
-    <Container onContextMenu={handleContextMenu}>
+    <Container onClick={onClick}>
       <HeadContainer>
-        <MenuName>
+        <MenuName title={menuName}>
           {truncateText(menuName, maxLength)}
         </MenuName>
-        <div>
         {isEditing && <DeleteIcon src={Delete} alt="삭제 아이콘" />}
-        </div>
       </HeadContainer>
-        <PhotoWrapper />
-        <HeartContainer>
+      <PhotoWrapper />
+      <HeartContainer>
         <HeartImg
-          onClick={handlerHeartClick}
-          src={isClicked ? FullHeart : Heart}
+          onClick={() => setIsHearted(!isHearted)}
+          src={isHearted ? FullHeart : Heart}
           alt="좋아요 버튼"
         />
         <CountHeart>{countHeart}</CountHeart>
       </HeartContainer>
-      {showMenu && (
-        <Dropdown
-          position={menuPosition}
-          onOptionSelect={(option) => {
-            if (option === "edit") handleEdit();
-            if (option === "delete") handleDelete();
-          }}
-        />
-      )}
-      {isModalOpen && (
-        <>
-          <Overlay />
-          <ModalContainer>
-            <RecipeModal closeModal={handleCloseModal} />
-          </ModalContainer>
-        </>
-      )}
     </Container>
   );
 };
-
-const Overlay = styled.div`
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(0, 0, 0, 0.5);
-  z-index: 1000;
-`;
-
-const ModalContainer = styled.div`
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  z-index: 1001;
-`;
 
 const HeadContainer = styled.div`
   display: flex;
@@ -129,7 +61,7 @@ const HeadContainer = styled.div`
   width: 230px;
   height: 35px;
 
-  @media screen and (max-width: 1200px){
+  @media screen and (max-width: 1200px) {
     width: 17vw;
     height: 2vw;
     margin-bottom: 0.4vw;
@@ -145,7 +77,7 @@ const DeleteIcon = styled.img`
   top: -3px;
   cursor: pointer;
 
-  @media screen and (max-width: 1200px){
+  @media screen and (max-width: 1200px) {
     width: 2.5vw;
     height: 2.5vw;
   }

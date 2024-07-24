@@ -2,34 +2,72 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import Heart from "../assets/images/Heart.svg";
 import FullHeart from "../assets/images/fullHeart.svg";
+import RecipeModal from "./RecipeModal";
 
 const PopularRecipeBox = ({ menuName, countHeart }) => {
   const [isClicked, setIsClicked] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const handlerHeartClick = () => {
     setIsClicked(!isClicked);
   };
 
+  const handleOpenModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+  };
+
   return (
-    <PopularContainer>
-      <MenuName>{menuName}</MenuName>
-      <HeartContainer>
-        <HeartImg
-          onClick={handlerHeartClick}
-          src={isClicked ? FullHeart : Heart}
-          alt="좋아요 버튼"
-        />
-        <CountHeart>{countHeart}</CountHeart>
-      </HeartContainer>
-    </PopularContainer>
+    <>
+      <PopularContainer onClick={handleOpenModal}>
+        <MenuName>{menuName}</MenuName>
+        <HeartContainer>
+          <HeartImg
+            onClick={handlerHeartClick}
+            src={isClicked ? FullHeart : Heart}
+            alt="좋아요 버튼"
+          />
+          <CountHeart>{countHeart}</CountHeart>
+        </HeartContainer>
+      </PopularContainer>
+      {isModalOpen && (
+        <>
+          <Overlay />
+          <ModalContainer>
+            <RecipeModal closeRecipeModal={handleCloseModal} />
+          </ModalContainer>
+        </>
+      )}
+    </>
   );
 };
+
+const Overlay = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+`;
+
+const ModalContainer = styled.div`
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1001;
+`;
 
 const CountHeart = styled.p`
   ${({ theme }) => theme.fonts.default20};
   margin-left: 5px;
 
-  @media screen and (max-width: 1200px){
+  @media screen and (max-width: 1200px) {
     margin-left: 0.35vw;
     font-size: 1.3vw;
   }
