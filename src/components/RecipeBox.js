@@ -3,10 +3,55 @@ import styled from "styled-components";
 import Heart from "../assets/images/Heart.svg";
 import FullHeart from "../assets/images/fullHeart.svg";
 import Delete from "../assets/images/delateIcon.svg";
+import Dropdown from "./DropDown";
+import RecipeModal from "./RecipeModal";
+import { useSetRecoilState, useRecoilValue } from "recoil";
+import { LikeAtom } from "../Recoil/Atom";
 
-const RecipeBox = ({ menuName, isEditing, countHeart, onClick }) => {
+const RecipeBox = ({
+  menuName,
+  countHeart,
+  isEditing,
+  showMenu,
+  menuPosition,
+  removeRecipeBox,
+  id,
+  state,
+  onClick,
+}) => {
+  const [isClicked, setIsClicked] = useState(false);
   const [maxLength, setMaxLength] = useState(12);
-  const [isHearted, setIsHearted] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [countHeartNumber, setCountHeartNumber] = useState(countHeart);
+  const setLike = useSetRecoilState(LikeAtom);
+  const Like = useRecoilValue(LikeAtom);
+
+  useEffect(() => {
+    const isLiked = Like.some((like) => like.id === id);
+    setIsClicked(isLiked);
+  }, [Like, id]);
+
+  const handlerHeartClick = () => {
+    setIsClicked(!isClicked);
+    if (!isClicked) {
+      setCountHeartNumber((preCount) => preCount + 1);
+      pushLike();
+    } else {
+      setCountHeartNumber((preCount) => preCount - 1);
+      removeLike();
+    }
+  };
+
+  const pushLike = () => {
+    setLike((prevLike) => [
+      ...prevLike,
+      { id, menuName, countHeart: countHeartNumber + 1 },
+    ]);
+  };
+
+  const removeLike = () => {
+    setLike((prevLike) => prevLike.filter((like) => like.id !== id));
+  };
 
   const truncateText = (text, maxLength) => {
     if (!text) return "";
@@ -14,6 +59,22 @@ const RecipeBox = ({ menuName, isEditing, countHeart, onClick }) => {
       return text.slice(0, maxLength) + "...";
     }
     return text;
+  };
+
+  const handleDelete = () => {
+    if (window.confirm("레시피를 정말 삭제하시겠습니까?")) {
+      removeRecipeBox(id);
+      console.log("레시피 삭제됨");
+      alert("레시피가 삭제되었습니다.");
+    }
+  };
+
+  const handleEdit = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
   };
 
   useEffect(() => {
@@ -26,6 +87,7 @@ const RecipeBox = ({ menuName, isEditing, countHeart, onClick }) => {
     };
 
     window.addEventListener("resize", handleResize);
+
     handleResize();
 
     return () => {
@@ -36,23 +98,64 @@ const RecipeBox = ({ menuName, isEditing, countHeart, onClick }) => {
   return (
     <Container onClick={onClick}>
       <HeadContainer>
-        <MenuName title={menuName}>
-          {truncateText(menuName, maxLength)}
-        </MenuName>
-        {isEditing && <DeleteIcon src={Delete} alt="삭제 아이콘" />}
+        <MenuName>{truncateText(menuName, maxLength)}</MenuName>
+        <div>
+          {isEditing && (
+            <DeleteIcon src={Delete} alt="삭제 아이콘" onClick={handleDelete} />
+          )}
+        </div>
       </HeadContainer>
       <PhotoWrapper />
       <HeartContainer>
-        <HeartImg
-          onClick={() => setIsHearted(!isHearted)}
-          src={isHearted ? FullHeart : Heart}
-          alt="좋아요 버튼"
-        />
-        <CountHeart>{countHeart}</CountHeart>
+        {state === "좋아요" || isClicked ? (
+          <HeartImg
+            onClick={handlerHeartClick}
+            src={FullHeart}
+            alt="좋아요 버튼"
+          />
+        ) : (
+          <HeartImg onClick={handlerHeartClick} src={Heart} alt="좋아요 버튼" />
+        )}
+        <Count>{countHeartNumber}</Count>
       </HeartContainer>
+      {showMenu && (
+        <Dropdown
+          position={menuPosition}
+          onOptionSelect={(option) => {
+            if (option === "edit") handleEdit();
+            if (option === "delete") handleDelete();
+          }}
+        />
+      )}
+      {isModalOpen && (
+        <>
+          <Overlay />
+          <ModalContainer>
+            <RecipeModal closeModal={handleCloseModal} />
+          </ModalContainer>
+        </>
+      )}
     </Container>
   );
 };
+
+const Overlay = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+`;
+
+const ModalContainer = styled.div`
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1001;
+`;
 
 const HeadContainer = styled.div`
   display: flex;
@@ -88,7 +191,7 @@ const HeartContainer = styled.div`
   align-items: center;
 `;
 
-const CountHeart = styled.p`
+const Count = styled.p`
   ${({ theme }) => theme.fonts.default20};
 `;
 
