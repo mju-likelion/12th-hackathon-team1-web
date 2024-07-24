@@ -3,12 +3,12 @@ import styled from 'styled-components';
 import exit from '../assets/images/x.svg'
 import Ingredient from './Ingredient';
 
-const IngredientBox = ({closeIngredientBox}) => {
+const IngredientBox = ({closeIngredientBox, storageName}) => {
     const [searchValue, setSearchValue] = useState('');
-
     const save = (event) => {
         setSearchValue(event.target.value);
     }
+
 
     return (
         <>
@@ -17,7 +17,11 @@ const IngredientBox = ({closeIngredientBox}) => {
                 <Exit src={exit} alt = "나가기" onClick={closeIngredientBox}/>
             </SearchBox>
             <BottomBox>
-                <Ingredient searchValue={searchValue} />
+                <Ingredient 
+                searchValue={searchValue} 
+                storageName={storageName}
+                closeIngredientBox={closeIngredientBox}
+                />
             </BottomBox>
         </>
 

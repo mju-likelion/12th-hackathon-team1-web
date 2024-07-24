@@ -1,15 +1,19 @@
 import React from "react";
 import styled from "styled-components";
 
-const SmallButton = ({closeModal, text}) => {
-  return <Container onClick={closeModal}>{text}</Container>;
+const SmallButton = ({onClick, text, disabled}) => {
+  return(
+    <> 
+    <Container onClick={onClick} disabled={disabled}>{text}</Container>
+    </>
+  );
 };
 
 const Container = styled.button`
   width: 167px;
   height: 52px;
   border-radius: 20px;
-  background-color: ${({ theme }) => theme.colors.white};
+  background-color: ${({ theme, disabled }) => disabled ? theme.colors.green100 : theme.colors.white};
   ${({theme})=>theme.fonts.default18}
 
   @media screen and (max-width: 1200px){
