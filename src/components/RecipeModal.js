@@ -3,7 +3,7 @@ import styled from "styled-components";
 import Heart from "../assets/images/Heart.svg";
 import SmallButton from "./SmallButton";
 
-const RecipeModal = ({ closeModal }) => {
+const RecipeModal = ({ closeRecipeModal }) => {
   return (
     <RecipeModalContainer>
       <ModalBackground>
@@ -33,7 +33,7 @@ const RecipeModal = ({ closeModal }) => {
           </ContentContainer>
         </ModalContentBox>
         <ButtonContainer>
-          <SmallButton text="닫기" onClick={closeModal} />
+          <SmallButton text="닫기" onClick={closeRecipeModal} />
         </ButtonContainer>
       </ModalBackground>
     </RecipeModalContainer>
