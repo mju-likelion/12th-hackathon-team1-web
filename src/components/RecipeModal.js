@@ -2,13 +2,17 @@ import React from "react";
 import styled from "styled-components";
 import Heart from "../assets/images/Heart.svg";
 import SmallButton from "./SmallButton";
+import { recipeData } from "../data/MockData";
 
 const RecipeModal = ({ closeRecipeModal }) => {
+  // 임시 로직
+  const selectedRecipe = recipeData[0];
+
   return (
     <RecipeModalContainer>
       <ModalBackground>
         <TitleBox>
-          <MainTitle>돼지고기 김치찌개</MainTitle>
+          <MainTitle>{selectedRecipe.menuName}</MainTitle>
         </TitleBox>
         <ModalContentBox>
           <TopContainer>
@@ -17,19 +21,25 @@ const RecipeModal = ({ closeRecipeModal }) => {
                 <Title>좋아요 수</Title>
                 <HeartContainer>
                   <HeartImg src={Heart} alt="좋아요 아이콘" />
-                  <CountHeart>5개</CountHeart>
+                  <CountHeart>{selectedRecipe.countHeart}개</CountHeart>
                 </HeartContainer>
               </ContentContainer>
               <ContentContainer>
                 <Title>재료</Title>
-                <IngredientBox></IngredientBox>
+                <IngredientContainer>
+                  {selectedRecipe.ingredients.map((ingredient, index) => (
+                    <IngredientBox key={index}>{ingredient}</IngredientBox>
+                  ))}
+                </IngredientContainer>
               </ContentContainer>
             </LeftContainer>
             <MenuImg />
           </TopContainer>
           <ContentContainer>
             <Title>조리 방법</Title>
-            <MethodBox></MethodBox>
+            {selectedRecipe.methods.map((method, index) => (
+              <MethodBox key={index}>{method}</MethodBox>
+            ))}
           </ContentContainer>
         </ModalContentBox>
         <ButtonContainer>
@@ -40,6 +50,11 @@ const RecipeModal = ({ closeRecipeModal }) => {
   );
 };
 
+const IngredientContainer = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+`;
+
 const ButtonContainer = styled.div`
   display: flex;
   justify-content: end;
@@ -49,11 +64,11 @@ const MenuImg = styled.div`
   width: 332px;
   height: 219px;
   margin: 20px;
-  background-color: aquamarine;
+  background-color: ${({ theme }) => theme.colors.white};
 `;
 
 const LeftContainer = styled.div`
-  width: 50%;
+  width: 60%;
 `;
 
 const TopContainer = styled.div`
@@ -64,11 +79,16 @@ const TopContainer = styled.div`
 `;
 
 const MethodBox = styled.p`
+  display: flex;
   ${({ theme }) => theme.fonts.default16}
   background-color: ${({ theme }) => theme.colors.white};
-  width: 416px;
+  width: 500px;
   height: 37px;
   border-radius: 10px;
+  border: none;
+  align-items: center;
+  margin: 5px;
+  padding: 0 10px;
 `;
 
 const CountHeart = styled.p`
@@ -82,11 +102,15 @@ const HeartContainer = styled.div`
 `;
 
 const IngredientBox = styled.p`
+  display: flex;
   ${({ theme }) => theme.fonts.default16}
   background-color: ${({ theme }) => theme.colors.white};
-  width: 80px;
+  width: 100px;
   height: 37px;
   border-radius: 10px;
+  align-items: center;
+  margin: 5px;
+  padding: 0 10px;
 `;
 
 const Title = styled.p`

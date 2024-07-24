@@ -1,14 +1,24 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import SmallButton from "./SmallButton";
 import Plus from "../assets/images/plus.svg";
 import Folder from "../assets/images/imageFolder.svg";
+import { recipeData } from "../data/MockData";
 
 const EditModal = ({ saveEditModal }) => {
   const [title, setTitle] = useState("");
-  const [ingredients, setIngredients] = useState(Array(1).fill(""));
+  const [ingredients, setIngredients] = useState([]);
   const [methods, setMethods] = useState([""]);
   const [image, setImage] = useState(null);
+
+  useEffect(() => {
+    if (recipeData) {
+      setTitle(recipeData.title || "");
+      setIngredients(recipeData.ingredients || []);
+      setMethods(recipeData.methods || []);
+      setImage(recipeData.image || null);
+    }
+  }, []);
 
   const handleIngredientChange = (index, value) => {
     const newIngredients = [...ingredients];
