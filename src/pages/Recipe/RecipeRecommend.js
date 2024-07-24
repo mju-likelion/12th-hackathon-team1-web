@@ -2,21 +2,10 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import RecipeBox from "../../components/RecipeBox";
 import Sidebar from "../../components/Sidebar";
-import { LikeAtom } from "../../Recoil/Atom";
-import { useRecoilValue } from "recoil";
 
-const chunkArray = (array, size) => {
-  const result = [];
-  for (let i = 0; i < array.length; i += size) {
-    result.push(array.slice(i, i + size));
-  }
-  return result;
-};
-
-const LikeRecipe = () => {
+const RecipeRecommend = () => {
   const [showMenu, setShowMenu] = useState(false);
   const [menuPosition, setMenuPosition] = useState({ x: 0, y: 0 });
-  const Like = useRecoilValue(LikeAtom);
 
   const handleContextMenu = (e) => {
     e.preventDefault();
@@ -28,8 +17,6 @@ const LikeRecipe = () => {
     setShowMenu(false);
   };
 
-  const groupedLikes = chunkArray(Like, 3);
-
   return (
     <>
       <SidebarContainer>
@@ -37,26 +24,46 @@ const LikeRecipe = () => {
       </SidebarContainer>
       <Container onClick={handleClickOutside}>
         <TitleEditContainer>
-          <BoxTitle>좋아요 누른 레시피</BoxTitle>
+          <BoxTitle>나의 냉장고 레시피</BoxTitle>
         </TitleEditContainer>
         <MyRecipeContainer>
           <Wrapper>
-            {groupedLikes.map((group, index) => (
-              <Line key={index}>
-                {group.map((box) => (
-                  <RecipeBox
-                    key={box.id}
-                    state="좋아요"
-                    menuName={box.menuName}
-                    id={box.id}
-                    countHeart={box.countHeart}
-                    showMenu={showMenu}
-                    menuPosition={menuPosition}
-                    handleContextMenu={handleContextMenu}
-                  />
-                ))}
-              </Line>
-            ))}
+            <Line>
+              <RecipeBox
+                menuName={"냉장고 레시피!!"}
+                countHeart={5}
+                showMenu={showMenu}
+                menuPosition={menuPosition}
+                handleContextMenu={handleContextMenu}
+              />
+              <RecipeBox
+                showMenu={showMenu}
+                menuPosition={menuPosition}
+                handleContextMenu={handleContextMenu}
+              />
+              <RecipeBox
+                showMenu={showMenu}
+                menuPosition={menuPosition}
+                handleContextMenu={handleContextMenu}
+              />
+            </Line>
+            <Line>
+              <RecipeBox
+                showMenu={showMenu}
+                menuPosition={menuPosition}
+                handleContextMenu={handleContextMenu}
+              />
+              <RecipeBox
+                showMenu={showMenu}
+                menuPosition={menuPosition}
+                handleContextMenu={handleContextMenu}
+              />
+              <RecipeBox
+                showMenu={showMenu}
+                menuPosition={menuPosition}
+                handleContextMenu={handleContextMenu}
+              />
+            </Line>
           </Wrapper>
         </MyRecipeContainer>
       </Container>
@@ -93,6 +100,7 @@ const Line = styled.div`
     gap: 2.3vw;
   }
 `;
+
 const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
@@ -133,4 +141,4 @@ const BoxTitle = styled.p`
   }
 `;
 
-export default LikeRecipe;
+export default RecipeRecommend;

@@ -5,16 +5,62 @@ import Plus from "../../assets/images/plus.svg";
 import Sidebar from "../../components/Sidebar";
 import RecipeModal from "../../components/RecipeModal";
 import EditModal from "../../components/EditModal";
+import { LikeAtom } from "../../Recoil/Atom";
+import { useRecoilValue, useSetRecoilState } from "recoil";
+
+const chunkArray = (array, size) => {
+  const chunked = [];
+  for (let i = 0; i < array.length; i += size) {
+    chunked.push(array.slice(i, i + size));
+  }
+  return chunked;
+};
 
 const MyRecipe = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [showRecipeModal, setShowRecipeModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
+  const [recipeData, setRecipeData] = useState([
+    { id: 1, menuName: "스파게티", countHeart: 5 },
+    { id: 2, menuName: "짜장면", countHeart: 3 },
+    { id: 3, menuName: "김치찌개", countHeart: 8 },
+    { id: 4, menuName: "된장찌개", countHeart: 4 },
+    { id: 5, menuName: "불고기", countHeart: 7 },
+    { id: 6, menuName: "갈비찜", countHeart: 6 },
+    { id: 7, menuName: "비빔밥", countHeart: 9 },
+    { id: 8, menuName: "삼겹살", countHeart: 10 },
+    { id: 9, menuName: "순두부찌개", countHeart: 2 },
+    { id: 10, menuName: "잡채", countHeart: 6 },
+    { id: 11, menuName: "해물파전", countHeart: 7 },
+    { id: 12, menuName: "떡볶이", countHeart: 8 },
+    { id: 13, menuName: "라면", countHeart: 5 },
+    { id: 14, menuName: "김밥", countHeart: 4 },
+    { id: 15, menuName: "오징어볶음", countHeart: 5 },
+    { id: 16, menuName: "부대찌개", countHeart: 7 },
+    { id: 17, menuName: "갈비탕", countHeart: 6 },
+    { id: 18, menuName: "된장국", countHeart: 4 },
+    { id: 19, menuName: "양념치킨", countHeart: 9 },
+    { id: 20, menuName: "치즈돈까스", countHeart: 6 },
+    { id: 21, menuName: "연어초밥", countHeart: 8 },
+    { id: 22, menuName: "콩나물국밥", countHeart: 5 },
+  ]);
+
+  const Like = useRecoilValue(LikeAtom);
+  const setLike = useSetRecoilState(LikeAtom);
 
   const handleEditClick = () => {
     setIsEditing(!isEditing);
   };
 
+  // const handleContextMenu = (e) => {
+  //   e.preventDefault();
+  //   setMenuPosition({ x: e.clientX, y: e.clientY });
+  //   setShowMenu(true);
+  // };
+
+  // const handleClickOutside = () => {
+  //   setShowMenu(false);
+  // };
   const openRecipeModal = () => {
     if (isEditing) {
       setShowEditModal(true);
@@ -23,38 +69,19 @@ const MyRecipe = () => {
     }
   };
 
-  const closeRecipeModal = () => {
-    setShowRecipeModal(false);
-  };
-
   const closeEditModal = () => {
     setShowEditModal(false);
   };
 
-  const recipeData = [
-    { menuName: "스파게티", countHeart: 5 },
-    { menuName: "짜장면", countHeart: 3 },
-    { menuName: "김치찌개", countHeart: 8 },
-    { menuName: "된장찌개", countHeart: 4 },
-    { menuName: "불고기", countHeart: 7 },
-    { menuName: "갈비찜", countHeart: 6 },
-    { menuName: "비빔밥", countHeart: 9 },
-    { menuName: "삼겹살", countHeart: 10 },
-    { menuName: "순두부찌개", countHeart: 2 },
-    { menuName: "잡채", countHeart: 6 },
-    { menuName: "해물파전", countHeart: 7 },
-    { menuName: "떡볶이", countHeart: 8 },
-    { menuName: "라면", countHeart: 5 },
-    { menuName: "김밥", countHeart: 4 },
-    { menuName: "오징어볶음", countHeart: 5 },
-    { menuName: "부대찌개", countHeart: 7 },
-    { menuName: "갈비탕", countHeart: 6 },
-    { menuName: "된장국", countHeart: 4 },
-    { menuName: "양념치킨", countHeart: 9 },
-    { menuName: "치즈돈까스", countHeart: 6 },
-    { menuName: "연어초밥", countHeart: 8 },
-    { menuName: "콩나물국밥", countHeart: 5 },
-  ];
+  const closeRecipeModal = () => {
+    setShowRecipeModal(false);
+  };
+
+  const removeRecipeBox = (id) => {
+    setRecipeData((prevBox) => prevBox.filter((box) => box.id !== id));
+  };
+
+  const chunkedData = chunkArray(recipeData, 3);
 
   return (
     <>
@@ -70,17 +97,25 @@ const MyRecipe = () => {
         </TitleEditContainer>
         <AddWrapper>
           <MyRecipeContainer>
-            <RecipeContainer>
-              {recipeData.map((recipe, index) => (
-                <RecipeBox
-                  key={index}
-                  menuName={recipe.menuName}
-                  countHeart={recipe.countHeart}
-                  isEditing={isEditing}
-                  onClick={openRecipeModal}
-                />
+            <Wrapper>
+              {chunkedData.map((chunk, index) => (
+                <Line key={index}>
+                  {chunk.map((data) => (
+                    <RecipeBox
+                      key={data.id}
+                      Like={Like}
+                      setLike={setLike}
+                      menuName={data.menuName}
+                      id={data.id}
+                      countHeart={data.countHeart}
+                      isEditing={isEditing}
+                      removeRecipeBox={removeRecipeBox}
+                      onClick={openRecipeModal}
+                    />
+                  ))}
+                </Line>
               ))}
-            </RecipeContainer>
+            </Wrapper>
           </MyRecipeContainer>
           {isEditing && <PlusButton src={Plus} alt="레시피 추가 버튼" />}
         </AddWrapper>
@@ -140,10 +175,11 @@ const PlusButton = styled.img`
   height: 20px;
   margin-left: 920px;
   margin-bottom: 5px;
-  cursor: pointer;
 
   @media screen and (max-width: 1200px) {
     margin-left: 71vw;
+    width: 2vw;
+    height: 2vw;
   }
 `;
 
@@ -183,25 +219,36 @@ const TitleEditContainer = styled.div`
   }
 `;
 
-const RecipeContainer = styled.div`
+const Line = styled.div`
   display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
+  width: 830px;
+  justify-content: start;
+  gap: 10px;
+
+  @media screen and (max-width: 1200px) {
+    width: 64vw;
+    gap: 2.3vw;
+  }
+`;
+
+const Wrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 `;
 
 const MyRecipeContainer = styled.div`
   background-color: ${({ theme }) => theme.colors.green200};
   width: 900px;
-  height: 814px;
-  justify-content: center;
+  min-height: 900px;
+  height: auto;
+  justify-content: space-evenly;
   align-items: center;
   border-radius: 1vw;
-  padding: 0 30px;
-  overflow-y: auto;
 
   @media screen and (max-width: 1200px) {
     width: 70vw;
-    height: 60vw;
+    min-height: 70vw;
   }
 `;
 

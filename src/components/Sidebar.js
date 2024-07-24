@@ -1,30 +1,42 @@
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
-import styled from "styled-components";
-import SidebarItem from "./SidebarItem";
+import styled, { css } from "styled-components";
+import Arrow from "../assets/images/next.svg";
 
 function Sidebar() {
   const location = useLocation();
-
-  const menus = [
-    { name: "내 레시피 보기", path: "/recipes/my_recipes" },
-    { name: "좋아요 누른 레시피 보기", path: "/auth/likes" },
-    { name: "내 냉장고 재료로 레시피 보기", path: "/recipes/recommendations" },
-  ];
 
   return (
     <SidebarContainer>
       <MenuText>Menu</MenuText>
       <Grayline />
       <Text>
-        {menus.map((menu, index) => {
-          const isSelected = location.pathname === menu.path;
-          return (
-            <Link to={menu.path} key={index}>
-              <SidebarItem menu={menu} isSelected={isSelected} />
-            </Link>
-          );
-        })}
+        <>
+          <Link to="/recipes/my_recipes">
+            <ItemContainer>
+              내 레시피 보기
+              {location.pathname === "/recipes/my_recipes" && (
+                <ArrowImg src={Arrow} alt="화살표 아이콘" />
+              )}
+            </ItemContainer>
+          </Link>
+          <Link to="/auth/likes">
+            <ItemContainer>
+              좋아요 누른 레시피 보기
+              {location.pathname === "/auth/likes" && (
+                <ArrowImg src={Arrow} alt="화살표 아이콘" />
+              )}
+            </ItemContainer>
+          </Link>
+          <Link to="/recipes/recommendations">
+            <ItemContainer>
+              내 냉장고 재료로 레시피 보기
+              {location.pathname === "/recipes/recommendations" && (
+                <ArrowImg src={Arrow} alt="화살표 아이콘" />
+              )}
+            </ItemContainer>
+          </Link>
+        </>
       </Text>
     </SidebarContainer>
   );
@@ -68,6 +80,37 @@ const SidebarContainer = styled.div`
     height: 17vw;
     padding: 1.6vw;
     border-radius: 0.7vw;
+  }
+`;
+
+const ArrowImg = styled.img`
+  height: 16px;
+  width: 16px;
+`;
+
+const ItemContainer = styled.p`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: ${({ theme }) => theme.fonts.default16};
+  text-decoration: none;
+  color: black;
+  margin: 10px 0;
+  cursor: pointer;
+
+  ${({ $isSelected }) =>
+    $isSelected &&
+    css`
+      font-weight: 600;
+    `}
+
+  &:hover {
+    font-weight: 600;
+  }
+
+  @media screen and (max-width: 1200px) {
+    font-size: 1.3vw;
+    margin: 0.7vw 0;
   }
 `;
 
