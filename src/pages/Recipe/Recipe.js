@@ -5,31 +5,31 @@ import RecipeMain from "./RecipeMain";
 
 const Recipe = () => {
   return (
-    <RecipeContainer>
+    <>
       <SidebarContainer>
         <Sidebar />
       </SidebarContainer>
+    <RecipeContainer>
       <PageContainer>
         <RecipeMain />
       </PageContainer>
     </RecipeContainer>
+    </>
   );
 };
 
 const SidebarContainer = styled.div`
+position: absolute;
   display: flex;
-  padding: 1.8vw;
   justify-content: end;
-  width: 26vw;
-  min-width: 300px;
 
   @media screen and (max-width: 1200px) {
-    padding: 10px;
   }
 `;
 
 const RecipeContainer = styled.div`
   display: flex;
+  justify-content: center;
   width: 100%;
 `;
 

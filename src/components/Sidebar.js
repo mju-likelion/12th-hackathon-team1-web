@@ -32,6 +32,11 @@ const MenuText = styled.p`
   font-size: ${({ theme }) => theme.fonts.menuText};
   text-decoration: none;
   margin: 10px 0;
+
+  @media screen and (max-width: 1200px){
+    margin: 0.7vw 0;
+    font-size: 1.3vw;
+  }
 `;
 
 const Grayline = styled.div`
@@ -49,6 +54,13 @@ const SidebarContainer = styled.div`
   border-radius: 10px;
   border: 1px solid ${({ theme }) => theme.colors.lineGray};
   background-color: ${({ theme }) => theme.colors.white};
+
+  @media screen and (max-width: 1200px){
+    width: 22vw;
+    height: 17vw;
+    padding: 1.6vw;
+    border-radius: 0.7vw;
+  }
 `;
 
 export default Sidebar;

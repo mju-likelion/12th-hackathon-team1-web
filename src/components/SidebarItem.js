@@ -28,6 +28,11 @@ const ItemContainer = styled.p`
   &:hover {
     font-weight: 600;
   }
+
+  @media screen and (max-width: 1200px){
+    font-size: 1.3vw;
+    margin: 0.7vw 0;
+  }
 `;
 
 export default SidebarItem;

@@ -21,7 +21,6 @@ const LikeRecipe = () => {
       <TitleEditContainer>
         <BoxTitle>좋아요 누른 레시피</BoxTitle>
       </TitleEditContainer>
-      <AddWrapper>
         <MyRecipeContainer>
           <Line>
             <RecipeBox
@@ -62,27 +61,20 @@ const LikeRecipe = () => {
             />
           </Line>
         </MyRecipeContainer>
-      </AddWrapper>
     </Container>
   );
 };
 
-const AddWrapper = styled.div`
-  display: flex;
-  align-items: end;
-`;
-
 const TitleEditContainer = styled.div`
   display: flex;
   width: 900px;
-  min-width: 630px;
   justify-content: space-between;
   align-items: center;
   padding: 0 3px;
   margin-top: 10px;
 
   @media screen and (max-width: 1200px) {
-    width: 46.875vw;
+    width: 70vw;
   }
 `;
 
@@ -94,16 +86,17 @@ const Line = styled.div`
 const MyRecipeContainer = styled.div`
   background-color: ${({ theme }) => theme.colors.green200};
   width: 900px;
-  min-width: 630px;
   height: 814px;
   justify-content: space-evenly;
   align-items: center;
-  border-radius: 1vw;
+  border-radius: 10px;
   margin-bottom: 3px;
   padding: 0 30px;
 
   @media screen and (max-width: 1200px) {
-    width: 46.875vw;
+    width: 70vw;
+    height: 60vw;
+    border-radius: 0.7vw;
   }
 `;
 
@@ -111,11 +104,16 @@ const Container = styled.div`
   display: flex;
   flex: 1;
   flex-direction: column;
+  align-items: center;
 `;
 
 const BoxTitle = styled.p`
   ${({ theme }) => theme.fonts.default18};
   margin: 10px 0;
+
+  @media screen and (max-width: 1200px){
+    font-size: 1.5vw;
+  }
 `;
 
 export default LikeRecipe;
