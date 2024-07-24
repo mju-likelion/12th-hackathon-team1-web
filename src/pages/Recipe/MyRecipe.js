@@ -24,84 +24,75 @@ const MyRecipe = () => {
   };
 
   return (
-    <Container onClick={handleClickOutside}>
-      <SidebarContainer>
+    <>
+    <SidebarContainer>
         <Sidebar />
       </SidebarContainer>
-      <MyContainer>
-        <TitleEditContainer>
-          <BoxTitle>내 레시피</BoxTitle>
-          <EditButton type="submit" onClick={handleEditClick}>
-            {isEditing ? "저장" : "편집"}
-          </EditButton>
-        </TitleEditContainer>
-        <AddWrapper>
-          <MyRecipeContainer>
-            <Line>
-              <RecipeBox
-                menuName={
-                  "삐쓰까또레부르쥬미첼라햄페스츄리치즈나쵸스트링스파게티"
-                }
-                countHeart={5}
-                isEditing={isEditing}
-                showMenu={showMenu}
-                menuPosition={menuPosition}
-                handleContextMenu={handleContextMenu}
-              />
-              <RecipeBox
-                isEditing={isEditing}
-                showMenu={showMenu}
-                menuPosition={menuPosition}
-                handleContextMenu={handleContextMenu}
-              />
-              <RecipeBox
-                isEditing={isEditing}
-                showMenu={showMenu}
-                menuPosition={menuPosition}
-                handleContextMenu={handleContextMenu}
-              />
-            </Line>
-            <Line>
-              <RecipeBox
-                isEditing={isEditing}
-                showMenu={showMenu}
-                menuPosition={menuPosition}
-                handleContextMenu={handleContextMenu}
-              />
-              <RecipeBox
-                isEditing={isEditing}
-                showMenu={showMenu}
-                menuPosition={menuPosition}
-                handleContextMenu={handleContextMenu}
-              />
-              <RecipeBox
-                isEditing={isEditing}
-                showMenu={showMenu}
-                menuPosition={menuPosition}
-                handleContextMenu={handleContextMenu}
-              />
-            </Line>
-          </MyRecipeContainer>
-          {isEditing && <PlusButton src={Plus} alt="레시피 추가 버튼" />}
-        </AddWrapper>
-      </MyContainer>
+      <Container onClick={handleClickOutside}>
+      <TitleEditContainer>
+        <BoxTitle>내 레시피</BoxTitle>
+        <EditButton type="submit" onClick={handleEditClick}>
+          {isEditing ? "저장" : "편집"}
+        </EditButton>
+      </TitleEditContainer>
+      <AddWrapper>
+        <MyRecipeContainer>
+          <Line>
+            <RecipeBox
+              menuName={
+                "삐쓰까또레부르쥬미첼라햄페스츄리치즈나쵸스트링스파게티"
+              }
+              countHeart={5}
+              isEditing={isEditing}
+              showMenu={showMenu}
+              menuPosition={menuPosition}
+              handleContextMenu={handleContextMenu}
+            />
+            <RecipeBox
+              isEditing={isEditing}
+              showMenu={showMenu}
+              menuPosition={menuPosition}
+              handleContextMenu={handleContextMenu}
+            />
+            <RecipeBox
+              isEditing={isEditing}
+              showMenu={showMenu}
+              menuPosition={menuPosition}
+              handleContextMenu={handleContextMenu}
+            />
+          </Line>
+          <Line>
+            <RecipeBox
+              isEditing={isEditing}
+              showMenu={showMenu}
+              menuPosition={menuPosition}
+              handleContextMenu={handleContextMenu}
+            />
+            <RecipeBox
+              isEditing={isEditing}
+              showMenu={showMenu}
+              menuPosition={menuPosition}
+              handleContextMenu={handleContextMenu}
+            />
+            <RecipeBox
+              isEditing={isEditing}
+              showMenu={showMenu}
+              menuPosition={menuPosition}
+              handleContextMenu={handleContextMenu}
+            />
+          </Line>
+        </MyRecipeContainer>
+        {isEditing && <PlusButton src={Plus} alt="레시피 추가 버튼" />}
+      </AddWrapper>
     </Container>
+    </>
   );
 };
-
-const MyContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  align-items: center;
-`;
 
 const SidebarContainer = styled.div`
   position: absolute;
   display: flex;
-
-  @media screen and (max-width: 1200px) {
-  }
+  position: fixed;
 `;
 
 const AddWrapper = styled.div`
@@ -110,16 +101,22 @@ const AddWrapper = styled.div`
 `;
 
 const PlusButton = styled.img`
-  width: 18px;
-  height: 18px;
-  margin: 5px;
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  margin-left: 920px;
+  margin-bottom: 5px;
+
+  @media screen and (max-width: 1200px){
+    margin-left: 71vw;
+  }
 `;
 
 const EditButton = styled.button`
   display: flex;
   background-color: ${({ theme }) => theme.colors.green200};
-  width: 45px;
-  height: 30px;
+  width: 55px;
+  height: 35px;
   border-radius: 5px;
   ${({ theme }) => theme.fonts.default16};
   justify-content: center;
@@ -127,19 +124,27 @@ const EditButton = styled.button`
   &:hover {
     font-weight: 600;
   }
+
+  @media screen and (max-width: 1200px){
+    width: 5vw;
+    height: 3vw;
+    border-radius: 0.35vw;
+    font-size: 1.3vw;
+  }
 `;
 
 const TitleEditContainer = styled.div`
   display: flex;
   width: 900px;
-  min-width: 630px;
+  height: 50px;
   justify-content: space-between;
   align-items: center;
   padding: 0 3px;
-  margin-top: 10px;
 
   @media screen and (max-width: 1200px) {
-    width: 46.875vw;
+    width: 70vw;
+    height: 5vw;
+    padding: 0 0.21vw;
   }
 `;
 
@@ -151,27 +156,31 @@ const Line = styled.div`
 const MyRecipeContainer = styled.div`
   background-color: ${({ theme }) => theme.colors.green200};
   width: 900px;
-  min-width: 630px;
   height: 814px;
   justify-content: space-evenly;
   align-items: center;
   border-radius: 1vw;
-  margin-bottom: 3px;
   padding: 0 30px;
 
   @media screen and (max-width: 1200px) {
-    width: 46.875vw;
+    width: 70vw;
+    height: 60vw;
   }
 `;
 
 const Container = styled.div`
   display: flex;
+  flex: 1;
   flex-direction: column;
+  align-items: center;
 `;
 
 const BoxTitle = styled.p`
   ${({ theme }) => theme.fonts.default18};
-  margin: 10px 0;
+
+  @media screen and (max-width: 1200px){
+    font-size: 1.5vw;
+  }
 `;
 
 export default MyRecipe;

@@ -27,7 +27,12 @@ const PopularRecipeBox = ({ menuName, countHeart }) => {
 
 const CountHeart = styled.p`
   ${({ theme }) => theme.fonts.default20};
-  margin: 5px;
+  margin-left: 5px;
+
+  @media screen and (max-width: 1200px){
+    margin-left: 0.35vw;
+    font-size: 1.3vw;
+  }
 `;
 
 const HeartImg = styled.img`
@@ -43,12 +48,19 @@ const HeartImg = styled.img`
 
 const MenuName = styled.p`
   ${({ theme }) => theme.fonts.default16};
-  max-width: 3.125vw;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 60px;
+  width: 120px;
   margin: 10px 0 20px;
   text-align: center;
 
   @media screen and (max-width: 1200px) {
-    max-width: 7vw;
+    height: 4.3vw;
+    width: 9vw;
+    margin: 0.7vw 0 1.4vw;
+    font-size: 1.2vw;
   }
 `;
 
@@ -68,9 +80,9 @@ const PopularContainer = styled.div`
   justify-content: center;
 
   @media screen and (max-width: 1200px) {
-    width: 10.5vw;
+    width: 11.3vw;
     height: 13.8vw;
-    border-radius: 1vw;
+    border-radius: 0.7vw;
   }
 `;
 

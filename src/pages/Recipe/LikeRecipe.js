@@ -18,14 +18,14 @@ const LikeRecipe = () => {
   };
 
   return (
-    <Container onClick={handleClickOutside}>
-      <SidebarContainer>
+    <>
+    <SidebarContainer>
         <Sidebar />
       </SidebarContainer>
-      <LikeContainer>
-        <TitleEditContainer>
-          <BoxTitle>좋아요 누른 레시피</BoxTitle>
-        </TitleEditContainer>
+      <Container onClick={handleClickOutside}>
+      <TitleEditContainer>
+        <BoxTitle>좋아요 누른 레시피</BoxTitle>
+      </TitleEditContainer>
         <MyRecipeContainer>
           <Line>
             <RecipeBox
@@ -64,24 +64,15 @@ const LikeRecipe = () => {
             />
           </Line>
         </MyRecipeContainer>
-      </LikeContainer>
     </Container>
+    </>
   );
 };
-
-const LikeContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  align-items: center;
-`;
 
 const SidebarContainer = styled.div`
   position: absolute;
   display: flex;
-
-  @media screen and (max-width: 1200px) {
-  }
+  position: fixed;
 `;
 
 const TitleEditContainer = styled.div`
@@ -90,7 +81,6 @@ const TitleEditContainer = styled.div`
   justify-content: space-between;
   align-items: center;
   padding: 0 3px;
-  margin-top: 10px;
 
   @media screen and (max-width: 1200px) {
     width: 70vw;
@@ -109,7 +99,6 @@ const MyRecipeContainer = styled.div`
   justify-content: space-evenly;
   align-items: center;
   border-radius: 10px;
-  margin-bottom: 3px;
   padding: 0 30px;
 
   @media screen and (max-width: 1200px) {
@@ -121,15 +110,20 @@ const MyRecipeContainer = styled.div`
 
 const Container = styled.div`
   display: flex;
-  align-items: start;
+  flex: 1;
+  flex-direction: column;
+  align-items: center;
 `;
 
 const BoxTitle = styled.p`
   ${({ theme }) => theme.fonts.default18};
-  margin: 10px 0;
+  display: flex;
+  align-items: center;
+  height: 50px;
 
-  @media screen and (max-width: 1200px) {
+  @media screen and (max-width: 1200px){
     font-size: 1.5vw;
+    height: 5vw;
   }
 `;
 

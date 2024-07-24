@@ -15,16 +15,18 @@ const PopularRecipe = () => {
 const PopularContainer = styled.div`
   background-color: ${({ theme }) => theme.colors.green200};
   width: 900px;
-  min-width: 630px;
   height: 198px;
   display: flex;
-  justify-content: space-evenly;
+  justify-content: center;
   align-items: center;
-  border-radius: 1vw;
-  margin-bottom: 3px;
+  gap: 80px;
+  border-radius: 10px;
 
   @media screen and (max-width: 1200px) {
-    width: 46.875vw;
+    width: 70vw;
+    height: 15.4vw;
+    gap: 5.5vw;
+    border-radius: 0.7vw;
   }
 `;
 

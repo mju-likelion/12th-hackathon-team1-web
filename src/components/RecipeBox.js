@@ -51,7 +51,7 @@ const RecipeBox = ({
       if (window.innerWidth <= 1200) {
         setMaxLength(6);
       } else {
-        setMaxLength(12);
+        setMaxLength(10);
       }
     };
 
@@ -67,13 +67,15 @@ const RecipeBox = ({
   return (
     <Container onContextMenu={handleContextMenu}>
       <HeadContainer>
-        <MenuName title={menuName}>
+        <MenuName>
           {truncateText(menuName, maxLength)}
         </MenuName>
+        <div>
         {isEditing && <DeleteIcon src={Delete} alt="삭제 아이콘" />}
+        </div>
       </HeadContainer>
-      <PhotoWrapper />
-      <HeartContainer>
+        <PhotoWrapper />
+        <HeartContainer>
         <HeartImg
           onClick={handlerHeartClick}
           src={isClicked ? FullHeart : Heart}
@@ -122,7 +124,17 @@ const ModalContainer = styled.div`
 
 const HeadContainer = styled.div`
   display: flex;
-  align-items: start;
+  justify-content: space-between;
+  align-items: center;
+  width: 230px;
+  height: 35px;
+
+  @media screen and (max-width: 1200px){
+    width: 17vw;
+    height: 2vw;
+    margin-bottom: 0.4vw;
+    font-size: 1.3vw;
+  }
 `;
 
 const DeleteIcon = styled.img`
@@ -132,6 +144,11 @@ const DeleteIcon = styled.img`
   right: -15px;
   top: -3px;
   cursor: pointer;
+
+  @media screen and (max-width: 1200px){
+    width: 2.5vw;
+    height: 2.5vw;
+  }
 `;
 
 const HeartContainer = styled.div`
@@ -144,14 +161,16 @@ const CountHeart = styled.p`
 `;
 
 const MenuName = styled.p`
+  width: 160px;
+  margin-left: 33px;
   ${({ theme }) => theme.fonts.default16};
-  margin: 0.8vw;
   text-align: center;
   white-space: nowrap;
-  max-width: 217px;
 
   @media screen and (max-width: 1200px) {
-    max-width: 11.3vw;
+    font-size: 1.5vw;
+    width: 11.3vw;
+    margin-left: 2.8vw;
   }
 `;
 
@@ -159,30 +178,31 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   height: 270px;
-  width: 248px;
+  width: 240px;
   background-color: ${({ theme }) => theme.colors.white};
-  border-radius: 0.52vw;
+  border-radius: 10px;
   align-items: center;
   justify-content: center;
-  margin: 10px;
+  margin: 15px;
 
   @media screen and (max-width: 1200px) {
-    height: 14vw;
-    width: 12.9vw;
-    border-radius: 0.52vw;
+    height: 20vw;
+    width: 17.8vw;
+    border-radius: 0.7vw;
+    margin: 1vw;
   }
 `;
 
 const PhotoWrapper = styled.div`
   height: 183px;
-  width: 217px;
+  width: 210px;
   background-color: ${({ theme }) => theme.colors.green200};
   border-radius: 10px;
 
   @media screen and (max-width: 1200px) {
-    height: 9.5vw;
-    width: 11.3vw;
-    border-radius: 0.52vw;
+    height: 12.8vw;
+    width: 15.5vw;
+    border-radius: 0.7vw;
   }
 `;
 

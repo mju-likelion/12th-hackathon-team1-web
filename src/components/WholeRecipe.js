@@ -30,8 +30,7 @@ const Line = styled.div`
 const WholeContainer = styled.div`
   background-color: ${({ theme }) => theme.colors.green200};
   width: 900px;
-  min-width: 630px;
-  height: 580px;
+  height: 600px;
   justify-content: space-evenly;
   align-items: center;
   border-radius: 1vw;
@@ -39,7 +38,8 @@ const WholeContainer = styled.div`
   padding: 0 30px;
 
   @media screen and (max-width: 1200px) {
-    width: 46.875vw;
+    width: 70vw;
+    height: 45vw;
   }
 `;
 

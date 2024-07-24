@@ -3,7 +3,7 @@ import styled from "styled-components";
 import RecipeBox from "../../components/RecipeBox";
 import Sidebar from "../../components/Sidebar";
 
-const RecomRecipe = () => {
+const RecipeRecommend = () => {
   const [showMenu, setShowMenu] = useState(false);
   const [menuPosition, setMenuPosition] = useState({ x: 0, y: 0 });
 
@@ -18,91 +18,75 @@ const RecomRecipe = () => {
   };
 
   return (
-    <Container onClick={handleClickOutside}>
-      <SidebarContainer>
+    <>
+    <SidebarContainer>
         <Sidebar />
       </SidebarContainer>
-      <RecomContainer>
-        <TitleEditContainer>
-          <BoxTitle>나의 냉장고 레시피</BoxTitle>
-        </TitleEditContainer>
-        <AddWrapper>
-          <MyRecipeContainer>
-            <Line>
-              <RecipeBox
-                menuName={"냉장고"}
-                countHeart={5}
-                showMenu={showMenu}
-                menuPosition={menuPosition}
-                handleContextMenu={handleContextMenu}
-              />
-              <RecipeBox
-                showMenu={showMenu}
-                menuPosition={menuPosition}
-                handleContextMenu={handleContextMenu}
-              />
-              <RecipeBox
-                showMenu={showMenu}
-                menuPosition={menuPosition}
-                handleContextMenu={handleContextMenu}
-              />
-            </Line>
-            <Line>
-              <RecipeBox
-                showMenu={showMenu}
-                menuPosition={menuPosition}
-                handleContextMenu={handleContextMenu}
-              />
-              <RecipeBox
-                showMenu={showMenu}
-                menuPosition={menuPosition}
-                handleContextMenu={handleContextMenu}
-              />
-              <RecipeBox
-                showMenu={showMenu}
-                menuPosition={menuPosition}
-                handleContextMenu={handleContextMenu}
-              />
-            </Line>
-          </MyRecipeContainer>
-        </AddWrapper>
-      </RecomContainer>
+      <Container onClick={handleClickOutside}>
+      <TitleEditContainer>
+        <BoxTitle>나의 냉장고 레시피</BoxTitle>
+      </TitleEditContainer>
+        <MyRecipeContainer>
+          <Line>
+            <RecipeBox
+              menuName={
+                "냉장고 레시피!!"
+              }
+              countHeart={5}
+              showMenu={showMenu}
+              menuPosition={menuPosition}
+              handleContextMenu={handleContextMenu}
+            />
+            <RecipeBox
+              showMenu={showMenu}
+              menuPosition={menuPosition}
+              handleContextMenu={handleContextMenu}
+            />
+            <RecipeBox
+              showMenu={showMenu}
+              menuPosition={menuPosition}
+              handleContextMenu={handleContextMenu}
+            />
+          </Line>
+          <Line>
+            <RecipeBox
+              showMenu={showMenu}
+              menuPosition={menuPosition}
+              handleContextMenu={handleContextMenu}
+            />
+            <RecipeBox
+              showMenu={showMenu}
+              menuPosition={menuPosition}
+              handleContextMenu={handleContextMenu}
+            />
+            <RecipeBox
+              showMenu={showMenu}
+              menuPosition={menuPosition}
+              handleContextMenu={handleContextMenu}
+            />
+          </Line>
+        </MyRecipeContainer>
     </Container>
+    </>
   );
 };
-
-const RecomContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  align-items: center;
-`;
 
 const SidebarContainer = styled.div`
   position: absolute;
   display: flex;
-  justify-content: end;
-
-  @media screen and (max-width: 1200px) {
-  }
+  position: fixed;
 `;
 
-const AddWrapper = styled.div`
-  display: flex;
-  align-items: end;
-`;
 
 const TitleEditContainer = styled.div`
   display: flex;
   width: 900px;
-  min-width: 630px;
   justify-content: space-between;
   align-items: center;
   padding: 0 3px;
-  margin-top: 10px;
 
   @media screen and (max-width: 1200px) {
-    width: 46.875vw;
+    width: 70vw;
   }
 `;
 
@@ -114,16 +98,16 @@ const Line = styled.div`
 const MyRecipeContainer = styled.div`
   background-color: ${({ theme }) => theme.colors.green200};
   width: 900px;
-  min-width: 630px;
   height: 814px;
   justify-content: space-evenly;
   align-items: center;
-  border-radius: 1vw;
-  margin-bottom: 3px;
+  border-radius: 10px;
   padding: 0 30px;
 
   @media screen and (max-width: 1200px) {
-    width: 46.875vw;
+    width: 70vw;
+    height: 60vw;
+    border-radius: 0.7vw;
   }
 `;
 
@@ -131,11 +115,19 @@ const Container = styled.div`
   display: flex;
   flex: 1;
   flex-direction: column;
+  align-items: center;
 `;
 
 const BoxTitle = styled.p`
   ${({ theme }) => theme.fonts.default18};
-  margin: 10px 0;
+  display: flex;
+  align-items: center;
+  height: 50px;
+
+  @media screen and (max-width: 1200px){
+    font-size: 1.5vw;
+    height: 5vw;
+  }
 `;
 
-export default RecomRecipe;
+export default RecipeRecommend;
