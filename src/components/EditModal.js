@@ -1,39 +1,105 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
-import Heart from "../assets/images/Heart.svg";
 import SmallButton from "./SmallButton";
+import Plus from "../assets/images/plus.svg";
+import Folder from "../assets/images/imageFolder.svg";
 
-const EditModal = ({ closeEditModal }) => {
+const EditModal = ({ saveEditModal }) => {
+  const [title, setTitle] = useState("");
+  const [ingredients, setIngredients] = useState(Array(1).fill(""));
+  const [methods, setMethods] = useState([""]);
+  const [image, setImage] = useState(null);
+
+  const handleIngredientChange = (index, value) => {
+    const newIngredients = [...ingredients];
+    newIngredients[index] = value;
+    setIngredients(newIngredients);
+  };
+
+  const handleAddIngredient = () => {
+    setIngredients([...ingredients, ""]);
+  };
+
+  const handleMethodChange = (index, value) => {
+    const newMethods = [...methods];
+    newMethods[index] = value;
+    setMethods(newMethods);
+  };
+
+  const handleMethodKeyDown = (index, e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      const newMethods = [...methods];
+      newMethods.splice(index + 1, 0, "");
+      setMethods(newMethods);
+    }
+  };
+
+  const handleImageChange = (e) => {
+    setImage(URL.createObjectURL(e.target.files[0]));
+  };
+
   return (
     <RecipeModalContainer>
       <ModalBackground>
         <TitleBox>
-          <MainTitle>레시피 수정 모달</MainTitle>
+          <TitleInput
+            type="text"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            placeholder="음식 이름을 입력하세요"
+          />
         </TitleBox>
         <ModalContentBox>
           <TopContainer>
-            <LeftContainer>
-              <ContentContainer>
-                <Title>좋아요 수</Title>
-                <HeartContainer>
-                  <HeartImg src={Heart} alt="좋아요 아이콘" />
-                  <CountHeart>5개</CountHeart>
-                </HeartContainer>
-              </ContentContainer>
-              <ContentContainer>
-                <Title>재료</Title>
-                <IngredientBox></IngredientBox>
-              </ContentContainer>
-            </LeftContainer>
-            <MenuImg />
+            <ContentContainer>
+              <Title>재료</Title>
+              <IngredientContainer>
+                {ingredients.map((ingredient, index) => (
+                  <IngredientInput
+                    key={index}
+                    type="text"
+                    value={ingredient}
+                    onChange={(e) =>
+                      handleIngredientChange(index, e.target.value)
+                    }
+                    placeholder={`재료 ${index + 1}`}
+                  />
+                ))}
+                <AddIngredientButton src={Plus} onClick={handleAddIngredient} />
+              </IngredientContainer>
+            </ContentContainer>
           </TopContainer>
           <ContentContainer>
             <Title>조리 방법</Title>
-            <MethodBox></MethodBox>
+            {methods.map((method, index) => (
+              <MethodTextarea
+                key={index}
+                value={method}
+                onChange={(e) => handleMethodChange(index, e.target.value)}
+                onKeyDown={(e) => handleMethodKeyDown(index, e)}
+                placeholder="ex) 돼지고기는 핏물을 빼주세요"
+              />
+            ))}
+          </ContentContainer>
+          <ContentContainer>
+            <Title>사진</Title>
+            <UploadImg>
+              {image && <img src={image} alt="Preview" />}
+              <UploadLabel htmlFor="file-upload">
+                <FolderIcon src={Folder} alt="Folder Icon" />
+              </UploadLabel>
+              <UploadButton
+                id="file-upload"
+                type="file"
+                accept="image/*"
+                onChange={handleImageChange}
+              />
+            </UploadImg>
           </ContentContainer>
         </ModalContentBox>
         <ButtonContainer>
-          <SmallButton text="닫기" onClick={closeEditModal} />
+          <SmallButton text="저장" onClick={saveEditModal} />
         </ButtonContainer>
       </ModalBackground>
     </RecipeModalContainer>
@@ -45,15 +111,40 @@ const ButtonContainer = styled.div`
   justify-content: end;
 `;
 
-const MenuImg = styled.div`
-  width: 332px;
-  height: 219px;
-  margin: 20px;
-  background-color: aquamarine;
+const UploadLabel = styled.label`
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  margin: 5px;
 `;
 
-const LeftContainer = styled.div`
-  width: 50%;
+const FolderIcon = styled.img`
+  width: 100%;
+  height: 100%;
+`;
+
+const UploadImg = styled.div`
+  display: flex;
+  width: 500px;
+  height: 37px;
+  border-radius: 10px;
+  justify-content: end;
+  border: none;
+  ${({ theme }) => theme.fonts.default16}
+  background-color: ${({ theme }) => theme.colors.white};
+  margin: 5px;
+`;
+
+const UploadButton = styled.input`
+  height: 40px;
+  width: 40px;
+  margin: 5px;
+  opacity: 0;
+  position: absolute;
+  cursor: pointer;
 `;
 
 const TopContainer = styled.div`
@@ -63,45 +154,47 @@ const TopContainer = styled.div`
   justify-content: space-between;
 `;
 
-const MethodBox = styled.p`
+const MethodTextarea = styled.input`
   ${({ theme }) => theme.fonts.default16}
   background-color: ${({ theme }) => theme.colors.white};
-  width: 416px;
+  width: 500px;
   height: 37px;
   border-radius: 10px;
+  border: none;
+  vertical-align: middle;
+  margin: 5px;
 `;
 
-const CountHeart = styled.p`
-  ${({ theme }) => theme.fonts.default16};
-  margin: 7px;
-`;
-
-const HeartContainer = styled.div`
+const IngredientContainer = styled.div`
   display: flex;
-  align-items: center;
+  width: 75%;
+  flex-wrap: wrap;
 `;
 
-const IngredientBox = styled.p`
+const IngredientInput = styled.p`
   ${({ theme }) => theme.fonts.default16}
   background-color: ${({ theme }) => theme.colors.white};
   width: 80px;
   height: 37px;
   border-radius: 10px;
+  margin: 5px;
+`;
+
+const AddIngredientButton = styled.img`
+  width: 25px;
+  height: 25px;
+  border-radius: 10px;
+  margin: 10px;
+  cursor: pointer;
 `;
 
 const Title = styled.p`
   ${({ theme }) => theme.fonts.default18};
-  margin: 0 0 10px;
+  margin: 5px;
 
   @media screen and (max-width: 1200px) {
     font-size: 1.5vw;
   }
-`;
-
-const HeartImg = styled.img`
-  width: 26px;
-  height: 26px;
-  padding: 2px;
 `;
 
 const ContentContainer = styled.div`
@@ -134,7 +227,8 @@ const ModalContentBox = styled.div`
 `;
 
 const TitleBox = styled.div`
-  width: 100%;
+  width: 500px;
+  height: 40px;
   display: flex;
   justify-content: start;
   margin-bottom: 25px;
@@ -144,11 +238,19 @@ const TitleBox = styled.div`
   }
 `;
 
-const MainTitle = styled.p`
-  ${({ theme }) => theme.fonts.title40}
+const TitleInput = styled.input`
+  ${({ theme }) => theme.fonts.title20}
+  background-color: ${({ theme }) => theme.colors.white};
+  border: none;
+  border-radius: 10px;
+  width: 100%;
+  height: 50px;
+  padding: 0 10px;
+  box-sizing: border-box;
 
   @media screen and (max-width: 1200px) {
-    font-size: 3vw;
+    font-size: 1vw;
+    height: 3vw;
   }
 `;
 
