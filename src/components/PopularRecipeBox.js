@@ -14,13 +14,11 @@ const RecipeBox = styled.div`
   height: 170px;
   background-color: ${({ theme }) => theme.colors.white};
   border-radius: 10px;
-  margin-left: 34px;
 
   @media screen and (max-width: 1200px){
-    width: 10.5vw;
-    height: 13.8vw;
-    margin-left: 1.8vw;
-    border-radius: 1vw;
+    width: 9.7vw;
+    height: 11.8vw;
+    border-radius: 0.7vw;
   }
 `;
 
