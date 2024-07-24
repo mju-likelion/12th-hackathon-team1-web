@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import RecipeBox from "../../components/RecipeBox";
+import Sidebar from "../../components/Sidebar";
 
 const RecomRecipe = () => {
   const [showMenu, setShowMenu] = useState(false);
@@ -18,54 +19,73 @@ const RecomRecipe = () => {
 
   return (
     <Container onClick={handleClickOutside}>
-      <TitleEditContainer>
-        <BoxTitle>나의 냉장고 레시피</BoxTitle>
-      </TitleEditContainer>
-      <AddWrapper>
-        <MyRecipeContainer>
-          <Line>
-            <RecipeBox
-              menuName={
-                "냉장고"
-              }
-              countHeart={5}
-              showMenu={showMenu}
-              menuPosition={menuPosition}
-              handleContextMenu={handleContextMenu}
-            />
-            <RecipeBox
-              showMenu={showMenu}
-              menuPosition={menuPosition}
-              handleContextMenu={handleContextMenu}
-            />
-            <RecipeBox
-              showMenu={showMenu}
-              menuPosition={menuPosition}
-              handleContextMenu={handleContextMenu}
-            />
-          </Line>
-          <Line>
-            <RecipeBox
-              showMenu={showMenu}
-              menuPosition={menuPosition}
-              handleContextMenu={handleContextMenu}
-            />
-            <RecipeBox
-              showMenu={showMenu}
-              menuPosition={menuPosition}
-              handleContextMenu={handleContextMenu}
-            />
-            <RecipeBox
-              showMenu={showMenu}
-              menuPosition={menuPosition}
-              handleContextMenu={handleContextMenu}
-            />
-          </Line>
-        </MyRecipeContainer>
-      </AddWrapper>
+      <SidebarContainer>
+        <Sidebar />
+      </SidebarContainer>
+      <RecomContainer>
+        <TitleEditContainer>
+          <BoxTitle>나의 냉장고 레시피</BoxTitle>
+        </TitleEditContainer>
+        <AddWrapper>
+          <MyRecipeContainer>
+            <Line>
+              <RecipeBox
+                menuName={"냉장고"}
+                countHeart={5}
+                showMenu={showMenu}
+                menuPosition={menuPosition}
+                handleContextMenu={handleContextMenu}
+              />
+              <RecipeBox
+                showMenu={showMenu}
+                menuPosition={menuPosition}
+                handleContextMenu={handleContextMenu}
+              />
+              <RecipeBox
+                showMenu={showMenu}
+                menuPosition={menuPosition}
+                handleContextMenu={handleContextMenu}
+              />
+            </Line>
+            <Line>
+              <RecipeBox
+                showMenu={showMenu}
+                menuPosition={menuPosition}
+                handleContextMenu={handleContextMenu}
+              />
+              <RecipeBox
+                showMenu={showMenu}
+                menuPosition={menuPosition}
+                handleContextMenu={handleContextMenu}
+              />
+              <RecipeBox
+                showMenu={showMenu}
+                menuPosition={menuPosition}
+                handleContextMenu={handleContextMenu}
+              />
+            </Line>
+          </MyRecipeContainer>
+        </AddWrapper>
+      </RecomContainer>
     </Container>
   );
 };
+
+const RecomContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  align-items: center;
+`;
+
+const SidebarContainer = styled.div`
+  position: absolute;
+  display: flex;
+  justify-content: end;
+
+  @media screen and (max-width: 1200px) {
+  }
+`;
 
 const AddWrapper = styled.div`
   display: flex;

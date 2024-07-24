@@ -9,31 +9,39 @@ function Sidebar() {
   const menus = [
     { name: "내 레시피 보기", path: "/recipes/my_recipes" },
     { name: "좋아요 누른 레시피 보기", path: "/auth/likes" },
-    { name: "내 냉장고 재료로 레시피 검색", path: "/recipes/recommendations" },
+    { name: "내 냉장고 재료로 레시피 보기", path: "/recipes/recommendations" },
   ];
 
   return (
     <SidebarContainer>
       <MenuText>Menu</MenuText>
       <Grayline />
-      {menus.map((menu, index) => {
-        const isSelected = location.pathname === menu.path;
-        return (
-          <Link to={menu.path} key={index}>
-            <SidebarItem menu={menu} isSelected={isSelected} />
-          </Link>
-        );
-      })}
+      <Text>
+        {menus.map((menu, index) => {
+          const isSelected = location.pathname === menu.path;
+          return (
+            <Link to={menu.path} key={index}>
+              <SidebarItem menu={menu} isSelected={isSelected} />
+            </Link>
+          );
+        })}
+      </Text>
     </SidebarContainer>
   );
 }
 
+const Text = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 200px;
+`;
+
 const MenuText = styled.p`
   font-size: ${({ theme }) => theme.fonts.menuText};
-  text-decoration: none;
   margin: 10px 0;
 
-  @media screen and (max-width: 1200px){
+  @media screen and (max-width: 1200px) {
     margin: 0.7vw 0;
     font-size: 1.3vw;
   }
@@ -55,7 +63,7 @@ const SidebarContainer = styled.div`
   border: 1px solid ${({ theme }) => theme.colors.lineGray};
   background-color: ${({ theme }) => theme.colors.white};
 
-  @media screen and (max-width: 1200px){
+  @media screen and (max-width: 1200px) {
     width: 22vw;
     height: 17vw;
     padding: 1.6vw;
