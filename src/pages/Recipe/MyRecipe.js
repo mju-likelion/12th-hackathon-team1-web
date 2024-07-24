@@ -3,91 +3,125 @@ import styled from "styled-components";
 import RecipeBox from "../../components/RecipeBox";
 import Plus from "../../assets/images/plus.svg";
 import Sidebar from "../../components/Sidebar";
+import RecipeModal from "../../components/RecipeModal";
+import EditModal from "../../components/EditModal";
 
 const MyRecipe = () => {
   const [isEditing, setIsEditing] = useState(false);
-  const [showMenu, setShowMenu] = useState(false);
-  const [menuPosition, setMenuPosition] = useState({ x: 0, y: 0 });
+  const [showRecipeModal, setShowRecipeModal] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
 
   const handleEditClick = () => {
     setIsEditing(!isEditing);
   };
 
-  const handleContextMenu = (e) => {
-    e.preventDefault();
-    setMenuPosition({ x: e.clientX, y: e.clientY });
-    setShowMenu(true);
+  const openRecipeModal = () => {
+    if (isEditing) {
+      setShowEditModal(true);
+    } else {
+      setShowRecipeModal(true);
+    }
   };
 
-  const handleClickOutside = () => {
-    setShowMenu(false);
+  const closeRecipeModal = () => {
+    setShowRecipeModal(false);
   };
+
+  const closeEditModal = () => {
+    setShowEditModal(false);
+  };
+
+  const recipeData = [
+    { menuName: "스파게티", countHeart: 5 },
+    { menuName: "짜장면", countHeart: 3 },
+    { menuName: "김치찌개", countHeart: 8 },
+    { menuName: "된장찌개", countHeart: 4 },
+    { menuName: "불고기", countHeart: 7 },
+    { menuName: "갈비찜", countHeart: 6 },
+    { menuName: "비빔밥", countHeart: 9 },
+    { menuName: "삼겹살", countHeart: 10 },
+    { menuName: "순두부찌개", countHeart: 2 },
+    { menuName: "잡채", countHeart: 6 },
+    { menuName: "해물파전", countHeart: 7 },
+    { menuName: "떡볶이", countHeart: 8 },
+    { menuName: "라면", countHeart: 5 },
+    { menuName: "김밥", countHeart: 4 },
+    { menuName: "오징어볶음", countHeart: 5 },
+    { menuName: "부대찌개", countHeart: 7 },
+    { menuName: "갈비탕", countHeart: 6 },
+    { menuName: "된장국", countHeart: 4 },
+    { menuName: "양념치킨", countHeart: 9 },
+    { menuName: "치즈돈까스", countHeart: 6 },
+    { menuName: "연어초밥", countHeart: 8 },
+    { menuName: "콩나물국밥", countHeart: 5 },
+  ];
 
   return (
     <>
-    <SidebarContainer>
+      <SidebarContainer>
         <Sidebar />
       </SidebarContainer>
-      <Container onClick={handleClickOutside}>
-      <TitleEditContainer>
-        <BoxTitle>내 레시피</BoxTitle>
-        <EditButton type="submit" onClick={handleEditClick}>
-          {isEditing ? "저장" : "편집"}
-        </EditButton>
-      </TitleEditContainer>
-      <AddWrapper>
-        <MyRecipeContainer>
-          <Line>
-            <RecipeBox
-              menuName={
-                "삐쓰까또레부르쥬미첼라햄페스츄리치즈나쵸스트링스파게티"
-              }
-              countHeart={5}
-              isEditing={isEditing}
-              showMenu={showMenu}
-              menuPosition={menuPosition}
-              handleContextMenu={handleContextMenu}
-            />
-            <RecipeBox
-              isEditing={isEditing}
-              showMenu={showMenu}
-              menuPosition={menuPosition}
-              handleContextMenu={handleContextMenu}
-            />
-            <RecipeBox
-              isEditing={isEditing}
-              showMenu={showMenu}
-              menuPosition={menuPosition}
-              handleContextMenu={handleContextMenu}
-            />
-          </Line>
-          <Line>
-            <RecipeBox
-              isEditing={isEditing}
-              showMenu={showMenu}
-              menuPosition={menuPosition}
-              handleContextMenu={handleContextMenu}
-            />
-            <RecipeBox
-              isEditing={isEditing}
-              showMenu={showMenu}
-              menuPosition={menuPosition}
-              handleContextMenu={handleContextMenu}
-            />
-            <RecipeBox
-              isEditing={isEditing}
-              showMenu={showMenu}
-              menuPosition={menuPosition}
-              handleContextMenu={handleContextMenu}
-            />
-          </Line>
-        </MyRecipeContainer>
-        {isEditing && <PlusButton src={Plus} alt="레시피 추가 버튼" />}
-      </AddWrapper>
-    </Container>
+      <Container>
+        <TitleEditContainer>
+          <BoxTitle>내 레시피</BoxTitle>
+          <EditButton type="submit" onClick={handleEditClick}>
+            {isEditing ? "저장" : "편집"}
+          </EditButton>
+        </TitleEditContainer>
+        <AddWrapper>
+          <MyRecipeContainer>
+            <RecipeContainer>
+              {recipeData.map((recipe, index) => (
+                <RecipeBox
+                  key={index}
+                  menuName={recipe.menuName}
+                  countHeart={recipe.countHeart}
+                  isEditing={isEditing}
+                  onClick={openRecipeModal}
+                />
+              ))}
+            </RecipeContainer>
+          </MyRecipeContainer>
+          {isEditing && <PlusButton src={Plus} alt="레시피 추가 버튼" />}
+        </AddWrapper>
+        {showRecipeModal && (
+          <>
+            <Overlay />
+            <ModalContent>
+              <RecipeModal closeRecipeModal={closeRecipeModal} />
+            </ModalContent>
+          </>
+        )}
+        {showEditModal && (
+          <>
+            <Overlay />
+            <ModalContent>
+              <EditModal closeEditModal={closeEditModal} />
+            </ModalContent>
+          </>
+        )}
+      </Container>
     </>
   );
 };
+
+const Overlay = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+`;
+
+const ModalContent = styled.div`
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1001;
+`;
 
 const SidebarContainer = styled.div`
   position: absolute;
@@ -106,8 +140,9 @@ const PlusButton = styled.img`
   height: 20px;
   margin-left: 920px;
   margin-bottom: 5px;
+  cursor: pointer;
 
-  @media screen and (max-width: 1200px){
+  @media screen and (max-width: 1200px) {
     margin-left: 71vw;
   }
 `;
@@ -125,7 +160,7 @@ const EditButton = styled.button`
     font-weight: 600;
   }
 
-  @media screen and (max-width: 1200px){
+  @media screen and (max-width: 1200px) {
     width: 5vw;
     height: 3vw;
     border-radius: 0.35vw;
@@ -148,8 +183,9 @@ const TitleEditContainer = styled.div`
   }
 `;
 
-const Line = styled.div`
+const RecipeContainer = styled.div`
   display: flex;
+  flex-wrap: wrap;
   justify-content: space-between;
 `;
 
@@ -157,10 +193,11 @@ const MyRecipeContainer = styled.div`
   background-color: ${({ theme }) => theme.colors.green200};
   width: 900px;
   height: 814px;
-  justify-content: space-evenly;
+  justify-content: center;
   align-items: center;
   border-radius: 1vw;
   padding: 0 30px;
+  overflow-y: auto;
 
   @media screen and (max-width: 1200px) {
     width: 70vw;
@@ -178,7 +215,7 @@ const Container = styled.div`
 const BoxTitle = styled.p`
   ${({ theme }) => theme.fonts.default18};
 
-  @media screen and (max-width: 1200px){
+  @media screen and (max-width: 1200px) {
     font-size: 1.5vw;
   }
 `;
