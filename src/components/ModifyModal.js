@@ -1,14 +1,55 @@
-import React, { useState } from 'react';
+import React, {useState, useEffect} from 'react';
 import styled from 'styled-components';
-import SmallButton from '../components/SmallButton';
+import SmallButton from './SmallButton';
+import { dataAtom } from '../Recoil/Atom';
+import {useRecoilValue,useSetRecoilState } from 'recoil';
 
-const AddIngredient = ({closeModal, ingredientValue}) => {
+const ModifyModal = ({ title, id, isCloseShowFood}) => {
+  const handleWrapperClick = (e) => {
+    e.stopPropagation();
+  };
 
-  const [saveYear, setSaveYear] = useState('');
-  const [saveMonth, setSaveMonth] = useState('');
-  const [saveDate, setSaveDate] = useState('');
+  const foodData = useRecoilValue(dataAtom);
+  const setFoodData = useSetRecoilState(dataAtom);
+  const [year, setYear] = useState('');
+  const [month, setMonth] = useState('');
+  const [date, setDate] = useState('');
   const [count, setCount] = useState('');
-  const [saveMethod, setSaveMethod] = useState('');
+  const [storage, setStorage] = useState('');
+  const [memo, setMemo] = useState('');
+
+  useEffect(() => {
+    const foodItem = foodData.find(item => item.key === id);
+    if (foodItem) {
+      const [yr, mn, dt] = foodItem.expiredDate.split('-');
+      setYear(yr);
+      setMonth(mn);
+      setDate(dt);
+      setCount(foodItem.quantity);
+      setStorage(foodItem.storage);
+      setMemo(foodItem.memo);
+    }
+  }, [id, foodData]);
+
+  const handleSave = () => {
+    setFoodData(prevData => {
+      return prevData.map(item => {
+        if(item.key === id) {
+          return {
+            ...item,
+            expiredDate: `${year}-${month}-${date}`,
+            quantity: count,
+            storage: storage,
+            memo: memo
+          };
+        }
+        return item;
+      });
+    });
+    console.log("foodData: ", foodData);
+    isCloseShowFood();
+  };
+
 
   const years = [
     { value: "", label: "년 선택" },
@@ -47,52 +88,45 @@ const AddIngredient = ({closeModal, ingredientValue}) => {
     { value: "10", label: "10" },
   ];
   const numbers = [
-    {value: ""},
-    {value: "01"},
-    {value: "02"},
-    {value: "03"},
-    {value: "04"},
-    {value: "05"},
-    {value: "06"},
-    {value: "07"},
-    {value: "08"},
-    {value: "09"},
-    {value: "10"},
+    { value: "", label: "횟수 선택" },
+    { value: "01", label: "01" },
+    { value: "02", label: "02" },
+    { value: "03", label: "03" },
+    { value: "04", label: "04" },
+    { value: "05", label: "05" },
+    { value: "06", label: "06" },
+    { value: "07", label: "07" },
+    { value: "08", label: "08" },
+    { value: "09", label: "09" },
+    { value: "10", label: "10" },
   ]
   const methods = [
-    {value: ""},
-    {value: "냉동실"},
-    {value: "냉장실"},
-    {value: "상온"},
+    {value: "", label: "저장 방법"},
+    {value: "냉동", label: "냉동"},
+    {value: "냉장", label: "냉장"},
+    {value: "상온", label: "상온"},
   ]
 
-  const handleYearChange = (e) => setSaveYear(e.target.value);
-  const handleMonthChange = (e) => setSaveMonth(e.target.value);
-  const handleDateChange = (e) => setSaveDate(e.target.value);
-  const handleCountChange = (e) => setCount(e.target.value);
-  const handleMethodChange = (e) => setSaveMethod(e.target.value);
-
-  console.log("Year: ", saveYear);
   return (
-    <>
-      <WrapperBox>
+        <ModalWrapper onClick={handleWrapperClick}>
+        <WrapperBox>
             <Wrapper>
               <TitleBox>
-                <MainTitle>재료 등록하기</MainTitle>
+                <MainTitle>재료 수정하기</MainTitle>
               </TitleBox>
                 <SmallWrapper>
                   <TextBoxWrapper>
                     <TextWrapper>
                       <Title>재료명</Title>
                       <NameBox>
-                        <Name>{ingredientValue}</Name>
+                        <Name>{title}</Name>
                       </NameBox>
                     </TextWrapper>
                     <TextWrapper>
                       <Title>남은 유통기한</Title>
                       <YearWrapper>
                         <YearBox>
-                        <Text value={saveYear} onChange={handleYearChange}>
+                        <Text value={year} onChange={(e) => setYear(e.target.value)}>
                       {years.map((year, index) => (
                         <option key={index} value={year.value} disabled={year.value === ""}>
                           {year.label}
@@ -102,7 +136,7 @@ const AddIngredient = ({closeModal, ingredientValue}) => {
                           <Title>년</Title>
                         </YearBox>
                         <YearBox>
-                        <Text> value={saveMonth} onChange={handleMonthChange}
+                        <Text value={month} onChange={(e) => setMonth(e.target.value)}>
                       {months.map((month, index) => (
                         <option key={index} value={month.value} disabled={month.value === ""}>
                           {month.label}
@@ -112,7 +146,7 @@ const AddIngredient = ({closeModal, ingredientValue}) => {
                           <Title>월</Title>
                         </YearBox>
                         <YearBox>
-                        <Text value={saveDate} onChange={handleDateChange}>
+                        <Text value={date} onChange={(e) => setDate(e.target.value)}>
                       {dates.map((date, index) => (
                         <option key={index} value={date.value} disabled={date.value === ""}>
                           {date.label}
@@ -125,39 +159,53 @@ const AddIngredient = ({closeModal, ingredientValue}) => {
                     </TextWrapper>
                     <TextWrapper>
                       <Title>수량 설정</Title>
-                        <Text value={count} onChange={handleCountChange}>
-                          {numbers.map((number, index)=>(
-                            <option key={index} value={number.value} disabled={number.value === ""}>
-                              {number.value}
-                            </option>
-                          ))}
-                        </Text>
+                      <Text value={count} onChange={(e) => setCount(e.target.value)}>
+                  {numbers.map((num, index) => (
+                    <option key={index} value={num.value} disabled={num.value === ""}>
+                      {num.label}
+                    </option>
+                  ))}
+                </Text>
                     </TextWrapper>
                     <TextWrapper>
                       <Title>보관 방법</Title>
-                        <Text lue={saveMethod} onChange={handleMethodChange}>
-                        {methods.map((method, index)=>(
-                              <option key={index} value={method.value} disabled={method.value===""}>
-                                {method.value}
-                              </option>
-                            ))}
-                        </Text>
+                      <Text value={storage} onChange={(e) => setStorage(e.target.value)}>
+                  {methods.map((method, index) => (
+                    <option key={index} value={method.value} disabled={method.value === ""}>
+                      {method.label}
+                    </option>
+                  ))}
+                </Text>
                     </TextWrapper>
                     <TextWrapper>
                       <Title>메모</Title>
-                      <LongText></LongText>
+                      <LongText value={memo} onChange={(e) => setMemo(e.target.value)} />
                     </TextWrapper>
                   </TextBoxWrapper>
                 </SmallWrapper>
                 <ButtonWrapper>
-                    <SmallButton text="등록 취소" closeModal={closeModal}/>
-                    <SmallButton text="등록 완료"/>
+                    <SmallButton text="닫기" onClick={isCloseShowFood}/>
+                    <SmallButton text="수정 완료"onClick={handleSave}/>
                 </ButtonWrapper>
             </Wrapper>
         </WrapperBox>
-    </>
+        </ModalWrapper>
+
+
   );
 };
+
+const ModalWrapper = styled.div`
+
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
 
 const WrapperBox = styled.div`
     background-color: ${({theme}) => theme.colors.green200};
@@ -227,6 +275,7 @@ const TextBoxWrapper = styled.div`
   height: 580px;
   display: flex;
   flex-direction: column;
+  align-items: start;
   justify-content: space-between;
 
   @media screen and (max-width: 1200px){
@@ -242,6 +291,7 @@ const Title = styled.p`
   ${({theme})=>theme.fonts.default18}
   margin-left: 20px;
   margin-bottom: 10px;
+  display: flex;
 
   @media screen and (max-width: 1200px){
     font-size: 1.5vw;
@@ -274,6 +324,7 @@ const Name = styled.p`
 
 const Text = styled.select`
   background-color: ${({theme})=>theme.colors.white};
+  ${({theme})=>theme.fonts.default16};
   width: 80px;
   height: 40px;
   border: none;
@@ -286,6 +337,7 @@ const Text = styled.select`
   @media screen and (max-width: 1200px){
     width: 5.6vw;
     height: 2.78vw;
+    font-size: 1.3vw;
   }
 `;
 
@@ -314,6 +366,7 @@ const LongText = styled.input`
   @media screen and (max-width: 1200px){
     width: 31.25vw;
     height: 10.41vw;
+    font-size: 1.5vw;
   }
 `;
 
@@ -324,4 +377,5 @@ const ButtonWrapper = styled.div`
   gap: 1.3vw;
 `;
 
-export default AddIngredient;
+
+export default ModifyModal;
