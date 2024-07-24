@@ -48,6 +48,7 @@ const TextContainer = styled.div`
   width: 900px;
   min-width: 630px;
   padding: 0 3px;
+  margin-top: 10px;
 
   @media screen and (max-width: 1200px) {
     width: 46.875vw;
