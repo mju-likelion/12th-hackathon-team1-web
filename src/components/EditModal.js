@@ -142,6 +142,12 @@ const UploadLabel = styled.label`
   width: 30px;
   height: 30px;
   margin: 5px;
+
+  @media screen and (max-width: 1200px){
+    width: 2.08vw;
+    height: 2.08vw;
+    margin: 0.35vw;
+  }
 `;
 
 const FolderIcon = styled.img`
@@ -159,6 +165,13 @@ const UploadImg = styled.div`
   ${({ theme }) => theme.fonts.default16}
   background-color: ${({ theme }) => theme.colors.white};
   margin: 5px;
+
+  @media screen and (max-width: 1200px){
+    width: 34.7vw;
+    height: 2.56vw;
+    border-radius: 0.7vw;
+    margin: 0.35vw;
+  }
 `;
 
 const UploadButton = styled.input`
@@ -168,6 +181,12 @@ const UploadButton = styled.input`
   opacity: 0;
   position: absolute;
   cursor: pointer;
+
+  @media screen and (max-width: 1200px){
+    height: 2.77vw;
+    width: 2.77vw;
+    margin: 0.35vw;
+  }
 `;
 
 const TopContainer = styled.div`
@@ -175,6 +194,10 @@ const TopContainer = styled.div`
   height: 250px;
   display: flex;
   justify-content: space-between;
+
+  @media screen and (max-width: 1200px){
+    height: 17.36vw;
+  }
 `;
 
 const MethodTextarea = styled.input`
@@ -186,12 +209,25 @@ const MethodTextarea = styled.input`
   border: none;
   vertical-align: middle;
   margin: 5px;
+
+  &:focus {
+    outline: none;
+  }
+
+  @media screen and (max-width: 1200px){
+    font-size: 1.3vw;
+    width: 34.7vw;
+    height: 2.56vw;
+    border-radius: 0.7vw;
+    margin: 0.35vw;
+  }
 `;
 
 const IngredientContainer = styled.div`
   display: flex;
   width: 75%;
   flex-wrap: wrap;
+
 `;
 
 const IngredientInput = styled.p`
@@ -201,6 +237,14 @@ const IngredientInput = styled.p`
   height: 37px;
   border-radius: 10px;
   margin: 5px;
+
+  @media screen and (max-width: 1200px){
+    font-size: 1.1vw;
+    width: 5.55vw;
+    height: 2.56vw;
+    border-radius: 0.7vw;
+    margin: 0.35vw;
+  }
 `;
 
 const AddIngredientButton = styled.img`
@@ -209,6 +253,13 @@ const AddIngredientButton = styled.img`
   border-radius: 10px;
   margin: 10px;
   cursor: pointer;
+
+  @media screen and (max-width: 1200px){
+    width: 1.4vw;
+    height: 1.4vw;
+    border-radius: 0.7vw;
+    margin: 0.7vw;
+  }
 `;
 
 const Title = styled.p`
@@ -217,17 +268,19 @@ const Title = styled.p`
 
   @media screen and (max-width: 1200px) {
     font-size: 1.5vw;
+    margin: 0.35vw;
   }
 `;
 
 const ContentContainer = styled.div`
   width: 100%;
+  height: 100%;
   display: flex;
   flex-direction: column;
   padding: 20px;
 
   @media screen and (max-width: 1200px) {
-    height: 42vw;
+    padding: 1.4vw;
   }
 `;
 
@@ -250,14 +303,13 @@ const ModalContentBox = styled.div`
 `;
 
 const TitleBox = styled.div`
-  width: 500px;
-  height: 40px;
   display: flex;
   justify-content: start;
-  margin-bottom: 25px;
+  align-items: center;
+  margin:60px 0 10px 0;
 
   @media screen and (max-width: 1200px) {
-    margin-bottom: 1.5vw;
+    margin: 4.16vw 0 0.7vw 0;
   }
 `;
 
@@ -266,24 +318,34 @@ const TitleInput = styled.input`
   background-color: ${({ theme }) => theme.colors.white};
   border: none;
   border-radius: 10px;
-  width: 100%;
+  width: 450px;
   height: 50px;
   padding: 0 10px;
   box-sizing: border-box;
 
+  &:focus {
+    outline: none;
+  }
+
   @media screen and (max-width: 1200px) {
     font-size: 1vw;
+    width: 30vw;
     height: 3vw;
+    border-radius: 0.7vw;
   }
 `;
 
 const ModalBackground = styled.div`
+  width: 725px;
+  height: 850px;
   display: flex;
   flex-direction: column;
   align-content: space-between;
+  
 
   @media screen and (max-width: 1200px) {
-    height: 54.5vw;
+    width: 50vw;
+    height: 60vw;
   }
 `;
 
