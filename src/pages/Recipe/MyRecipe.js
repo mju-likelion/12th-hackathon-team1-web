@@ -96,7 +96,7 @@ const MyRecipe = () => {
           <>
             <Overlay />
             <ModalContent>
-              <EditModal closeEditModal={closeEditModal} />
+              <EditModal saveEditModal={closeEditModal} />
             </ModalContent>
           </>
         )}
