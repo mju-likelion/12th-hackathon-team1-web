@@ -240,8 +240,9 @@ const Wrapper = styled.div`
 const MyRecipeContainer = styled.div`
   background-color: ${({ theme }) => theme.colors.green200};
   width: 900px;
-  min-height: 900px;
-  height: auto;
+  max-height: 900px;
+  height: 100%;
+  overflow-y: auto;
   justify-content: space-evenly;
   align-items: center;
   border-radius: 1vw;
