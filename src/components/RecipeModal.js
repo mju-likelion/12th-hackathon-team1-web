@@ -65,6 +65,12 @@ const MenuImg = styled.div`
   height: 219px;
   margin: 20px;
   background-color: ${({ theme }) => theme.colors.white};
+
+  @media screen and (max-width: 1200px){
+    width: 23vw;
+    height: 15.2vw;
+    margin: 1.4vw;
+  }
 `;
 
 const LeftContainer = styled.div`
@@ -76,6 +82,10 @@ const TopContainer = styled.div`
   height: 250px;
   display: flex;
   justify-content: space-between;
+
+  @media screen and (max-width: 1200px){
+    height: 17.36vw;
+  }
 `;
 
 const MethodBox = styled.p`
@@ -89,11 +99,25 @@ const MethodBox = styled.p`
   align-items: center;
   margin: 5px;
   padding: 0 10px;
+
+  @media screen and (max-width: 1200px){
+    width: 35vw;
+    height: 2.56vw;
+    font-size: 1.1vw;
+    margin: 0.35vw;
+    padding: 0 0.7vw;
+    border-radius: 0.7vw;
+  }
 `;
 
 const CountHeart = styled.p`
   ${({ theme }) => theme.fonts.default16};
   margin: 7px;
+
+  @media screen and (max-width: 1200px){
+    margin: 0.5vw;
+    font-size: 1.3vw;
+  }
 `;
 
 const HeartContainer = styled.div`
@@ -110,7 +134,18 @@ const IngredientBox = styled.p`
   border-radius: 10px;
   align-items: center;
   margin: 5px;
-  padding: 0 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  @media screen and (max-width: 1200px){
+    width: 7vw;
+    height: 2.56vw;
+    border-radius: 0.7vw;
+    margin: 0.35vw;
+    padding-top: 0 0.7vw;
+    font-size: 1vw;
+  }
 `;
 
 const Title = styled.p`
@@ -118,7 +153,8 @@ const Title = styled.p`
   margin: 0 0 10px;
 
   @media screen and (max-width: 1200px) {
-    font-size: 1.5vw;
+    font-size: 1.3vw;
+    margin: 0 0 0.7vw;
   }
 `;
 
@@ -126,6 +162,12 @@ const HeartImg = styled.img`
   width: 26px;
   height: 26px;
   padding: 2px;
+
+  @media screen and (max-width: 1200px){
+    width: 1.8vw;
+    height: 1.8vw;
+    padding: 0.14vw;
+  }
 `;
 
 const ContentContainer = styled.div`
@@ -135,7 +177,7 @@ const ContentContainer = styled.div`
   padding: 20px;
 
   @media screen and (max-width: 1200px) {
-    height: 42vw;
+    padding: 1.4vw;
   }
 `;
 
@@ -152,7 +194,7 @@ const ModalContentBox = styled.div`
   @media screen and (max-width: 1200px) {
     width: 50vw;
     height: 45vw;
-    border-radius: 0.52vw;
+    border-radius: 0.7vw;
     margin-bottom: 1.5vw;
   }
 `;
@@ -180,10 +222,6 @@ const ModalBackground = styled.div`
   display: flex;
   flex-direction: column;
   align-content: space-between;
-
-  @media screen and (max-width: 1200px) {
-    height: 54.5vw;
-  }
 `;
 
 const RecipeModalContainer = styled.div`
