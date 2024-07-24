@@ -6,6 +6,7 @@ import Login from './pages/Login';
 import Join from './pages/Join';
 import Refrigerator from "./pages/Fridge";
 import Recipe from './pages/Recipe';
+import MyRecipe from "./components/RecipePage/MyRecipe";
 
 function App() {
   return (
@@ -17,7 +18,8 @@ function App() {
         <Route path="/auth/login" element={<Login />} />
         <Route path="/auth/signin" element={<Join />} />
         <Route path="/fridge" element={<Refrigerator />} />
-        <Route path="/recipe" element={<Recipe />} />
+        <Route path="/recipes" element={<Recipe />} />
+        <Route path="/recipes/my_recipes" element={<MyRecipe />} />
       </Routes>
     </>
   );

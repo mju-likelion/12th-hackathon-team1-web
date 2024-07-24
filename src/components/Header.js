@@ -4,29 +4,42 @@ import logo from "../assets/images/logo.svg";
 import menu from "../assets/images/Menu.svg";
 import search from "../assets/images/search.svg";
 import Heart from "../assets/images/Heart.svg";
+import { Link } from "react-router-dom";
 
 const Header = () => {
   return (
     <HeaderContent>
       <MainHeader>
-        <LogoImg src={logo} alt="헤더 로고" />
+        <Link to="/main">
+          <LogoImg src={logo} alt="헤더 로고" />
+        </Link>
         <AccountContainer>
-          <PageText>로그인</PageText>
-          <PageText>회원가입</PageText>
+          <Link to="/auth/login">
+            <PageText>로그인</PageText>
+          </Link>
+          <Link to="/auth/signin">
+            <PageText>회원가입</PageText>
+          </Link>
         </AccountContainer>
       </MainHeader>
       <FunctionHeader>
         <FunctionContainer>
           <MenuImg src={menu} alt="메뉴 버튼" />
-          <PageText>냉장고 관리</PageText>
-          <PageText>레시피</PageText>
+          <Link to="/fridge">
+            <PageText>냉장고 관리</PageText>
+          </Link>
+          <Link to="/recipes">
+            <PageText>레시피</PageText>
+          </Link>
         </FunctionContainer>
         <FunctionContainer>
           <SearchBox>
             <Search placeholder="레시피 검색" />
             <img src={search} alt="검색 돋보기 이미지" />
           </SearchBox>
-          <HeartImg src={Heart} alt="마음에 드는 레시피 탭" />
+          <Link to="/recipes">
+            <HeartImg src={Heart} alt="마음에 드는 레시피 탭" />
+          </Link>
         </FunctionContainer>
       </FunctionHeader>
     </HeaderContent>
