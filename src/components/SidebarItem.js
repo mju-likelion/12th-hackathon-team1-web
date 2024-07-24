@@ -1,6 +1,6 @@
 import React from "react";
 import styled, { css } from "styled-components";
-import Arrow from "../../assets/images/next.svg";
+import Arrow from "../assets/images/next.svg";
 
 function SidebarItem({ menu, isSelected }) {
   return (

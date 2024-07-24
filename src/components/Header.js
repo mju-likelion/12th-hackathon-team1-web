@@ -37,7 +37,7 @@ const Header = () => {
             <Search placeholder="레시피 검색" />
             <img src={search} alt="검색 돋보기 이미지" />
           </SearchBox>
-          <Link to="/recipes">
+          <Link to="/auth/likes">
             <HeartImg src={Heart} alt="마음에 드는 레시피 탭" />
           </Link>
         </FunctionContainer>

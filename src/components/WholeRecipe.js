@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import RecipeBox from "../RecipeBox";
+import RecipeBox from "./RecipeBox";
 
 const WholeRecipe = () => {
   return (

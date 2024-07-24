@@ -1,16 +1,10 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-import RecipeBox from "../RecipeBox";
-import Plus from "../../assets/images/plus.svg";
+import RecipeBox from "../../components/RecipeBox";
 
-const MyRecipe = () => {
-  const [isEditing, setIsEditing] = useState(false);
+const RecomRecipe = () => {
   const [showMenu, setShowMenu] = useState(false);
   const [menuPosition, setMenuPosition] = useState({ x: 0, y: 0 });
-
-  const handleEditClick = () => {
-    setIsEditing(!isEditing);
-  };
 
   const handleContextMenu = (e) => {
     e.preventDefault();
@@ -25,32 +19,26 @@ const MyRecipe = () => {
   return (
     <Container onClick={handleClickOutside}>
       <TitleEditContainer>
-        <BoxTitle>내 레시피</BoxTitle>
-        <EditButton type="submit" onClick={handleEditClick}>
-          {isEditing ? "저장" : "편집"}
-        </EditButton>
+        <BoxTitle>나의 냉장고 레시피</BoxTitle>
       </TitleEditContainer>
       <AddWrapper>
         <MyRecipeContainer>
           <Line>
             <RecipeBox
               menuName={
-                "삐쓰까또레부르쥬미첼라햄페스츄리치즈나쵸스트링스파게티"
+                "냉장고"
               }
               countHeart={5}
-              isEditing={isEditing}
               showMenu={showMenu}
               menuPosition={menuPosition}
               handleContextMenu={handleContextMenu}
             />
             <RecipeBox
-              isEditing={isEditing}
               showMenu={showMenu}
               menuPosition={menuPosition}
               handleContextMenu={handleContextMenu}
             />
             <RecipeBox
-              isEditing={isEditing}
               showMenu={showMenu}
               menuPosition={menuPosition}
               handleContextMenu={handleContextMenu}
@@ -58,26 +46,22 @@ const MyRecipe = () => {
           </Line>
           <Line>
             <RecipeBox
-              isEditing={isEditing}
               showMenu={showMenu}
               menuPosition={menuPosition}
               handleContextMenu={handleContextMenu}
             />
             <RecipeBox
-              isEditing={isEditing}
               showMenu={showMenu}
               menuPosition={menuPosition}
               handleContextMenu={handleContextMenu}
             />
             <RecipeBox
-              isEditing={isEditing}
               showMenu={showMenu}
               menuPosition={menuPosition}
               handleContextMenu={handleContextMenu}
             />
           </Line>
         </MyRecipeContainer>
-        {isEditing && <PlusButton src={Plus} alt="레시피 추가 버튼" />}
       </AddWrapper>
     </Container>
   );
@@ -86,26 +70,6 @@ const MyRecipe = () => {
 const AddWrapper = styled.div`
   display: flex;
   align-items: end;
-`;
-
-const PlusButton = styled.img`
-  width: 18px;
-  height: 18px;
-  margin: 5px;
-`;
-
-const EditButton = styled.button`
-  display: flex;
-  background-color: ${({ theme }) => theme.colors.green200};
-  width: 45px;
-  height: 30px;
-  border-radius: 5px;
-  ${({ theme }) => theme.fonts.default16};
-  justify-content: center;
-  align-items: center;
-  &:hover {
-    font-weight: 600;
-  }
 `;
 
 const TitleEditContainer = styled.div`
@@ -154,4 +118,4 @@ const BoxTitle = styled.p`
   margin: 10px 0;
 `;
 
-export default MyRecipe;
+export default RecomRecipe;

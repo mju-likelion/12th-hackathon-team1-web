@@ -1,8 +1,7 @@
 import React from "react";
 import styled from "styled-components";
-import Sidebar from "../components/RecipePage/Sidebar";
-import RecipeMain from "../components/RecipePage/RecipeMain";
-import MyRecipe from "../components/RecipePage/MyRecipe";
+import Sidebar from "../../components/Sidebar";
+import RecipeMain from "./RecipeMain";
 
 const Recipe = () => {
   return (
@@ -11,7 +10,6 @@ const Recipe = () => {
         <Sidebar />
       </SidebarContainer>
       <PageContainer>
-        <MyRecipe />
         <RecipeMain />
       </PageContainer>
     </RecipeContainer>

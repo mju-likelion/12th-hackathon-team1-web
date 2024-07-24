@@ -5,8 +5,10 @@ import Main from './pages/Main';
 import Login from './pages/Login';
 import Join from './pages/Join';
 import Refrigerator from "./pages/Fridge";
-import Recipe from './pages/Recipe';
-import MyRecipe from "./components/RecipePage/MyRecipe";
+import Recipe from './pages/Recipe/Recipe';
+import MyRecipe from "./pages/Recipe/MyRecipe";
+import LikeRecipe from "./pages/Recipe/LikeRecipe";
+import RecomRecipe from "./pages/Recipe/RecomRecipe";
 
 function App() {
   return (
@@ -20,6 +22,8 @@ function App() {
         <Route path="/fridge" element={<Refrigerator />} />
         <Route path="/recipes" element={<Recipe />} />
         <Route path="/recipes/my_recipes" element={<MyRecipe />} />
+        <Route path="/recipes/recommendations" element={<RecomRecipe />} />
+        <Route path="/auth/likes" element={<LikeRecipe />} />
       </Routes>
     </>
   );
