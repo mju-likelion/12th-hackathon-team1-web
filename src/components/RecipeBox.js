@@ -31,7 +31,8 @@ const RecipeBox = ({
     setIsClicked(isLiked);
   }, [Like, id]);
 
-  const handlerHeartClick = () => {
+  const handlerHeartClick = (e) => {
+    e.stopPropagation();
     setIsClicked(!isClicked);
     if (!isClicked) {
       setCountHeartNumber((preCount) => preCount + 1);
@@ -61,11 +62,13 @@ const RecipeBox = ({
     return text;
   };
 
-  const handleDelete = () => {
+  const handleDelete = (e) => {
+    e.stopPropagation();
     if (window.confirm("레시피를 정말 삭제하시겠습니까?")) {
       removeRecipeBox(id);
       console.log("레시피 삭제됨");
       alert("레시피가 삭제되었습니다.");
+      setIsModalOpen(false); // 삭제 후 모달을 닫습니다.
     }
   };
 
@@ -174,10 +177,13 @@ const HeadContainer = styled.div`
 
 const DeleteIcon = styled.img`
   width: 30px;
+  background-color: ${({ theme }) => theme.colors.white};
+  border-radius: 10;
   height: 30px;
   margin-left: auto;
   right: -15px;
   top: -3px;
+  z-index: 1200;
   cursor: pointer;
 
   @media screen and (max-width: 1200px) {
