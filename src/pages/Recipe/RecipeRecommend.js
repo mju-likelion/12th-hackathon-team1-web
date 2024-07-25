@@ -13,7 +13,7 @@ const chunkArray = (array, size) => {
   return result;
 };
 
-const LikeRecipe = () => {
+const RecipeRecommend = () => {
   const [showMenu, setShowMenu] = useState(false);
   const [menuPosition, setMenuPosition] = useState({ x: 0, y: 0 });
   const Like = useRecoilValue(LikeAtom);
@@ -37,9 +37,9 @@ const LikeRecipe = () => {
       </SidebarContainer>
       <Container onClick={handleClickOutside}>
         <TitleEditContainer>
-          <BoxTitle>좋아요 누른 레시피</BoxTitle>
+          <BoxTitle>나의 냉장고 레시피</BoxTitle>
         </TitleEditContainer>
-        <MyRecipeContainer>
+        <RecommendContainer>
           <Wrapper>
             {groupedLikes.map((group, index) => (
               <Line key={index}>
@@ -58,7 +58,7 @@ const LikeRecipe = () => {
               </Line>
             ))}
           </Wrapper>
-        </MyRecipeContainer>
+        </RecommendContainer>
       </Container>
     </>
   );
@@ -93,13 +93,14 @@ const Line = styled.div`
     gap: 2.3vw;
   }
 `;
+
 const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
 `;
 
-const MyRecipeContainer = styled.div`
+const RecommendContainer = styled.div`
   background-color: ${({ theme }) => theme.colors.green200};
   width: 900px;
   min-height: 900px;
@@ -133,4 +134,4 @@ const BoxTitle = styled.p`
   }
 `;
 
-export default LikeRecipe;
+export default RecipeRecommend;

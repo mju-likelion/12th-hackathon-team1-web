@@ -2,13 +2,17 @@ import React from "react";
 import styled from "styled-components";
 import Heart from "../assets/images/Heart.svg";
 import SmallButton from "./SmallButton";
+import { recipeData } from "../data/MockData";
 
-const RecipeModal = ({ closeModal }) => {
+const RecipeModal = ({ closeRecipeModal }) => {
+  // 임시 로직
+  const selectedRecipe = recipeData[0];
+
   return (
     <RecipeModalContainer>
       <ModalBackground>
         <TitleBox>
-          <MainTitle>돼지고기 김치찌개</MainTitle>
+          <MainTitle>{selectedRecipe.menuName}</MainTitle>
         </TitleBox>
         <ModalContentBox>
           <TopContainer>
@@ -17,28 +21,39 @@ const RecipeModal = ({ closeModal }) => {
                 <Title>좋아요 수</Title>
                 <HeartContainer>
                   <HeartImg src={Heart} alt="좋아요 아이콘" />
-                  <CountHeart>5개</CountHeart>
+                  <CountHeart>{selectedRecipe.countHeart}개</CountHeart>
                 </HeartContainer>
               </ContentContainer>
               <ContentContainer>
                 <Title>재료</Title>
-                <IngredientBox></IngredientBox>
+                <IngredientContainer>
+                  {selectedRecipe.ingredients.map((ingredient, index) => (
+                    <IngredientBox key={index}>{ingredient}</IngredientBox>
+                  ))}
+                </IngredientContainer>
               </ContentContainer>
             </LeftContainer>
             <MenuImg />
           </TopContainer>
           <ContentContainer>
             <Title>조리 방법</Title>
-            <MethodBox></MethodBox>
+            {selectedRecipe.methods.map((method, index) => (
+              <MethodBox key={index}>{method}</MethodBox>
+            ))}
           </ContentContainer>
         </ModalContentBox>
         <ButtonContainer>
-          <SmallButton text="닫기" onClick={closeModal} />
+          <SmallButton text="닫기" onClick={closeRecipeModal} />
         </ButtonContainer>
       </ModalBackground>
     </RecipeModalContainer>
   );
 };
+
+const IngredientContainer = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+`;
 
 const ButtonContainer = styled.div`
   display: flex;
@@ -49,11 +64,17 @@ const MenuImg = styled.div`
   width: 332px;
   height: 219px;
   margin: 20px;
-  background-color: aquamarine;
+  background-color: ${({ theme }) => theme.colors.white};
+
+  @media screen and (max-width: 1200px){
+    width: 23vw;
+    height: 15.2vw;
+    margin: 1.4vw;
+  }
 `;
 
 const LeftContainer = styled.div`
-  width: 50%;
+  width: 60%;
 `;
 
 const TopContainer = styled.div`
@@ -61,19 +82,42 @@ const TopContainer = styled.div`
   height: 250px;
   display: flex;
   justify-content: space-between;
+
+  @media screen and (max-width: 1200px){
+    height: 17.36vw;
+  }
 `;
 
 const MethodBox = styled.p`
+  display: flex;
   ${({ theme }) => theme.fonts.default16}
   background-color: ${({ theme }) => theme.colors.white};
-  width: 416px;
+  width: 500px;
   height: 37px;
   border-radius: 10px;
+  border: none;
+  align-items: center;
+  margin: 5px;
+  padding: 0 10px;
+
+  @media screen and (max-width: 1200px){
+    width: 35vw;
+    height: 2.56vw;
+    font-size: 1.1vw;
+    margin: 0.35vw;
+    padding: 0 0.7vw;
+    border-radius: 0.7vw;
+  }
 `;
 
 const CountHeart = styled.p`
   ${({ theme }) => theme.fonts.default16};
   margin: 7px;
+
+  @media screen and (max-width: 1200px){
+    margin: 0.5vw;
+    font-size: 1.3vw;
+  }
 `;
 
 const HeartContainer = styled.div`
@@ -82,11 +126,26 @@ const HeartContainer = styled.div`
 `;
 
 const IngredientBox = styled.p`
+  display: flex;
   ${({ theme }) => theme.fonts.default16}
   background-color: ${({ theme }) => theme.colors.white};
-  width: 80px;
+  width: 100px;
   height: 37px;
   border-radius: 10px;
+  align-items: center;
+  margin: 5px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  @media screen and (max-width: 1200px){
+    width: 7vw;
+    height: 2.56vw;
+    border-radius: 0.7vw;
+    margin: 0.35vw;
+    padding-top: 0 0.7vw;
+    font-size: 1vw;
+  }
 `;
 
 const Title = styled.p`
@@ -94,7 +153,8 @@ const Title = styled.p`
   margin: 0 0 10px;
 
   @media screen and (max-width: 1200px) {
-    font-size: 1.5vw;
+    font-size: 1.3vw;
+    margin: 0 0 0.7vw;
   }
 `;
 
@@ -102,6 +162,12 @@ const HeartImg = styled.img`
   width: 26px;
   height: 26px;
   padding: 2px;
+
+  @media screen and (max-width: 1200px){
+    width: 1.8vw;
+    height: 1.8vw;
+    padding: 0.14vw;
+  }
 `;
 
 const ContentContainer = styled.div`
@@ -111,7 +177,7 @@ const ContentContainer = styled.div`
   padding: 20px;
 
   @media screen and (max-width: 1200px) {
-    height: 42vw;
+    padding: 1.4vw;
   }
 `;
 
@@ -128,7 +194,7 @@ const ModalContentBox = styled.div`
   @media screen and (max-width: 1200px) {
     width: 50vw;
     height: 45vw;
-    border-radius: 0.52vw;
+    border-radius: 0.7vw;
     margin-bottom: 1.5vw;
   }
 `;
@@ -156,10 +222,6 @@ const ModalBackground = styled.div`
   display: flex;
   flex-direction: column;
   align-content: space-between;
-
-  @media screen and (max-width: 1200px) {
-    height: 54.5vw;
-  }
 `;
 
 const RecipeModalContainer = styled.div`

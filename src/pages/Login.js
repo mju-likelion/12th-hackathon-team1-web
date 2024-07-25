@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import * as Yup from "yup";
 import InputFilled from "../components/InputFilled";
@@ -11,6 +12,7 @@ const Login = () => {
   const [passwordError, setPasswordError] = useState("");
   const [isUserIdValid, setIsUserIdValid] = useState(false);
   const [isPasswordValid, setIsPasswordValid] = useState(false);
+  const navigate = useNavigate();
 
   const validateUserId = (value) => {
     const schema = Yup.string().matches(
@@ -54,6 +56,7 @@ const Login = () => {
           password,
         };
         console.log(response);
+        navigate('/main');
       } catch (error) {
         console.error("로그인 실패", error);
       }
@@ -115,7 +118,10 @@ const Login = () => {
               </BigButton>
             </Button>
             <SignUp>
-              처음 방문이신가요? <SignUpLink href="/join">회원가입</SignUpLink>
+              처음 방문이신가요? 
+              <Link to="/auth/signin">
+              <SignUpLink>회원가입</SignUpLink>
+              </Link>
             </SignUp>
           </FormContainer>
         </AllBox>

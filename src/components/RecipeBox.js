@@ -5,6 +5,8 @@ import FullHeart from "../assets/images/fullHeart.svg";
 import Delete from "../assets/images/delateIcon.svg";
 import Dropdown from "./DropDown";
 import RecipeModal from "./RecipeModal";
+import { useSetRecoilState, useRecoilValue } from "recoil";
+import { LikeAtom } from "../Recoil/Atom";
 
 const RecipeBox = ({
   menuName,
@@ -12,14 +14,44 @@ const RecipeBox = ({
   isEditing,
   showMenu,
   menuPosition,
-  handleContextMenu,
+  removeRecipeBox,
+  id,
+  state,
+  onClick,
 }) => {
   const [isClicked, setIsClicked] = useState(false);
   const [maxLength, setMaxLength] = useState(12);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [countHeartNumber, setCountHeartNumber] = useState(countHeart);
+  const setLike = useSetRecoilState(LikeAtom);
+  const Like = useRecoilValue(LikeAtom);
 
-  const handlerHeartClick = () => {
+  useEffect(() => {
+    const isLiked = Like.some((like) => like.id === id);
+    setIsClicked(isLiked);
+  }, [Like, id]);
+
+  const handlerHeartClick = (e) => {
+    e.stopPropagation();
     setIsClicked(!isClicked);
+    if (!isClicked) {
+      setCountHeartNumber((preCount) => preCount + 1);
+      pushLike();
+    } else {
+      setCountHeartNumber((preCount) => preCount - 1);
+      removeLike();
+    }
+  };
+
+  const pushLike = () => {
+    setLike((prevLike) => [
+      ...prevLike,
+      { id, menuName, countHeart: countHeartNumber + 1 },
+    ]);
+  };
+
+  const removeLike = () => {
+    setLike((prevLike) => prevLike.filter((like) => like.id !== id));
   };
 
   const truncateText = (text, maxLength) => {
@@ -30,11 +62,13 @@ const RecipeBox = ({
     return text;
   };
 
-  const handleDelete = () => {
+  const handleDelete = (e) => {
+    e.stopPropagation();
     if (window.confirm("레시피를 정말 삭제하시겠습니까?")) {
+      removeRecipeBox(id);
       console.log("레시피 삭제됨");
-      // 레시피 삭제 로직 추가 예정
       alert("레시피가 삭제되었습니다.");
+      setIsModalOpen(false); // 삭제 후 모달을 닫습니다.
     }
   };
 
@@ -65,21 +99,27 @@ const RecipeBox = ({
   }, []);
 
   return (
-    <Container onContextMenu={handleContextMenu}>
+    <Container onClick={onClick}>
       <HeadContainer>
-        <MenuName title={menuName}>
-          {truncateText(menuName, maxLength)}
-        </MenuName>
-        {isEditing && <DeleteIcon src={Delete} alt="삭제 아이콘" />}
+        <MenuName>{truncateText(menuName, maxLength)}</MenuName>
+        <div>
+          {isEditing && (
+            <DeleteIcon src={Delete} alt="삭제 아이콘" onClick={handleDelete} />
+          )}
+        </div>
       </HeadContainer>
       <PhotoWrapper />
       <HeartContainer>
-        <HeartImg
-          onClick={handlerHeartClick}
-          src={isClicked ? FullHeart : Heart}
-          alt="좋아요 버튼"
-        />
-        <CountHeart>{countHeart}</CountHeart>
+        {state === "좋아요" || isClicked ? (
+          <HeartImg
+            onClick={handlerHeartClick}
+            src={FullHeart}
+            alt="좋아요 버튼"
+          />
+        ) : (
+          <HeartImg onClick={handlerHeartClick} src={Heart} alt="좋아요 버튼" />
+        )}
+        <Count>{countHeartNumber}</Count>
       </HeartContainer>
       {showMenu && (
         <Dropdown
@@ -122,16 +162,34 @@ const ModalContainer = styled.div`
 
 const HeadContainer = styled.div`
   display: flex;
-  align-items: start;
+  justify-content: space-between;
+  align-items: center;
+  width: 230px;
+  height: 35px;
+
+  @media screen and (max-width: 1200px) {
+    width: 17vw;
+    height: 2vw;
+    margin-bottom: 0.4vw;
+    font-size: 1.3vw;
+  }
 `;
 
 const DeleteIcon = styled.img`
   width: 30px;
+  background-color: ${({ theme }) => theme.colors.white};
+  border-radius: 10;
   height: 30px;
   margin-left: auto;
   right: -15px;
   top: -3px;
+  z-index: 1200;
   cursor: pointer;
+
+  @media screen and (max-width: 1200px) {
+    width: 2.5vw;
+    height: 2.5vw;
+  }
 `;
 
 const HeartContainer = styled.div`
@@ -139,19 +197,21 @@ const HeartContainer = styled.div`
   align-items: center;
 `;
 
-const CountHeart = styled.p`
+const Count = styled.p`
   ${({ theme }) => theme.fonts.default20};
 `;
 
 const MenuName = styled.p`
+  width: 160px;
+  margin-left: 33px;
   ${({ theme }) => theme.fonts.default16};
-  margin: 0.8vw;
   text-align: center;
   white-space: nowrap;
-  max-width: 217px;
 
   @media screen and (max-width: 1200px) {
-    max-width: 11.3vw;
+    font-size: 1.5vw;
+    width: 11.3vw;
+    margin-left: 2.8vw;
   }
 `;
 
@@ -159,30 +219,31 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   height: 270px;
-  width: 248px;
+  width: 240px;
   background-color: ${({ theme }) => theme.colors.white};
-  border-radius: 0.52vw;
+  border-radius: 10px;
   align-items: center;
   justify-content: center;
-  margin: 10px;
+  margin: 15px;
 
   @media screen and (max-width: 1200px) {
-    height: 14vw;
-    width: 12.9vw;
-    border-radius: 0.52vw;
+    height: 20vw;
+    width: 17.8vw;
+    border-radius: 0.7vw;
+    margin: 1vw;
   }
 `;
 
 const PhotoWrapper = styled.div`
   height: 183px;
-  width: 217px;
+  width: 210px;
   background-color: ${({ theme }) => theme.colors.green200};
   border-radius: 10px;
 
   @media screen and (max-width: 1200px) {
-    height: 9.5vw;
-    width: 11.3vw;
-    border-radius: 0.52vw;
+    height: 12.8vw;
+    width: 15.5vw;
+    border-radius: 0.7vw;
   }
 `;
 

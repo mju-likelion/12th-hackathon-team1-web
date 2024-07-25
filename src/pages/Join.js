@@ -87,7 +87,7 @@ const Join = () => {
           nickname,
         };
         console.log(response);
-        navigate("/auth/login ");
+        navigate("/auth/login");
       } catch (error) {
         console.error("회원가입 실패", error);
       }

@@ -106,6 +106,7 @@ const HeaderContent = styled.div`
   padding: 0 12vw;
   background-color: ${({ theme }) => theme.colors.white};
   border: 1px solid ${({ theme }) => theme.colors.headerLine};
+  z-index: 100;
 `;
 
 const LogoImg = styled.img`
@@ -116,6 +117,7 @@ const LogoImg = styled.img`
 const PageText = styled.p`
   font-size: ${({ theme }) => theme.fonts.helpText14};
   margin-left: 20px;
+  color: black;
   cursor: pointer;
   &:hover {
     font-weight: 600;
