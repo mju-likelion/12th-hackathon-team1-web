@@ -181,7 +181,7 @@ const SignUp = styled.div`
   color: ${({ theme }) => theme.colors.helperText};
 `;
 
-const SignUpLink = styled.a`
+const SignUpLink = styled.p`
   ${({ theme }) => theme.fonts.default16};
   color: ${({ theme }) => theme.colors.black};
   text-decoration: none;
