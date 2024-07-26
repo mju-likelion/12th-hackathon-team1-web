@@ -9,15 +9,26 @@ import Recipe from "./pages/Recipe/RecipeMain";
 import MyRecipe from "./pages/Recipe/MyRecipe";
 import LikeRecipe from "./pages/Recipe/LikeRecipe";
 import RecipeRecommend from "./pages/Recipe/RecipeRecommend";
+import { useState, useEffect } from "react";
 
 function App() {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  useEffect(() => {
+    const userLoggedIn = localStorage.getItem("isLoggedIn") === "true";
+    setIsLoggedIn(userLoggedIn);
+  }, []);
+
   return (
     <>
-      <Layout />
+      <Layout isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />
       <Routes>
         <Route path="/" element={<Navigate to="/main" />} />
         <Route path="/main" element={<Main />} />
-        <Route path="/auth/login" element={<Login />} />
+        <Route
+          path="/auth/login"
+          element={<Login setIsLoggedIn={setIsLoggedIn} />}
+        />
         <Route path="/auth/signin" element={<Join />} />
         <Route path="/fridge" element={<Refrigerator />} />
         <Route path="/recipes" element={<Recipe />} />

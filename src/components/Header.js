@@ -4,9 +4,34 @@ import logo from "../assets/images/logo.svg";
 import menu from "../assets/images/Menu.svg";
 import search from "../assets/images/search.svg";
 import Heart from "../assets/images/Heart.svg";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { Axios } from "../api/Axios";
 
-const Header = () => {
+const Header = ({ isLoggedIn, setIsLoggedIn }) => {
+  const navigate = useNavigate();
+
+  const handleLogout = async () => {
+    try {
+      const token = localStorage.getItem("userToken");
+      const response = await Axios.post(
+        "/auth/logout",
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      console.log(response.data);
+      localStorage.removeItem("isLoggedIn");
+      localStorage.removeItem("userToken");
+      setIsLoggedIn(false);
+      navigate("/auth/login");
+    } catch (error) {
+      console.error("로그아웃 실패", error);
+    }
+  };
+
   return (
     <HeaderContent>
       <MainHeader>
@@ -14,12 +39,23 @@ const Header = () => {
           <LogoImg src={logo} alt="헤더 로고" />
         </Link>
         <AccountContainer>
-          <Link to="/auth/login">
-            <PageText>로그인</PageText>
-          </Link>
-          <Link to="/auth/signin">
-            <PageText>회원가입</PageText>
-          </Link>
+          {isLoggedIn ? (
+            <>
+              <PageText onClick={handleLogout}>로그아웃</PageText>
+              <Link to="/auth/delete">
+                <PageText>회원 탈퇴</PageText>
+              </Link>
+            </>
+          ) : (
+            <>
+              <Link to="/auth/login">
+                <PageText>로그인</PageText>
+              </Link>
+              <Link to="/auth/signin">
+                <PageText>회원가입</PageText>
+              </Link>
+            </>
+          )}
         </AccountContainer>
       </MainHeader>
       <FunctionHeader>
