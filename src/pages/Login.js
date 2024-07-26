@@ -4,17 +4,18 @@ import styled from "styled-components";
 import * as Yup from "yup";
 import InputFilled from "../components/InputFilled";
 import BigButton from "../components/BigButton";
+import { Axios } from "../api/Axios";
 
-const Login = () => {
-  const [userId, setUserId] = useState("");
+const Login = ({ setIsLoggedIn }) => {
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [userIdError, setUserIdError] = useState("");
+  const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
-  const [isUserIdValid, setIsUserIdValid] = useState(false);
+  const [isEmailValid, setIsEmailValid] = useState(false);
   const [isPasswordValid, setIsPasswordValid] = useState(false);
   const navigate = useNavigate();
 
-  const validateUserId = (value) => {
+  const validateEmail = (value) => {
     const schema = Yup.string().matches(
       /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/,
       "잘못된 아이디(이메일)입니다."
@@ -22,12 +23,12 @@ const Login = () => {
     schema
       .validate(value)
       .then(() => {
-        setUserIdError("");
-        setIsUserIdValid(true);
+        setEmailError("");
+        setIsEmailValid(true);
       })
       .catch((err) => {
-        setUserIdError(err.message);
-        setIsUserIdValid(false);
+        setEmailError(err.message);
+        setIsEmailValid(false);
       });
   };
 
@@ -48,15 +49,18 @@ const Login = () => {
       });
   };
 
-  const handleLogin = () => {
-    if (isUserIdValid && isPasswordValid) {
+  const handleLogin = async () => {
+    if (isEmailValid && isPasswordValid) {
       try {
-        const response = {
-          userId,
+        const response = await Axios.post(`/auth/login`, {
+          email,
           password,
-        };
-        console.log(response);
-        navigate('/main');
+        });
+        console.log(response.data);
+        localStorage.setItem("isLoggedIn", "true");
+        localStorage.setItem("userToken", response.data.token);
+        setIsLoggedIn(true);
+        navigate("/main");
       } catch (error) {
         console.error("로그인 실패", error);
       }
@@ -72,21 +76,21 @@ const Login = () => {
             <InputFilled
               placeholder="아이디(이메일)"
               type="text"
-              value={userId}
+              value={email}
               onChange={(e) => {
                 const value = e.target.value;
-                setUserId(value);
+                setEmail(value);
                 if (value === "") {
-                  setUserIdError("");
-                  setIsUserIdValid(false);
+                  setEmailError("");
+                  setIsEmailValid(false);
                 } else {
-                  validateUserId(value);
+                  validateEmail(value);
                 }
               }}
               hint={
-                userIdError ? "" : "사용하실 아이디(이메일)를 입력하여 주세요."
+                emailError ? "" : "사용하실 아이디(이메일)를 입력하여 주세요."
               }
-              error={userIdError}
+              error={emailError}
             />
             <InputFilled
               placeholder="비밀번호"
@@ -111,16 +115,16 @@ const Login = () => {
             />
             <Button>
               <BigButton
-                disabled={!isUserIdValid || !isPasswordValid}
+                disabled={!isEmailValid || !isPasswordValid}
                 onClick={handleLogin}
               >
                 로그인
               </BigButton>
             </Button>
             <SignUp>
-              처음 방문이신가요? 
+              처음 방문이신가요?
               <Link to="/auth/signin">
-              <SignUpLink>회원가입</SignUpLink>
+                <SignUpLink> 회원가입</SignUpLink>
               </Link>
             </SignUp>
           </FormContainer>

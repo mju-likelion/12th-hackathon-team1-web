@@ -1,21 +1,32 @@
-import React from 'react';
-import styled from 'styled-components';
-import MainBigBox from '../components/MainBigBox';
-import MainSmallBox from '../components/MainSmallBox';
+import React, { useState, useEffect } from "react";
+import styled from "styled-components";
+import MainBigBox from "../components/MainBigBox";
+import MainSmallBox from "../components/MainSmallBox";
 
 const Main = () => {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  useEffect(() => {
+    const loggedInStatus = localStorage.getItem("isLoggedIn") === "true";
+    setIsLoggedIn(loggedInStatus);
+  }, []);
   return (
     <Wrapper>
       <BoxWrapper>
+        <Title>
+          {isLoggedIn
+            ? "나의 냉장고"
+            : "나만의 냉장고를 만들어보세요! (로그인 후 이용 가능합니다.)"}
+        </Title>
         <MainBigBox />
         <SmallBoxWrapper>
           <SmallTextBox>
             <Text>인기 레시피</Text>
-            <MainSmallBox />
+            <MainSmallBox isLoggedIn={true} />
           </SmallTextBox>
           <SmallTextBox>
-            <Text>내 좋아요 레시피</Text>
-            <MainSmallBox />
+            <Text>나의 냉장고 레시피</Text>
+            <MainSmallBox isLoggedIn={isLoggedIn} />
           </SmallTextBox>
         </SmallBoxWrapper>
       </BoxWrapper>
@@ -28,7 +39,7 @@ const Wrapper = styled.div`
   justify-content: center;
   margin-top: 50px;
 
-  @media screen and (max-width: 1200px){
+  @media screen and (max-width: 1200px) {
     margin-top: 5vw;
   }
 `;
@@ -37,8 +48,20 @@ const BoxWrapper = styled.div`
   width: 1150px;
   display: flex;
   flex-direction: column;
-  @media screen and (max-width: 1200px){
+  @media screen and (max-width: 1200px) {
     width: 80vw;
+  }
+`;
+
+const Title = styled.p`
+  ${({ theme }) => theme.fonts.default16};
+  height: 50px;
+  display: flex;
+  align-items: center;
+
+  @media screen and (max-width: 1200px) {
+    height: 3vw;
+    font-size: 1.3vw;
   }
 `;
 
@@ -54,11 +77,12 @@ const SmallTextBox = styled.div`
 `;
 
 const Text = styled.p`
+  ${({ theme }) => theme.fonts.default18}
   height: 50px;
   display: flex;
   align-items: center;
 
-  @media screen and (max-width: 1200px){
+  @media screen and (max-width: 1200px) {
     height: 3vw;
     font-size: 1.3vw;
   }

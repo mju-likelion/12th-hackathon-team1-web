@@ -6,7 +6,7 @@ export const dataAtom = atom({
     {
       key: 1,
       title: "사과",
-      expiredDate: "2024-07-20",
+      expiredDate: "2024-07-27",
       quantity: "1",
       storage: "냉장",
       memo: "가",
@@ -14,7 +14,7 @@ export const dataAtom = atom({
     {
       key: 2,
       title: "자두",
-      expiredDate: "2024-07-21",
+      expiredDate: "2024-07-28",
       quantity: "2",
       storage: "냉동",
       memo: "나",
@@ -22,7 +22,7 @@ export const dataAtom = atom({
     {
       key: 3,
       title: "양파",
-      expiredDate: "2024-07-25",
+      expiredDate: "2024-07-29",
       quantity: "3",
       storage: "상온",
       memo: "다",
