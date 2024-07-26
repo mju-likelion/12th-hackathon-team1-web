@@ -1,12 +1,31 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
+import { Axios } from "../api/Axios";
 import Heart from "../assets/images/Heart.svg";
 import FullHeart from "../assets/images/fullHeart.svg";
 import RecipeModal from "./RecipeModal";
 
-const PopularRecipeBox = ({ menuName, countHeart }) => {
+const PopularRecipeBox = ({ recipeId }) => {
   const [isClicked, setIsClicked] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [recipeData, setRecipeData] = useState(null);
+
+  useEffect(() => {
+    const fetchRecipeData = async () => {
+      try {
+        const response = await Axios.get(`/recipes/${recipeId}`);
+        if (response.data && response.data.data) {
+          setRecipeData(response.data.data);
+        } else {
+          throw new Error("응답 데이터 형식이 올바르지 않습니다.");
+        }
+      } catch (error) {
+        console.error("레시피 데이터를 가져오는 데 실패했습니다.", error);
+      }
+    };
+
+    fetchRecipeData();
+  }, [recipeId]);
 
   const handlerHeartClick = () => {
     setIsClicked(!isClicked);
@@ -20,24 +39,36 @@ const PopularRecipeBox = ({ menuName, countHeart }) => {
     setIsModalOpen(false);
   };
 
+  if (!recipeData) {
+    return <div>Loading...</div>;
+  }
+
+  const imageUrl = recipeData.image ? recipeData.image.url : "";
+
   return (
     <>
-      <PopularContainer onClick={handleOpenModal}>
-        <MenuName>{menuName}</MenuName>
+      <PopularContainer
+        onClick={handleOpenModal}
+        style={{ backgroundImage: `url(${imageUrl})` }}
+      >
+        <MenuName>{recipeData.name}</MenuName>
         <HeartContainer>
           <HeartImg
             onClick={handlerHeartClick}
             src={isClicked ? FullHeart : Heart}
             alt="좋아요 버튼"
           />
-          <CountHeart>{countHeart}</CountHeart>
+          <CountHeart>{recipeData.likeCount}</CountHeart>
         </HeartContainer>
       </PopularContainer>
       {isModalOpen && (
         <>
           <Overlay />
           <ModalContainer>
-            <RecipeModal closeRecipeModal={handleCloseModal} />
+            <RecipeModal
+              recipeId={recipeId}
+              closeRecipeModal={handleCloseModal}
+            />
           </ModalContainer>
         </>
       )}
@@ -116,6 +147,8 @@ const PopularContainer = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  background-size: cover;
+  background-position: center;
 
   @media screen and (max-width: 1200px) {
     width: 11.3vw;

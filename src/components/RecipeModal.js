@@ -1,18 +1,55 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
+import { Axios } from "../api/Axios";
 import Heart from "../assets/images/Heart.svg";
 import SmallButton from "./SmallButton";
-import { recipeData } from "../data/MockData";
 
-const RecipeModal = ({ closeRecipeModal }) => {
-  // 임시 로직
-  const selectedRecipe = recipeData[0];
+const RecipeModal = ({ recipeId, closeRecipeModal }) => {
+  const [recipe, setRecipe] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchRecipe = async () => {
+      try {
+        const response = await Axios.get(`/recipes/${recipeId}`);
+        if (response.data && response.data.data) {
+          setRecipe(response.data.data);
+        } else {
+          throw new Error("응답 데이터 형식이 올바르지 않습니다.");
+        }
+      } catch (error) {
+        console.error("레시피를 불러오는 데 실패했습니다.", error);
+        setError("레시피를 불러오는 데 실패했습니다.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchRecipe();
+  }, [recipeId]);
+
+  if (loading) return <p>로딩 중...</p>;
+
+  if (error)
+    return (
+      <ErrorContainer>
+        <ErrorMessage>{error}</ErrorMessage>
+        <SmallButton text="닫기" onClick={closeRecipeModal} />
+      </ErrorContainer>
+    );
+
+  const imageUrl = recipe?.image?.url || "";
+
+  const cookingSteps = recipe?.cookingStep
+    ? recipe.cookingStep.split(".").filter((step) => step.trim() !== "")
+    : ["조리 방법 정보 없음"];
 
   return (
     <RecipeModalContainer>
       <ModalBackground>
         <TitleBox>
-          <MainTitle>{selectedRecipe.menuName}</MainTitle>
+          <MainTitle>{recipe.name}</MainTitle>
         </TitleBox>
         <ModalContentBox>
           <TopContainer>
@@ -21,25 +58,34 @@ const RecipeModal = ({ closeRecipeModal }) => {
                 <Title>좋아요 수</Title>
                 <HeartContainer>
                   <HeartImg src={Heart} alt="좋아요 아이콘" />
-                  <CountHeart>{selectedRecipe.countHeart}개</CountHeart>
+                  <CountHeart>{recipe.likeCount || 0}개</CountHeart>{" "}
                 </HeartContainer>
               </ContentContainer>
               <ContentContainer>
                 <Title>재료</Title>
                 <IngredientContainer>
-                  {selectedRecipe.ingredients.map((ingredient, index) => (
-                    <IngredientBox key={index}>{ingredient}</IngredientBox>
-                  ))}
+                  {recipe.ingredientRecipes &&
+                  recipe.ingredientRecipes.length > 0 ? (
+                    recipe.ingredientRecipes.map((item) => (
+                      <IngredientBox key={item.id}>
+                        {item.ingredient.name}
+                      </IngredientBox>
+                    ))
+                  ) : (
+                    <IngredientBox>재료 정보 없음</IngredientBox>
+                  )}
                 </IngredientContainer>
               </ContentContainer>
             </LeftContainer>
-            <MenuImg />
+            <MenuImg style={{ backgroundImage: `url(${imageUrl})` }} />
           </TopContainer>
           <ContentContainer>
             <Title>조리 방법</Title>
-            {selectedRecipe.methods.map((method, index) => (
-              <MethodBox key={index}>{method}</MethodBox>
-            ))}
+            <MethodContainer>
+              {cookingSteps.map((step, index) => (
+                <MethodItem key={index}>{step.trim()}.</MethodItem>
+              ))}
+            </MethodContainer>
           </ContentContainer>
         </ModalContentBox>
         <ButtonContainer>
@@ -49,6 +95,47 @@ const RecipeModal = ({ closeRecipeModal }) => {
     </RecipeModalContainer>
   );
 };
+
+const MethodContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+`;
+
+const MethodItem = styled.p`
+  display: flex;
+  ${({ theme }) => theme.fonts.default16}
+  background-color: ${({ theme }) => theme.colors.white};
+  width: 500px;
+  height: 37px;
+  border-radius: 10px;
+  border: none;
+  align-items: center;
+  margin: 5px;
+  padding: 0 10px;
+
+  @media screen and (max-width: 1200px) {
+    width: 35vw;
+    height: 2.56vw;
+    font-size: 1.1vw;
+    margin: 0.35vw;
+    padding: 0 0.7vw;
+    border-radius: 0.7vw;
+  }
+`;
+
+const ErrorContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+`;
+
+const ErrorMessage = styled.p`
+  ${({ theme }) => theme.fonts.default18};
+  color: red;
+  margin-bottom: 20px;
+`;
 
 const IngredientContainer = styled.div`
   display: flex;
@@ -66,7 +153,7 @@ const MenuImg = styled.div`
   margin: 20px;
   background-color: ${({ theme }) => theme.colors.white};
 
-  @media screen and (max-width: 1200px){
+  @media screen and (max-width: 1200px) {
     width: 23vw;
     height: 15.2vw;
     margin: 1.4vw;
@@ -83,30 +170,8 @@ const TopContainer = styled.div`
   display: flex;
   justify-content: space-between;
 
-  @media screen and (max-width: 1200px){
+  @media screen and (max-width: 1200px) {
     height: 17.36vw;
-  }
-`;
-
-const MethodBox = styled.p`
-  display: flex;
-  ${({ theme }) => theme.fonts.default16}
-  background-color: ${({ theme }) => theme.colors.white};
-  width: 500px;
-  height: 37px;
-  border-radius: 10px;
-  border: none;
-  align-items: center;
-  margin: 5px;
-  padding: 0 10px;
-
-  @media screen and (max-width: 1200px){
-    width: 35vw;
-    height: 2.56vw;
-    font-size: 1.1vw;
-    margin: 0.35vw;
-    padding: 0 0.7vw;
-    border-radius: 0.7vw;
   }
 `;
 
@@ -114,7 +179,7 @@ const CountHeart = styled.p`
   ${({ theme }) => theme.fonts.default16};
   margin: 7px;
 
-  @media screen and (max-width: 1200px){
+  @media screen and (max-width: 1200px) {
     margin: 0.5vw;
     font-size: 1.3vw;
   }
@@ -138,7 +203,7 @@ const IngredientBox = styled.p`
   justify-content: center;
   align-items: center;
 
-  @media screen and (max-width: 1200px){
+  @media screen and (max-width: 1200px) {
     width: 7vw;
     height: 2.56vw;
     border-radius: 0.7vw;
@@ -163,7 +228,7 @@ const HeartImg = styled.img`
   height: 26px;
   padding: 2px;
 
-  @media screen and (max-width: 1200px){
+  @media screen and (max-width: 1200px) {
     width: 1.8vw;
     height: 1.8vw;
     padding: 0.14vw;
