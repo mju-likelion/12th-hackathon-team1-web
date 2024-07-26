@@ -2,21 +2,39 @@ import React, {useEffect, useState} from 'react';
 import styled from 'styled-components';
 import FoodBox from './FoodBox';
 import IngredientBox from './IngredientBox';
-import { dataAtom } from '../Recoil/Atom';
-import { useRecoilValue, useSetRecoilState } from 'recoil';
 import plus from '../assets/images/circlePlus.svg';
+import { Axios } from '../api/Axios';
 
 const RefrigeratorSection = ({title, ButtonText, dateRef}) => {
-    const FoodData = useRecoilValue(dataAtom);
-    const setFoodData = useSetRecoilState(dataAtom);
     const [showIngredientBox, setShowIngredientBox] = useState(false);
     const [storageName, setStorageName] = useState('');
     const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const [expiredData, setExpiredData] = useState([]);
+    const [freezerData, setFreezerData] = useState([]);
+    const [fridgeData, setFridgeData] = useState([]);
+    const [roomTempData, setRoomTempData] = useState([]);
 
     useEffect(() => {
         const loggedInStatus = localStorage.getItem("isLoggedIn") === "true";
         setIsLoggedIn(loggedInStatus);
     }, []);
+
+    useEffect(()=> {
+        const fetchFood = async () => {
+            try{
+                const response = await Axios.get(`/fridge/ingredients`);
+                console.log("data: ", response);
+                setExpiredData(response.data.data.expirationDate);
+                setFreezerData(response.data.data.frozen);
+                setFridgeData(response.data.data.coldStorage);
+                setRoomTempData(response.data.data.ambient);
+            } catch (error) {
+                console.log(error);
+            }
+        };
+
+        fetchFood();
+    }, [])
 
     const today = new Date();
     const year = today.getFullYear();
@@ -40,15 +58,6 @@ const RefrigeratorSection = ({title, ButtonText, dateRef}) => {
         return diffDays;
     };
 
-    const expiredFoodData = FoodData.filter(box => isDateExpired(box.expiredDate));
-    const freezerData = FoodData.filter(box => box.storage === "냉동" && !isDateExpired(box.expiredDate));
-    const fridgeData = FoodData.filter(box => box.storage === "냉장" && !isDateExpired(box.expiredDate));
-    const roomTempData = FoodData.filter(box => box.storage === "상온" && !isDateExpired(box.expiredDate));
-
-    const removeFoodBox = (key) => {
-        setFoodData((prevData) => prevData.filter(box => box.key !== key));
-    }
-
     const openIngredientBox = (box) => {
         setShowIngredientBox(true);
         setStorageName(box.storage);
@@ -70,67 +79,46 @@ const RefrigeratorSection = ({title, ButtonText, dateRef}) => {
                     {isLoggedIn && (
                         <FoodBoxWrapper ref={dateRef}>
                         {title === "유통기한 만료" && 
-                            expiredFoodData.map(box => (
+                            expiredData.map(box => (
                                 <FoodBox
-                                    key = {box.key}
-                                    id = {box.key}
-                                    name = {box.title}
-                                    year={box.expiredDate.split('-')[0]}
-                                    month={box.expiredDate.split('-')[1]}
-                                    date={box.expiredDate.split('-')[2]}
-                                    quantity={box.quantity}
-                                    storage={box.storage}
-                                    memo={box.memo}
-                                    removeFoodBox={()=>removeFoodBox(box.key)}
-                                    isDate={isDateExpired(box.expiredDate)}
+                                    id = {box.id}
+                                    idName = {box.ingredientName}
+                                    name = {box.ingredientName}
+                                    isDate="유통기한"
                                     ButtonText={ButtonText}
                                 />
                             ))}
-                            {title === '냉동실' && (
-                            <>
-                                {freezerData.map((box) => (
-                                    <FoodBox
-                                        key={box.key}
-                                        id={box.key}
-                                        name={box.title}
-                                        year={box.expiredDate.split('-')[0]}
-                                        month={box.expiredDate.split('-')[1]}
-                                        date={box.expiredDate.split('-')[2]}
-                                        quantity={box.quantity}
-                                        storage={box.storage}
-                                        memo={box.memo}
-                                        expiryDate={isDateDDay(box.expiredDate)}
-                                        ButtonText={ButtonText}
-                                        removeFoodBox={() => removeFoodBox(box.key)}
-                                    />
-                                ))}
-                                {ButtonText === '저장' && (
+                        {title === '냉동실' && (
+                            <div>
+                            {freezerData.map((box) => (
+                                <FoodBox
+                                    id = {box.id}
+                                    idName = {box.ingredientName}
+                                    name = {box.ingredientName}
+                                    storage="냉동"
+                                    ButtonText={ButtonText}
+                                />
+                            ))}
+                            {ButtonText === '저장' && (
                                 <PlusImg
                                     src={plus}
                                     alt="추가 이미지"
                                     onClick={() => openIngredientBox({ storage: '냉동' })}
                                 />
-                                )}
-                            </>
                             )}
-                            {title === '냉장실' && (
+                            </div>
+                            )}
+                        {title === '냉장실' && (
                             <>
-                                {fridgeData.map((box) => (
-                                    <FoodBox
-                                        key={box.key}
-                                        id={box.key}
-                                        name={box.title}
-                                        year={box.expiredDate.split('-')[0]}
-                                        month={box.expiredDate.split('-')[1]}
-                                        date={box.expiredDate.split('-')[2]}
-                                        quantity={box.quantity}
-                                        storage={box.storage}
-                                        memo={box.memo}
-                                        expiryDate={isDateDDay(box.expiredDate)}
-                                        ButtonText={ButtonText}
-                                        removeFoodBox={() => removeFoodBox(box.key)}
-                                    />
-                                ))}
+                            {fridgeData.map((box) => (
+                                <FoodBox
+                                    id = {box.id}
+                                    idName = {box.ingredientName}
+                                    name = {box.ingredientName}
+                                    storage="냉장"
+                                    ButtonText={ButtonText}
+                                />
+                            ))}
                                 {ButtonText === '저장' && (
                                 <PlusImg
                                     src={plus}
@@ -140,25 +128,18 @@ const RefrigeratorSection = ({title, ButtonText, dateRef}) => {
                                 )}
                             </>
                             )}
-                            {title === '상온' && (
+                        {title === '상온' && (
                             <>
-                                {roomTempData.map((box) => (
-                                    <FoodBox
-                                        key={box.key}
-                                        id={box.key}
-                                        name={box.title}
-                                        year={box.expiredDate.split('-')[0]}
-                                        month={box.expiredDate.split('-')[1]}
-                                        date={box.expiredDate.split('-')[2]}
-                                        quantity={box.quantity}
-                                        storage={box.storage}
-                                        memo={box.memo}
-                                        expiryDate={isDateDDay(box.expiredDate)}
-                                        ButtonText={ButtonText}
-                                        removeFoodBox={() => removeFoodBox(box.key)}
-                                    />
-                                ))}
-                                {ButtonText === '저장' && (
+                            {roomTempData.map((box) => (
+                                <FoodBox
+                                    id = {box.id}
+                                    idName = {box.ingredientName}
+                                    name = {box.ingredientName}
+                                    storage="상온"
+                                    ButtonText={ButtonText}
+                                />
+                            ))}
+                            {ButtonText === '저장' && (
                                 <PlusImg
                                     src={plus}
                                     alt="추가 이미지"
@@ -167,19 +148,18 @@ const RefrigeratorSection = ({title, ButtonText, dateRef}) => {
                                 )}
                             </>
                             )}
-                    </FoodBoxWrapper>
+                        </FoodBoxWrapper>
                     )}
                 </LineBox>
             </AllTextWrapper>
         </Section>
         <IngredientWrapper>
-                            {showIngredientBox  && <IngredientBox 
-                            closeIngredientBox = {closeIngredientBox}
-                            storageName={storageName}
-                        />}
-                    </IngredientWrapper>
-        </>
-        
+        {showIngredientBox  && <IngredientBox 
+            closeIngredientBox = {closeIngredientBox}
+            storageName={storageName}
+        />}
+        </IngredientWrapper>
+        </>    
     );
 };
 
