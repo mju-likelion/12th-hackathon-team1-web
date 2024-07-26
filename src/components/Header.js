@@ -61,9 +61,13 @@ const Header = ({ isLoggedIn, setIsLoggedIn }) => {
       <FunctionHeader>
         <FunctionContainer>
           <MenuImg src={menu} alt="메뉴 버튼" />
+          {isLoggedIn ? 
           <Link to="/fridge">
-            <PageText>냉장고 관리</PageText>
-          </Link>
+          <PageText>냉장고 관리</PageText>
+        </Link> : 
+        <PageText
+        onClick={()=>{alert("로그인 후 이용가능한 기능입니다.")}}
+        >냉장고 관리</PageText>}
           <Link to="/recipes">
             <PageText>레시피</PageText>
           </Link>
