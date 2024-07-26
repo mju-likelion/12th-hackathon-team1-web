@@ -26,7 +26,7 @@ const Header = ({ isLoggedIn, setIsLoggedIn }) => {
       localStorage.removeItem("isLoggedIn");
       localStorage.removeItem("userToken");
       setIsLoggedIn(false);
-      navigate("/auth/login");
+      navigate("/");
     } catch (error) {
       console.error("로그아웃 실패", error);
     }
