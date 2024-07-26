@@ -10,7 +10,14 @@ const RecipeModal = ({ recipeId, closeRecipeModal }) => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
+    if (!recipeId) {
+      setLoading(false);
+      setError("유효하지 않은 레시피 ID입니다.");
+      return;
+    }
     const fetchRecipe = async () => {
+      setLoading(true);
+      setError(null);
       try {
         const response = await Axios.get(`/recipes/${recipeId}`);
         if (response.data && response.data.data) {
@@ -21,6 +28,7 @@ const RecipeModal = ({ recipeId, closeRecipeModal }) => {
       } catch (error) {
         console.error("레시피를 불러오는 데 실패했습니다.", error);
         setError("레시피를 불러오는 데 실패했습니다.");
+        setRecipe(null);
       } finally {
         setLoading(false);
       }
@@ -29,15 +37,25 @@ const RecipeModal = ({ recipeId, closeRecipeModal }) => {
     fetchRecipe();
   }, [recipeId]);
 
-  if (loading) return <p>로딩 중...</p>;
+  if (loading) return <LoadingMessage>로딩 중...</LoadingMessage>;
 
-  if (error)
+  if (error) {
     return (
       <ErrorContainer>
         <ErrorMessage>{error}</ErrorMessage>
         <SmallButton text="닫기" onClick={closeRecipeModal} />
       </ErrorContainer>
     );
+  }
+
+  if (!recipe) {
+    return (
+      <ErrorContainer>
+        <ErrorMessage>레시피 정보를 불러올 수 없습니다.</ErrorMessage>
+        <SmallButton text="닫기" onClick={closeRecipeModal} />
+      </ErrorContainer>
+    );
+  }
 
   const imageUrl = recipe?.image?.url || "";
 
@@ -58,7 +76,7 @@ const RecipeModal = ({ recipeId, closeRecipeModal }) => {
                 <Title>좋아요 수</Title>
                 <HeartContainer>
                   <HeartImg src={Heart} alt="좋아요 아이콘" />
-                  <CountHeart>{recipe.likeCount || 0}개</CountHeart>{" "}
+                  <CountHeart>{recipe.likeCount || 0}개</CountHeart>
                 </HeartContainer>
               </ContentContainer>
               <ContentContainer>
@@ -95,6 +113,11 @@ const RecipeModal = ({ recipeId, closeRecipeModal }) => {
     </RecipeModalContainer>
   );
 };
+
+const LoadingMessage = styled.p`
+  text-align: center;
+  margin-top: 20px;
+`;
 
 const MethodContainer = styled.div`
   display: flex;
