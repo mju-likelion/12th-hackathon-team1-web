@@ -89,7 +89,7 @@ const RefrigeratorSection = ({title, ButtonText, dateRef}) => {
                                 />
                             ))}
                         {title === '냉동실' && (
-                            <div>
+                            <>
                             {freezerData.map((box) => (
                                 <FoodBox
                                     id = {box.id}
@@ -106,7 +106,7 @@ const RefrigeratorSection = ({title, ButtonText, dateRef}) => {
                                     onClick={() => openIngredientBox({ storage: '냉동' })}
                                 />
                             )}
-                            </div>
+                            </>
                             )}
                         {title === '냉장실' && (
                             <>
