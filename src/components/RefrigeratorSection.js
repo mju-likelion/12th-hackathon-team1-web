@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import styled from 'styled-components';
 import FoodBox from './FoodBox';
 import IngredientBox from './IngredientBox';
@@ -11,6 +11,12 @@ const RefrigeratorSection = ({title, ButtonText, dateRef}) => {
     const setFoodData = useSetRecoilState(dataAtom);
     const [showIngredientBox, setShowIngredientBox] = useState(false);
     const [storageName, setStorageName] = useState('');
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+    useEffect(() => {
+        const loggedInStatus = localStorage.getItem("isLoggedIn") === "true";
+        setIsLoggedIn(loggedInStatus);
+    }, []);
 
     const today = new Date();
     const year = today.getFullYear();
@@ -61,106 +67,108 @@ const RefrigeratorSection = ({title, ButtonText, dateRef}) => {
                 </TextBox>
                 <LineBox>
                     <VerticalLine />
+                    {isLoggedIn && (
                         <FoodBoxWrapper ref={dateRef}>
-                            {title === "유통기한 만료" && 
-                                expiredFoodData.map(box => (
+                        {title === "유통기한 만료" && 
+                            expiredFoodData.map(box => (
+                                <FoodBox
+                                    key = {box.key}
+                                    id = {box.key}
+                                    name = {box.title}
+                                    year={box.expiredDate.split('-')[0]}
+                                    month={box.expiredDate.split('-')[1]}
+                                    date={box.expiredDate.split('-')[2]}
+                                    quantity={box.quantity}
+                                    storage={box.storage}
+                                    memo={box.memo}
+                                    removeFoodBox={()=>removeFoodBox(box.key)}
+                                    isDate={isDateExpired(box.expiredDate)}
+                                    ButtonText={ButtonText}
+                                />
+                            ))}
+                            {title === '냉동실' && (
+                            <>
+                                {freezerData.map((box) => (
                                     <FoodBox
-                                        key = {box.key}
-                                        id = {box.key}
-                                        name = {box.title}
+                                        key={box.key}
+                                        id={box.key}
+                                        name={box.title}
                                         year={box.expiredDate.split('-')[0]}
                                         month={box.expiredDate.split('-')[1]}
                                         date={box.expiredDate.split('-')[2]}
                                         quantity={box.quantity}
                                         storage={box.storage}
                                         memo={box.memo}
-                                        removeFoodBox={()=>removeFoodBox(box.key)}
-                                        isDate={isDateExpired(box.expiredDate)}
+                                        expiryDate={isDateDDay(box.expiredDate)}
                                         ButtonText={ButtonText}
+                                        removeFoodBox={() => removeFoodBox(box.key)}
                                     />
                                 ))}
-                                {title === '냉동실' && (
-                                <>
-                                    {freezerData.map((box) => (
-                                        <FoodBox
-                                            key={box.key}
-                                            id={box.key}
-                                            name={box.title}
-                                            year={box.expiredDate.split('-')[0]}
-                                            month={box.expiredDate.split('-')[1]}
-                                            date={box.expiredDate.split('-')[2]}
-                                            quantity={box.quantity}
-                                            storage={box.storage}
-                                            memo={box.memo}
-                                            expiryDate={isDateDDay(box.expiredDate)}
-                                            ButtonText={ButtonText}
-                                            removeFoodBox={() => removeFoodBox(box.key)}
-                                        />
-                                    ))}
-                                    {ButtonText === '저장' && (
-                                    <PlusImg
-                                        src={plus}
-                                        alt="추가 이미지"
-                                        onClick={() => openIngredientBox({ storage: '냉동' })}
-                                    />
-                                    )}
-                                </>
+                                {ButtonText === '저장' && (
+                                <PlusImg
+                                    src={plus}
+                                    alt="추가 이미지"
+                                    onClick={() => openIngredientBox({ storage: '냉동' })}
+                                />
                                 )}
-                                {title === '냉장실' && (
-                                <>
-                                    {fridgeData.map((box) => (
-                                        <FoodBox
-                                            key={box.key}
-                                            id={box.key}
-                                            name={box.title}
-                                            year={box.expiredDate.split('-')[0]}
-                                            month={box.expiredDate.split('-')[1]}
-                                            date={box.expiredDate.split('-')[2]}
-                                            quantity={box.quantity}
-                                            storage={box.storage}
-                                            memo={box.memo}
-                                            expiryDate={isDateDDay(box.expiredDate)}
-                                            ButtonText={ButtonText}
-                                            removeFoodBox={() => removeFoodBox(box.key)}
-                                        />
-                                    ))}
-                                    {ButtonText === '저장' && (
-                                    <PlusImg
-                                        src={plus}
-                                        alt="추가 이미지"
-                                        onClick={() => openIngredientBox({ storage: '냉장' })}
+                            </>
+                            )}
+                            {title === '냉장실' && (
+                            <>
+                                {fridgeData.map((box) => (
+                                    <FoodBox
+                                        key={box.key}
+                                        id={box.key}
+                                        name={box.title}
+                                        year={box.expiredDate.split('-')[0]}
+                                        month={box.expiredDate.split('-')[1]}
+                                        date={box.expiredDate.split('-')[2]}
+                                        quantity={box.quantity}
+                                        storage={box.storage}
+                                        memo={box.memo}
+                                        expiryDate={isDateDDay(box.expiredDate)}
+                                        ButtonText={ButtonText}
+                                        removeFoodBox={() => removeFoodBox(box.key)}
                                     />
-                                    )}
-                                </>
+                                ))}
+                                {ButtonText === '저장' && (
+                                <PlusImg
+                                    src={plus}
+                                    alt="추가 이미지"
+                                    onClick={() => openIngredientBox({ storage: '냉장' })}
+                                />
                                 )}
-                                {title === '상온' && (
-                                <>
-                                    {roomTempData.map((box) => (
-                                        <FoodBox
-                                            key={box.key}
-                                            id={box.key}
-                                            name={box.title}
-                                            year={box.expiredDate.split('-')[0]}
-                                            month={box.expiredDate.split('-')[1]}
-                                            date={box.expiredDate.split('-')[2]}
-                                            quantity={box.quantity}
-                                            storage={box.storage}
-                                            memo={box.memo}
-                                            expiryDate={isDateDDay(box.expiredDate)}
-                                            ButtonText={ButtonText}
-                                            removeFoodBox={() => removeFoodBox(box.key)}
-                                        />
-                                    ))}
-                                    {ButtonText === '저장' && (
-                                    <PlusImg
-                                        src={plus}
-                                        alt="추가 이미지"
-                                        onClick={() => openIngredientBox({ storage: '상온' })}
+                            </>
+                            )}
+                            {title === '상온' && (
+                            <>
+                                {roomTempData.map((box) => (
+                                    <FoodBox
+                                        key={box.key}
+                                        id={box.key}
+                                        name={box.title}
+                                        year={box.expiredDate.split('-')[0]}
+                                        month={box.expiredDate.split('-')[1]}
+                                        date={box.expiredDate.split('-')[2]}
+                                        quantity={box.quantity}
+                                        storage={box.storage}
+                                        memo={box.memo}
+                                        expiryDate={isDateDDay(box.expiredDate)}
+                                        ButtonText={ButtonText}
+                                        removeFoodBox={() => removeFoodBox(box.key)}
                                     />
-                                    )}
-                                </>
+                                ))}
+                                {ButtonText === '저장' && (
+                                <PlusImg
+                                    src={plus}
+                                    alt="추가 이미지"
+                                    onClick={() => openIngredientBox({ storage: '상온' })}
+                                />
                                 )}
-                        </FoodBoxWrapper>
+                            </>
+                            )}
+                    </FoodBoxWrapper>
+                    )}
                 </LineBox>
             </AllTextWrapper>
         </Section>
