@@ -116,6 +116,13 @@ const Search = styled.input`
   margin: 10px 15px;
   border: none;
   outline: none;
+  @media screen and (max-width: 1200px){
+    font-size: 1.3vw;
+  }
+
+  @media screen and (max-width: 500px){
+    font-size: 1.8vw;
+  }
 `;
 
 const FunctionContainer = styled.div`
@@ -161,6 +168,13 @@ const PageText = styled.p`
   cursor: pointer;
   &:hover {
     font-weight: 600;
+  }
+  @media screen and (max-width: 1200px){
+    font-size: 1.3vw;
+  }
+
+  @media screen and (max-width: 500px){
+    font-size: 1.8vw;
   }
 `;
 
