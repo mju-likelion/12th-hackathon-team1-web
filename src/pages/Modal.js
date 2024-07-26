@@ -6,20 +6,17 @@ import AddModal from "../components/AddModal";
 const Modal = ({
   isCloseShowFood,
   modal,
-  title,
+  name,
   year,
   month,
   date,
-  quantity,
-  storage,
-  memo,
   id,
   closeModal,
   ingredientValue,
   storageName,
   closeIngredientBox,
-  closeModifyModal,
   isDate,
+  idName
 }) => {
   return (
     <>
@@ -27,23 +24,15 @@ const Modal = ({
         {modal === "단건조회" && (
           <FoodBoxModal
             isCloseShowFood={isCloseShowFood}
-            title={title}
-            year={year}
-            month={month}
-            date={date}
-            quantity={quantity}
-            storage={storage}
-            memo={memo}
             id={id}
             isDate={isDate}
+            idName={idName}
           />
         )}
         {modal === "수정" && (
           <ModifyModal
-            title={title}
+            name={name}
             id={id}
-            quantity={quantity}
-            closeModifyModal={closeModifyModal}
             isCloseShowFood={isCloseShowFood}
           />
         )}
