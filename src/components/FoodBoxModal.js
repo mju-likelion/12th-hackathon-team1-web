@@ -4,7 +4,7 @@ import SmallButton from './SmallButton';
 import Modal from './ModifyModal';
 import { Axios } from '../api/Axios';
 
-const FoodBoxModal = ({isCloseShowFood, id, isDate, idName}) => {
+const FoodBoxModal = ({isCloseShowFood, id, isDate, idName, main}) => {
   const [showModify, setShowModify] = useState(false);
   const [foodData, setFoodData] = useState([]);
 
@@ -12,7 +12,6 @@ const FoodBoxModal = ({isCloseShowFood, id, isDate, idName}) => {
     const ShowFood = async () => {
         try{
             const response = await Axios.get(`/fridge/ingredients/${id}`);
-            console.log("show: ", response)
             setFoodData(response.data.data)
       
         } catch (error) {
@@ -76,7 +75,7 @@ const FoodBoxModal = ({isCloseShowFood, id, isDate, idName}) => {
                 </SmallWrapper>
                 <ButtonWrapper>
                     <SmallButton text="닫기" onClick={isCloseShowFood}/>
-                      {!isDate && <SmallButton text="수정하기" onClick={openModifyModal}/>}
+                      {(!isDate && !main) && <SmallButton text="수정하기" onClick={openModifyModal}/>}
                     {showModify && (
                     <Modal 
                       name = {foodData.ingredientName}

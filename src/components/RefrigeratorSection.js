@@ -5,7 +5,7 @@ import IngredientBox from './IngredientBox';
 import plus from '../assets/images/circlePlus.svg';
 import { Axios } from '../api/Axios';
 
-const RefrigeratorSection = ({title, ButtonText, dateRef}) => {
+const RefrigeratorSection = ({title, ButtonText, dateRef, main}) => {
     const [showIngredientBox, setShowIngredientBox] = useState(false);
     const [storageName, setStorageName] = useState('');
     const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -23,7 +23,6 @@ const RefrigeratorSection = ({title, ButtonText, dateRef}) => {
         const fetchFood = async () => {
             try{
                 const response = await Axios.get(`/fridge/ingredients`);
-                console.log("data: ", response);
                 setExpiredData(response.data.data.expirationDate);
                 setFreezerData(response.data.data.frozen);
                 setFridgeData(response.data.data.coldStorage);
@@ -66,7 +65,6 @@ const RefrigeratorSection = ({title, ButtonText, dateRef}) => {
     const closeIngredientBox = () => {
         setShowIngredientBox(false);
     }
-
     return (
         <>
         <Section>
@@ -96,6 +94,7 @@ const RefrigeratorSection = ({title, ButtonText, dateRef}) => {
                                     idName = {box.ingredientName}
                                     name = {box.ingredientName}
                                     storage="냉동"
+                                    main={main}
                                     ButtonText={ButtonText}
                                 />
                             ))}
@@ -116,6 +115,7 @@ const RefrigeratorSection = ({title, ButtonText, dateRef}) => {
                                     idName = {box.ingredientName}
                                     name = {box.ingredientName}
                                     storage="냉장"
+                                    main={main}
                                     ButtonText={ButtonText}
                                 />
                             ))}
@@ -136,6 +136,7 @@ const RefrigeratorSection = ({title, ButtonText, dateRef}) => {
                                     idName = {box.ingredientName}
                                     name = {box.ingredientName}
                                     storage="상온"
+                                    main={main}
                                     ButtonText={ButtonText}
                                 />
                             ))}

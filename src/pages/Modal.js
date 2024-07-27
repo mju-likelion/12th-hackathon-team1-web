@@ -16,7 +16,8 @@ const Modal = ({
   storageName,
   closeIngredientBox,
   isDate,
-  idName
+  idName,
+  main
 }) => {
   return (
     <>
@@ -27,6 +28,7 @@ const Modal = ({
             id={id}
             isDate={isDate}
             idName={idName}
+            main={main}
           />
         )}
         {modal === "수정" && (

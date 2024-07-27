@@ -4,21 +4,19 @@ import remove from '../assets/images/delateIcon.svg'
 import Modal from '../pages/Modal';
 import { Axios } from '../api/Axios';
 
-const FoodBox = ({name, ButtonText, year, month, date, isDate, quantity, storage, memo, id, expiryDate}) => {
+const FoodBox = ({name, ButtonText, year, month, date, isDate, quantity, storage, memo, id, expiryDate, main}) => {
     const [showFoodBox, setShowFoodBox] = useState(false);
     const [maxLength, setMaxLength] = useState(5);
         const handleDelete = async () => {
             try {
-                const response = await Axios.delete(`/fridge/ingredients/${id}`);
-                console.log("delete: ", response);
+                await Axios.delete(`/fridge/ingredients/${id}`);
                 window.location.href = `/fridge`;
             }catch (error) {
                 console.error(error);
             }
         }
-
     const isOpenShowFood = () => {
-        if (ButtonText === '편집') {
+        if (ButtonText === '편집' || main==="main") {
             setShowFoodBox(true);
         }
     }
@@ -60,7 +58,7 @@ const FoodBox = ({name, ButtonText, year, month, date, isDate, quantity, storage
         }
         <Wrapper expiryDate={expiryDate}>
             <TextWrapper onClick={isOpenShowFood}>
-                {showFoodBox && ButtonText === '편집' &&
+                {showFoodBox &&(
                 <Modal 
                     id={id}
                     isCloseShowFood={isCloseShowFood}
@@ -72,8 +70,9 @@ const FoodBox = ({name, ButtonText, year, month, date, isDate, quantity, storage
                     storage={storage}
                     memo={memo}
                     modal = "단건조회"
+                    main = {main}
                     isDate={isDate}
-                />}
+                />)}
                 <HighWrapper>
                 <IngredientName $isDate={isDate}>{truncateText(name, maxLength)}</IngredientName>
                 <ImgBox>
