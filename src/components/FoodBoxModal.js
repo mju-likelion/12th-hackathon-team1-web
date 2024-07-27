@@ -1,10 +1,26 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import styled from 'styled-components';
 import SmallButton from './SmallButton';
 import Modal from './ModifyModal';
+import { Axios } from '../api/Axios';
 
-const FoodBoxModal = ({isCloseShowFood, title, year, month, date, quantity, storage, memo, id, isDate }) => {
+const FoodBoxModal = ({isCloseShowFood, id, isDate, idName, main}) => {
   const [showModify, setShowModify] = useState(false);
+  const [foodData, setFoodData] = useState([]);
+
+  useEffect(()=> {
+    const ShowFood = async () => {
+        try{
+            const response = await Axios.get(`/fridge/ingredients/${id}`);
+            setFoodData(response.data.data)
+      
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
+    ShowFood();
+}, [id])
 
   const stopPropagation = (e) => {
     e.stopPropagation();
@@ -23,47 +39,51 @@ const FoodBoxModal = ({isCloseShowFood, title, year, month, date, quantity, stor
         <WrapperBox onClick={stopPropagation}>
             <Wrapper>
               <TitleBox>
-                <MainTitle>{title}</MainTitle>
+                <MainTitle>{foodData.ingredientName}</MainTitle>
               </TitleBox>
                 <SmallWrapper>
                   <TextBoxWrapper>
                     <TextWrapper>
                       <Title>유통기한</Title>
                       <NameBox>
-                        <TextBox>{year}.{month}.{date}</TextBox>
+                      <TextBox>
+                  {foodData.expiredDate ? 
+                    `${foodData.expiredDate.split('-')[0]}.${foodData.expiredDate.split('-')[1]}.${foodData.expiredDate.split('-')[2]}` :
+                    '정보 없음'}
+                </TextBox>
                       </NameBox>
                     </TextWrapper>
                     <TextWrapper>
                       <Title>남은 재료 개수</Title>
                       <NameBox>
-                        <TextBox>{quantity}</TextBox>
+                        <TextBox>{foodData.quantity}</TextBox>
                       </NameBox>
                     </TextWrapper>
                     <TextWrapper>
                       <Title>보관 방법</Title>
                       <NameBox>
-                        <TextBox>{storage}</TextBox>
+                        <TextBox>{foodData.storage}</TextBox>
                       </NameBox>
                     </TextWrapper>
                     <TextWrapper>
                       <Title>메모</Title>
                       <NameBox>
-                        <TextBox>{memo}</TextBox>
+                        <TextBox>{foodData.memo}</TextBox>
                       </NameBox>
                     </TextWrapper>
                   </TextBoxWrapper>
                 </SmallWrapper>
                 <ButtonWrapper>
                     <SmallButton text="닫기" onClick={isCloseShowFood}/>
-                      {!isDate && <SmallButton text="수정하기" onClick={openModifyModal}/>}
+                      {(!isDate && !main) && <SmallButton text="수정하기" onClick={openModifyModal}/>}
                     {showModify && (
                     <Modal 
-                      title={title}
+                      name = {foodData.ingredientName}
                       closeModifyModal={closeModifyModal}
                       id={id}
-                      quantity={quantity}
                       isCloseShowFood={isCloseShowFood}
                       modal = "수정"
+                      idName = {idName}
                     />
                     )}
                 </ButtonWrapper>

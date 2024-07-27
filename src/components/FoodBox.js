@@ -2,13 +2,21 @@ import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import remove from '../assets/images/delateIcon.svg'
 import Modal from '../pages/Modal';
+import { Axios } from '../api/Axios';
 
-const FoodBox = ({name, ButtonText, removeFoodBox, year, month, date, isDate, quantity, storage, memo, id, expiryDate}) => {
+const FoodBox = ({name, ButtonText, year, month, date, isDate, quantity, storage, memo, id, expiryDate, main}) => {
     const [showFoodBox, setShowFoodBox] = useState(false);
     const [maxLength, setMaxLength] = useState(5);
-
+        const handleDelete = async () => {
+            try {
+                await Axios.delete(`/fridge/ingredients/${id}`);
+                window.location.href = `/fridge`;
+            }catch (error) {
+                console.error(error);
+            }
+        }
     const isOpenShowFood = () => {
-        if (ButtonText === '편집') {
+        if (ButtonText === '편집' || main==="main") {
             setShowFoodBox(true);
         }
     }
@@ -43,14 +51,14 @@ const FoodBox = ({name, ButtonText, removeFoodBox, year, month, date, isDate, qu
     return (
         <AllWrapper>
             {expiryDate <=3 &&
-        (expiryDate === 1 ?
+        (expiryDate === 0 ?
             <DdayText>D-DAY</DdayText>
-            : <DdayText>D-{expiryDate -1 }</DdayText>
+            : <DdayText>D-{expiryDate }</DdayText>
             )
         }
         <Wrapper expiryDate={expiryDate}>
             <TextWrapper onClick={isOpenShowFood}>
-                {showFoodBox && ButtonText === '편집' &&
+                {showFoodBox &&(
                 <Modal 
                     id={id}
                     isCloseShowFood={isCloseShowFood}
@@ -62,12 +70,13 @@ const FoodBox = ({name, ButtonText, removeFoodBox, year, month, date, isDate, qu
                     storage={storage}
                     memo={memo}
                     modal = "단건조회"
+                    main = {main}
                     isDate={isDate}
-                />}
+                />)}
                 <HighWrapper>
                 <IngredientName $isDate={isDate}>{truncateText(name, maxLength)}</IngredientName>
                 <ImgBox>
-                    {ButtonText === '저장' && <DeleteImg onClick={removeFoodBox} src={remove} alt='삭제'/>}
+                    {ButtonText === '저장' && <DeleteImg onClick={handleDelete} src={remove} alt='삭제'/>}
                 </ImgBox>
                 </HighWrapper>
                 <IngredientDate $isDate={isDate}>유통기한: {year}.{month}.{date}</IngredientDate>
