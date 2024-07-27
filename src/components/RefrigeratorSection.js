@@ -35,28 +35,6 @@ const RefrigeratorSection = ({title, ButtonText, dateRef, main}) => {
         fetchFood();
     }, [])
 
-    const today = new Date();
-    const year = today.getFullYear();
-    const month = today.getMonth() + 1;
-    const day = today.getDate();
-
-    const isDateExpired = (expiredDate) => {
-        const [foodYear, foodMonth, foodDay] = expiredDate.split('-').map(Number);
-        if (foodYear < year) return true;
-        if (foodYear > year) return false;
-        if (foodMonth < month) return true;
-        if (foodMonth > month) return false;
-        if (foodDay < day) return true;
-        return false;
-    }
-
-    const isDateDDay = (expiredDate) => {
-        const expiryDate = new Date(expiredDate);
-        const diffTime = expiryDate - today;
-        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-        return diffDays;
-    };
-
     const openIngredientBox = (box) => {
         setShowIngredientBox(true);
         setStorageName(box.storage);
@@ -79,6 +57,7 @@ const RefrigeratorSection = ({title, ButtonText, dateRef, main}) => {
                         {title === "유통기한 만료" && 
                             expiredData.map(box => (
                                 <FoodBox
+                                    key = {box.id}
                                     id = {box.id}
                                     idName = {box.ingredientName}
                                     name = {box.ingredientName}
@@ -90,8 +69,9 @@ const RefrigeratorSection = ({title, ButtonText, dateRef, main}) => {
                             <>
                             {freezerData.map((box) => (
                                 <FoodBox
+                                    key = {box.id}
                                     id = {box.id}
-                                    idName = {box.ingredientName}
+                                    idName = {box.ingredientId}
                                     name = {box.ingredientName}
                                     storage="냉동"
                                     main={main}
@@ -111,6 +91,7 @@ const RefrigeratorSection = ({title, ButtonText, dateRef, main}) => {
                             <>
                             {fridgeData.map((box) => (
                                 <FoodBox
+                                    key = {box.id}
                                     id = {box.id}
                                     idName = {box.ingredientName}
                                     name = {box.ingredientName}
@@ -132,6 +113,7 @@ const RefrigeratorSection = ({title, ButtonText, dateRef, main}) => {
                             <>
                             {roomTempData.map((box) => (
                                 <FoodBox
+                                    key = {box.id}
                                     id = {box.id}
                                     idName = {box.ingredientName}
                                     name = {box.ingredientName}
