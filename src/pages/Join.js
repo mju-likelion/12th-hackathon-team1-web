@@ -4,24 +4,25 @@ import * as Yup from "yup";
 import { useNavigate } from "react-router-dom";
 import InputFilled from "../components/InputFilled";
 import BigButton from "../components/BigButton";
+import { Axios } from "../api/Axios";
 
 const Join = () => {
-  const [userId, setUserId] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [nickname, setNickname] = useState("");
-  const [userIdError, setUserIdError] = useState("");
+  const [name, setName] = useState("");
+  const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
-  const [nicknameError, setNicknameError] = useState("");
-  const [userIdSuccess, setUserIdSuccess] = useState("");
+  const [nameError, setNameError] = useState("");
+  const [emailSuccess, setEmailSuccess] = useState("");
   const [passwordSuccess, setPasswordSuccess] = useState("");
-  const [nicknameSuccess, setNicknameSuccess] = useState("");
-  const [isUserIdValid, setIsUserIdValid] = useState(false);
+  const [nameSuccess, setNameSuccess] = useState("");
+  const [isEmailValid, setIsEmailValid] = useState(false);
   const [isPasswordValid, setIsPasswordValid] = useState(false);
-  const [isNicknameValid, setIsNicknameValid] = useState(false);
+  const [isNameValid, setIsNameValid] = useState(false);
 
   const navigate = useNavigate();
 
-  const validateUserId = (value) => {
+  const validateEmail = (value) => {
     const schema = Yup.string().matches(
       /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/,
       "잘못된 아이디(이메일)입니다."
@@ -29,14 +30,14 @@ const Join = () => {
     schema
       .validate(value)
       .then(() => {
-        setUserIdError("");
-        setIsUserIdValid(true);
-        setUserIdSuccess("사용가능한 아이디(이메일)입니다.");
+        setEmailError("");
+        setIsEmailValid(true);
+        setEmailSuccess("사용가능한 아이디(이메일)입니다.");
       })
       .catch((err) => {
-        setUserIdError(err.message);
-        setIsUserIdValid(false);
-        setUserIdSuccess("");
+        setEmailError(err.message);
+        setIsEmailValid(false);
+        setEmailSuccess("");
       });
   };
 
@@ -59,7 +60,7 @@ const Join = () => {
       });
   };
 
-  const validateNickname = (value) => {
+  const validateName = (value) => {
     const schema = Yup.string().matches(
       /^[a-zA-Z가-힣]{3,10}$/,
       "사용하실 닉네임(3~10자)을 입력해주세요. 특수기호 사용불가."
@@ -67,29 +68,39 @@ const Join = () => {
     schema
       .validate(value)
       .then(() => {
-        setNicknameError("");
-        setIsNicknameValid(true);
-        setNicknameSuccess("사용가능한 닉네임입니다.");
+        setNameError("");
+        setIsNameValid(true);
+        setNameSuccess("사용가능한 닉네임입니다.");
       })
       .catch((err) => {
-        setNicknameError(err.message);
-        setIsNicknameValid(false);
-        setNicknameSuccess("");
+        setNameError(err.message);
+        setIsNameValid(false);
+        setNameSuccess("");
       });
   };
 
-  const handleSignUp = () => {
-    if (isUserIdValid && isPasswordValid && isNicknameValid) {
+  const handleSignup = async () => {
+    if (isEmailValid && isPasswordValid && isNameValid) {
       try {
-        const response = {
-          userId,
+        const response = await Axios.post("/auth/signin", {
+          name,
+          email,
           password,
-          nickname,
-        };
-        console.log(response);
-        navigate("/auth/login");
+        });
+        if (response.status === 201) {
+          navigate("/auth/login");
+        }
       } catch (error) {
-        console.error("회원가입 실패", error);
+        console.error("회원가입 중 에러 발생:", error);
+        if (error.response) {
+          if (error.response.status === 409) {
+            console.error("이미 사용 중인 아이디나 비밀번호입니다.");
+          } else {
+            console.error("서버에서 에러 응답:", error.response.data);
+          }
+        } else {
+          console.error("클라이언트 요청에서 에러 발생:", error.message);
+        }
       }
     }
   };
@@ -103,23 +114,23 @@ const Join = () => {
             <InputFilled
               placeholder="아이디(이메일)"
               type="text"
-              value={userId}
+              value={email}
               onChange={(e) => {
                 const value = e.target.value;
-                setUserId(value);
+                setEmail(value);
                 if (value === "") {
-                  setUserIdError("");
-                  setIsUserIdValid(false);
-                  setUserIdSuccess("");
+                  setEmailError("");
+                  setIsEmailValid(false);
+                  setEmailSuccess("");
                 } else {
-                  validateUserId(value);
+                  validateEmail(value);
                 }
               }}
               hint={
-                userIdError ? "" : "사용하실 아이디(이메일)를 입력하여 주세요."
+                emailError ? "" : "사용하실 아이디(이메일)를 입력하여 주세요."
               }
-              error={userIdError}
-              success={userIdSuccess}
+              error={emailError}
+              success={emailSuccess}
             />
             <InputFilled
               placeholder="비밀번호"
@@ -147,32 +158,30 @@ const Join = () => {
             <InputFilled
               placeholder="닉네임"
               type="text"
-              value={nickname}
+              value={name}
               onChange={(e) => {
                 const value = e.target.value;
-                setNickname(value);
+                setName(value);
                 if (value === "") {
-                  setNicknameError("");
-                  setIsNicknameValid(false);
-                  setNicknameSuccess("");
+                  setNameError("");
+                  setIsNameValid(false);
+                  setNameSuccess("");
                 } else {
-                  validateNickname(value);
+                  validateName(value);
                 }
               }}
               hint={
-                nicknameError
+                nameError
                   ? ""
                   : "사용하실 닉네임(3~10자)을 입력하여 주세요. (특수기호 사용 불가)"
               }
-              error={nicknameError}
-              success={nicknameSuccess}
+              error={nameError}
+              success={nameSuccess}
             />
             <Button>
               <BigButton
-                disabled={
-                  !isUserIdValid || !isPasswordValid || !isNicknameValid
-                }
-                onClick={handleSignUp}
+                disabled={!isEmailValid || !isPasswordValid || !isNameValid}
+                onClick={handleSignup}
               >
                 회원가입
               </BigButton>
