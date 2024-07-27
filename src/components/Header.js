@@ -5,7 +5,7 @@ import menu from "../assets/images/Menu.svg";
 import search from "../assets/images/search.svg";
 import Heart from "../assets/images/Heart.svg";
 import { Link, useNavigate } from "react-router-dom";
-import { Axios } from "../api/Axios";
+import { Axios } from "../api/Axios"; // Axios 임포트
 
 const Header = ({ isLoggedIn, setIsLoggedIn }) => {
   const navigate = useNavigate();
@@ -32,6 +32,30 @@ const Header = ({ isLoggedIn, setIsLoggedIn }) => {
     }
   };
 
+  const handleDeleteAccount = async () => {
+    if (window.confirm("회원 탈퇴 하시겠습니까?")) {
+      try {
+        const token = localStorage.getItem("userToken");
+        const response = await Axios.delete(
+          "/auth/leave",
+          {},
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        console.log(response.data);
+        localStorage.removeItem("isLoggedIn");
+        localStorage.removeItem("userToken");
+        setIsLoggedIn(false);
+        navigate("/");
+      } catch (error) {
+        console.error("회원 탈퇴 실패", error);
+      }
+    }
+  };
+
   return (
     <HeaderContent>
       <MainHeader>
@@ -42,9 +66,7 @@ const Header = ({ isLoggedIn, setIsLoggedIn }) => {
           {isLoggedIn ? (
             <>
               <PageText onClick={handleLogout}>로그아웃</PageText>
-              <Link to="/auth/delete">
-                <PageText>회원 탈퇴</PageText>
-              </Link>
+              <PageText onClick={handleDeleteAccount}>회원 탈퇴</PageText>
             </>
           ) : (
             <>
@@ -61,13 +83,19 @@ const Header = ({ isLoggedIn, setIsLoggedIn }) => {
       <FunctionHeader>
         <FunctionContainer>
           <MenuImg src={menu} alt="메뉴 버튼" />
-          {isLoggedIn ? 
-          <Link to="/fridge">
-          <PageText>냉장고 관리</PageText>
-        </Link> : 
-        <PageText
-        onClick={()=>{alert("로그인 후 이용가능한 기능입니다.")}}
-        >냉장고 관리</PageText>}
+          {isLoggedIn ? (
+            <Link to="/fridge">
+              <PageText>냉장고 관리</PageText>
+            </Link>
+          ) : (
+            <PageText
+              onClick={() => {
+                alert("로그인 후 이용가능한 기능입니다.");
+              }}
+            >
+              냉장고 관리
+            </PageText>
+          )}
           <Link to="/recipes">
             <PageText>레시피</PageText>
           </Link>
@@ -116,11 +144,11 @@ const Search = styled.input`
   margin: 10px 15px;
   border: none;
   outline: none;
-  @media screen and (max-width: 1200px){
+  @media screen and (max-width: 1200px) {
     font-size: 1.3vw;
   }
 
-  @media screen and (max-width: 500px){
+  @media screen and (max-width: 500px) {
     font-size: 1.8vw;
   }
 `;
@@ -169,11 +197,11 @@ const PageText = styled.p`
   &:hover {
     font-weight: 600;
   }
-  @media screen and (max-width: 1200px){
+  @media screen and (max-width: 1200px) {
     font-size: 1.3vw;
   }
 
-  @media screen and (max-width: 500px){
+  @media screen and (max-width: 500px) {
     font-size: 1.8vw;
   }
 `;
