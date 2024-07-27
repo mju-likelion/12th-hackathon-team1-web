@@ -20,7 +20,7 @@ const FoodBoxModal = ({isCloseShowFood, id, isDate, idName, main}) => {
     };
 
     ShowFood();
-}, [])
+}, [id])
 
   const stopPropagation = (e) => {
     e.stopPropagation();
