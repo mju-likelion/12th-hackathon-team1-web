@@ -1,16 +1,10 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState} from 'react';
 import styled from 'styled-components';
 import SmallButton from './SmallButton';
-import { dataAtom } from '../Recoil/Atom';
-import {useRecoilValue,useSetRecoilState } from 'recoil';
+import { Axios } from '../api/Axios';
 
-const ModifyModal = ({ title, id, isCloseShowFood}) => {
-  const handleWrapperClick = (e) => {
-    e.stopPropagation();
-  };
+const ModifyModal = ({ name, id, isCloseShowFood}) => {
 
-  const foodData = useRecoilValue(dataAtom);
-  const setFoodData = useSetRecoilState(dataAtom);
   const [year, setYear] = useState('');
   const [month, setMonth] = useState('');
   const [date, setDate] = useState('');
@@ -18,35 +12,8 @@ const ModifyModal = ({ title, id, isCloseShowFood}) => {
   const [storage, setStorage] = useState('');
   const [memo, setMemo] = useState('');
 
-  useEffect(() => {
-    const foodItem = foodData.find(item => item.key === id);
-    if (foodItem) {
-      const [yr, mn, dt] = foodItem.expiredDate.split('-');
-      setYear(yr);
-      setMonth(mn);
-      setDate(dt);
-      setCount(foodItem.quantity);
-      setStorage(foodItem.storage);
-      setMemo(foodItem.memo);
-    }
-  }, [id, foodData]);
-
   const handleSave = () => {
-    setFoodData(prevData => {
-      return prevData.map(item => {
-        if(item.key === id) {
-          return {
-            ...item,
-            expiredDate: `${year}-${month}-${date}`,
-            quantity: count,
-            storage: storage,
-            memo: memo
-          };
-        }
-        return item;
-      });
-    });
-    console.log("foodData: ", foodData);
+    Modify();
     isCloseShowFood();
   };
 
@@ -86,6 +53,27 @@ const ModifyModal = ({ title, id, isCloseShowFood}) => {
     { value: "08", label: "08" },
     { value: "09", label: "09" },
     { value: "10", label: "10" },
+    { value: "11", label: "11" },
+    { value: "12", label: "12" },
+    { value: "13", label: "13" },
+    { value: "14", label: "14" },
+    { value: "15", label: "15" },
+    { value: "16", label: "16" },
+    { value: "17", label: "17" },
+    { value: "18", label: "18" },
+    { value: "19", label: "19" },
+    { value: "20", label: "20" },
+    { value: "21", label: "21" },
+    { value: "22", label: "22" },
+    { value: "23", label: "23" },
+    { value: "24", label: "24" },
+    { value: "25", label: "25" },
+    { value: "26", label: "26" },
+    { value: "27", label: "27" },
+    { value: "28", label: "28" },
+    { value: "29", label: "29" },
+    { value: "30", label: "30" },
+    { value: "31", label: "31" },
   ];
   const numbers = [
     { value: "", label: "횟수 선택" },
@@ -107,8 +95,24 @@ const ModifyModal = ({ title, id, isCloseShowFood}) => {
     {value: "상온", label: "상온"},
   ]
 
+  const Modify = async() => {
+    try{
+      const response = await Axios.patch(`/fridge/ingredients/${id}`, {
+        ingredientId: id,
+        expiredDate: `${year}-${month}-${date}`,
+        quantity: count,
+        storage: storage,
+        memo: memo,
+      });
+      window.location.href = `/fridge`;
+      console.log("zz: ", response);
+    }catch (error) {
+      console.log(error)
+    }
+  } 
+
   return (
-        <ModalWrapper onClick={handleWrapperClick}>
+        <ModalWrapper>
         <WrapperBox>
             <Wrapper>
               <TitleBox>
@@ -119,7 +123,7 @@ const ModifyModal = ({ title, id, isCloseShowFood}) => {
                     <TextWrapper>
                       <Title>재료명</Title>
                       <NameBox>
-                        <Name>{title}</Name>
+                        <Name>{name}</Name>
                       </NameBox>
                     </TextWrapper>
                     <TextWrapper>
