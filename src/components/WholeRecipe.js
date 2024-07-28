@@ -4,7 +4,7 @@ import { Axios } from "../api/Axios";
 import RecipeBox from "./RecipeBox";
 import Next from "../assets/images/next.svg";
 
-const WholeRecipe = () => {
+const WholeRecipe = ({ type }) => {
   const [recipes, setRecipes] = useState([]);
   const [page, setPage] = useState(0);
   const [totalPage, setTotalPage] = useState(1);
@@ -21,7 +21,7 @@ const WholeRecipe = () => {
           params: {
             page: page,
             size: 6,
-            type: "newest",
+            type: type,
           },
         });
 
@@ -40,7 +40,7 @@ const WholeRecipe = () => {
     };
 
     fetchRecipes();
-  }, [page]);
+  }, [page, type]);
 
   const handleNextPage = () => {
     if (page < totalPage - 1) {
@@ -61,11 +61,7 @@ const WholeRecipe = () => {
   return (
     <WholeContainer>
       <PrevButton onClick={handlePrevPage} disabled={page === 0}>
-        <img
-          src={Next}
-          alt="이전 버튼"
-          style={{ transform: "rotate(180deg)" }}
-        />
+        <img src={Next} alt="이전 버튼" />
       </PrevButton>
       <RecipeContainer>
         {recipes.map((recipe) => (
@@ -85,13 +81,11 @@ const WholeRecipe = () => {
 };
 
 const PrevButton = styled.button`
+  transform: rotate(180deg);
   background: none;
   border: none;
   cursor: pointer;
-
-  &:disabled {
-    cursor: not-allowed;
-  }
+  opacity: ${(props) => (props.disabled ? 0.5 : 1)};
 `;
 
 const NextButton = styled.button`
