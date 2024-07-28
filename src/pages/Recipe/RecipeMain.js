@@ -25,13 +25,13 @@ const RecipeMain = () => {
               <BoxTitle>전체 레시피</BoxTitle>
               <TabContainer>
                 <TabText
-                  isActive={type === "newest"}
+                  $isActive={type === "newest"}
                   onClick={() => setType("newest")}
                 >
                   최신순
                 </TabText>
                 <TabText
-                  isActive={type === "popularity"}
+                  $isActive={type === "popularity"}
                   onClick={() => setType("popularity")}
                 >
                   인기순
@@ -78,7 +78,9 @@ const TabContainer = styled.div`
   }
 `;
 
-const TabText = styled.p`
+const TabText = styled.p.attrs((props) => ({
+  isActive: props.isActive,
+}))`
   display: flex;
   font-size: ${({ theme }) => theme.fonts.default16};
   cursor: pointer;
