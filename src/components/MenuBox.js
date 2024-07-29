@@ -8,14 +8,14 @@ const MenuBox = () => {
       <Grayline />
       <MenuList>내 레시피 보기</MenuList>
       <MenuList>좋아요 누른 레시피 보기</MenuList>
-      <MenuList>내 냉장고 재료로 레시피 검색</MenuList>
+      <MenuList>나의 냉장고 재료로 레시피 검색</MenuList>
     </MainContainer>
   );
 };
 
 const Grayline = styled.div`
   width: 100%;
-  border-bottom: 1px solid ${({theme})=>theme.colors.lineGray};
+  border-bottom: 1px solid ${({ theme }) => theme.colors.lineGray};
   margin-bottom: 10px;
 `;
 
@@ -40,8 +40,8 @@ const MainContainer = styled.div`
   width: 300px;
   padding: 23px;
   border-radius: 10px;
-  border: 1px solid ${({theme})=>theme.colors.lineGray};
-  background-color: ${({theme})=>theme.colors.white};
+  border: 1px solid ${({ theme }) => theme.colors.lineGray};
+  background-color: ${({ theme }) => theme.colors.white};
 `;
 
 export default MenuBox;
