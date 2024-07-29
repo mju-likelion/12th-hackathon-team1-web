@@ -181,7 +181,7 @@ const HeaderContent = styled.div`
   padding: 0 12vw;
   background-color: ${({ theme }) => theme.colors.white};
   border: 1px solid ${({ theme }) => theme.colors.headerLine};
-  z-index: 1200;
+  z-index: 1000;
 `;
 
 const LogoImg = styled.img`
