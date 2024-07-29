@@ -72,28 +72,26 @@ const MainSmallBox = ({ isLoggedIn, type }) => {
 
   return (
     <SmallBox>
-      <BigBox>
-        <ArrowButton onClick={handlePreviousPage} disabled={page === 0}>
-          <Img src={arrow} alt="이전" style={{ transform: "rotate(180deg)" }} />
-        </ArrowButton>
-        <RecipeBoxWrapper>
-          {isLoggedIn ? (
-            recipeData.map((recipe) => (
-              <PopularRecipeBox
-                key={recipe.recipeId}
-                recipeId={recipe.recipeId}
-              />
-            ))
-          ) : (
-            <LoginPrompt>
-              나만의 좋아요 레시피를 추가해주세요! (로그인 후 이용가능합니다.)
-            </LoginPrompt>
-          )}
-        </RecipeBoxWrapper>
-        <ArrowButton onClick={handleNextPage} disabled={page >= totalPage - 1}>
-          <Img src={arrow} alt="다음" />
-        </ArrowButton>
-      </BigBox>
+      <ArrowButton onClick={handlePreviousPage} disabled={page === 0}>
+        <Img src={arrow} alt="이전" style={{ transform: "rotate(180deg)" }} />
+      </ArrowButton>
+      <RecipeBoxWrapper>
+        {isLoggedIn ? (
+          recipeData.map((recipe) => (
+            <PopularRecipeBox
+              key={recipe.recipeId}
+              recipeId={recipe.recipeId}
+            />
+          ))
+        ) : (
+          <LoginPrompt>
+            나만의 좋아요 레시피를 추가해주세요! (로그인 후 이용가능합니다.)
+          </LoginPrompt>
+        )}
+      </RecipeBoxWrapper>
+      <ArrowButton onClick={handleNextPage} disabled={page >= totalPage - 1}>
+        <Img src={arrow} alt="다음" />
+      </ArrowButton>
     </SmallBox>
   );
 };
@@ -105,6 +103,8 @@ const SmallBox = styled.div`
   border-radius: 10px;
   display: flex;
   align-items: center;
+  /* justify-content: space-between; */
+  padding: 0 10px;
 
   @media screen and (max-width: 1200px) {
     width: 38.5vw;
@@ -113,25 +113,14 @@ const SmallBox = styled.div`
   }
 `;
 
-const BigBox = styled.div`
-  width: 100%;
-  height: 220px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-
-  @media screen and (max-width: 1200px) {
-    height: 15.3vw;
-  }
-`;
-
 const RecipeBoxWrapper = styled.div`
   display: flex;
-  gap: 35px;
+  gap: 15px;
   align-items: center;
+  width: 100%;
 
   @media screen and (max-width: 1200px) {
-    gap: 2.43vw;
+    gap: 1vw;
   }
 `;
 
@@ -139,6 +128,8 @@ const ArrowButton = styled.button`
   background-color: transparent;
   border: none;
   cursor: pointer;
+  display: flex;
+  align-items: center;
 `;
 
 const Img = styled.img`
