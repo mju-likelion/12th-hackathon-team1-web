@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import SmallButton from '../components/SmallButton';
 import { Axios } from '../api/Axios';
 
-const AddModal = ({closeAddModal, ingredientName, storageName, closeIngredientBox, id}) => {
+const AddModal = ({closeAddModal, ingredientName, storageName, closeIngredientBox, ingredientId}) => {
   const handleWrapperClick = (e) => {
     e.stopPropagation();
   };
@@ -15,21 +15,22 @@ const AddModal = ({closeAddModal, ingredientName, storageName, closeIngredientBo
 
   const handleSave = async() => {
     try{
-        await Axios.post(`fridge/ingredients`, {
-        ingredientId: id,
+        const response = await Axios.post(`fridge/ingredients`, {
+        ingredientId: ingredientId,
         expiredDate: `${year}-${month}-${date}`,
         quantity: quantity,
         storage: storageName,
         memo: memo,
       },
     )
-    window.location.href = `/fridge`;
+    console.log("rrr: ", response);
     }catch(error)
     {
       console.log(error);
     }
     closeIngredientBox();
     closeAddModal();
+    window.location.href = `/fridge`;
   };
 
   const canSave = () => {
