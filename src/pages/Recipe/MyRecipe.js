@@ -43,11 +43,12 @@ const MyRecipe = () => {
 
   const openRecipeModal = (id) => {
     setCurrentRecipeId(id);
-    if (isEditing) {
-      setShowEditModal(true);
-    } else {
-      setShowRecipeModal(true);
-    }
+    setShowRecipeModal(true);
+  };
+
+  const openEditModal = (id) => {
+    setCurrentRecipeId(id);
+    setShowEditModal(true);
   };
 
   const openAddRecipeModal = () => {
@@ -116,7 +117,11 @@ const MyRecipe = () => {
                       image={data.image}
                       isEditing={isEditing}
                       removeRecipeBox={removeRecipeBox}
-                      onClick={() => openRecipeModal(data.recipeId)}
+                      onClick={() =>
+                        isEditing
+                          ? openEditModal(data.recipeId)
+                          : openRecipeModal(data.recipeId)
+                      }
                     />
                   ))}
                 </Line>
@@ -139,7 +144,7 @@ const MyRecipe = () => {
             </ModalContent>
           </>
         )}
-        {showEditModal && currentRecipeId !== null && (
+        {showEditModal && (
           <>
             <Overlay />
             <ModalContent>
@@ -164,7 +169,7 @@ const Overlay = styled.div`
   right: 0;
   bottom: 0;
   background-color: rgba(0, 0, 0, 0.5);
-  z-index: 1100;
+  z-index: 1050;
 `;
 
 const ModalContent = styled.div`
@@ -172,7 +177,7 @@ const ModalContent = styled.div`
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  z-index: 1001;
+  z-index: 1100;
 `;
 
 const SidebarContainer = styled.div`
@@ -192,6 +197,7 @@ const PlusButton = styled.img`
   height: 20px;
   margin-left: 920px;
   margin-bottom: 5px;
+  cursor: pointer;
 
   @media screen and (max-width: 1200px) {
     margin-left: 71vw;

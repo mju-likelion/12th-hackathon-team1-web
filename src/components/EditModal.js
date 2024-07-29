@@ -68,7 +68,7 @@ const EditModal = ({ recipeId, onSave, saveEditModal, isNew }) => {
   };
 
   return (
-    <RecipeModalContainer>
+    <EditModalContainer>
       <ModalBackground>
         <TitleBox>
           <TitleInput
@@ -127,16 +127,19 @@ const EditModal = ({ recipeId, onSave, saveEditModal, isNew }) => {
           </ContentContainer>
         </ModalContentBox>
         <ButtonContainer>
+          <SmallButton text="닫기" onClick={saveEditModal} />
           <SmallButton text="저장" onClick={handleSave} />
         </ButtonContainer>
       </ModalBackground>
-    </RecipeModalContainer>
+    </EditModalContainer>
   );
 };
 
 const ButtonContainer = styled.div`
   display: flex;
-  justify-content: end;
+  justify-content: space-between;
+  width: 50%;
+  margin-left: auto;
 `;
 
 const UploadLabel = styled.label`
@@ -352,7 +355,7 @@ const ModalBackground = styled.div`
   }
 `;
 
-const RecipeModalContainer = styled.div`
+const EditModalContainer = styled.div`
   background-color: ${({ theme }) => theme.colors.green200};
   width: 800px;
   height: 850px;
