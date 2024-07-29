@@ -42,7 +42,7 @@ const RefrigeratorBox = () => {
                                 title="냉동실"
                                 dateRef={dateRefTwo}
                                 ButtonText={ButtonText} />
-                        <ArrowBox onClick={() => handleScroll(dateRefOne)}>
+                        <ArrowBox onClick={() => handleScroll(dateRefTwo)}>
                             <Arrow src={arrow} alt="화살표"/>
                         </ArrowBox>
                     </WrapperWrapper>
@@ -52,7 +52,7 @@ const RefrigeratorBox = () => {
                                 title="냉장실"
                                 dateRef={dateRefThree}
                                 ButtonText={ButtonText} />
-                        <ArrowBox onClick={() => handleScroll(dateRefOne)}>
+                        <ArrowBox onClick={() => handleScroll(dateRefThree)}>
                             <Arrow src={arrow} alt="화살표"/>
                         </ArrowBox>
                     </WrapperWrapper>
@@ -62,7 +62,7 @@ const RefrigeratorBox = () => {
                                 title="상온"
                                 dateRef={dateRefFour}
                                 ButtonText={ButtonText}/>
-                        <ArrowBox onClick={() => handleScroll(dateRefOne)}>
+                        <ArrowBox onClick={() => handleScroll(dateRefFour)}>
                             <Arrow src={arrow} alt="화살표"/>
                         </ArrowBox>
                     </WrapperWrapper>

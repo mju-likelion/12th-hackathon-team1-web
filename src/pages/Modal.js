@@ -11,13 +11,13 @@ const Modal = ({
   month,
   date,
   id,
-  closeModal,
-  ingredientValue,
+  closeAddModal,
+  ingredientName,
   storageName,
   closeIngredientBox,
   isDate,
   idName,
-  main
+  location, 
 }) => {
   return (
     <>
@@ -28,7 +28,7 @@ const Modal = ({
             id={id}
             isDate={isDate}
             idName={idName}
-            main={main}
+            location={location}
           />
         )}
         {modal === "수정" && (
@@ -40,10 +40,11 @@ const Modal = ({
         )}
         {modal === "등록" && (
           <AddModal
-            closeModal={closeModal}
-            ingredientValue={ingredientValue}
+          closeAddModal={closeAddModal}
+            ingredientName={ingredientName}
             storageName={storageName}
             closeIngredientBox={closeIngredientBox}
+            id = {id}
           />
         )}
       </ModalBackground>

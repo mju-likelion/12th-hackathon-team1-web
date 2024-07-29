@@ -1,36 +1,52 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import Modal from '../pages/Modal';
+import { Axios } from '../api/Axios';
 
 const Ingredient = ({searchValue, storageName, closeIngredientBox}) => {
-    const[choseShowIngredient, setChoseShowIngredient] = useState(false);
-    const [ingredientValue, setIngredientValue] = useState('');
+    const[addIngredient, setAddIngredient] = useState(false);
+    const [ingredientName, setIngredientName] = useState('');
+    const [ingredientId, setIngredientId] = useState('');
+    const [ingredients, setIngredients] = useState([]);
 
-    const arrays = [
-        {name: '양파'},
-        {name: '대파'},
-        {name: '양파볶음'},
-    ];
+    useEffect(() => {
+        const fetchRec = async() => {
+            try{
+                const response = await Axios.get(`/ingredients`, {
+                    params: { name: ingredientName },
+                });
+                setIngredients(response.data.data.ingredients)
+            }catch(error){
+                console.error(error);
+            }
+        }
+        fetchRec();
+    }, [ingredientName])
 
-    const openModal = (ingredientName) => {
-        setIngredientValue(ingredientName)
-        setChoseShowIngredient(true);
+    const openAddModal = (name, id) => {
+        setIngredientName(name);
+        setIngredientId(id);
+        setAddIngredient(true);
     }
 
-    const closeModal = () => {
-        setChoseShowIngredient(false);
+    const closeAddModal = () => {
+        setAddIngredient(false);
         closeIngredientBox();
     }
 
     return (
         <IngredientWrapper>
-        {arrays.map((ingredient, index) => ingredient.name.includes(searchValue) && (
-            <IngredientBox key={index} onClick={() =>openModal(ingredient.name)}>{ingredient.name}</IngredientBox>
+        {ingredients.map((ingredient) => 
+        ingredient.name.includes(searchValue) && (
+        <IngredientBox 
+        ingredientId={ingredient.id}
+        onClick={() =>openAddModal(ingredient.name, ingredient.id)}>{ingredient.name}</IngredientBox>
         ))}
-        {choseShowIngredient && 
+        {addIngredient && 
         <Modal 
-        closeModal={closeModal} 
-        ingredientValue={ingredientValue}
+        closeAddModal={closeAddModal} 
+        ingredientName={ingredientName}
+        ingredientId = {ingredientId}
         storageName={storageName}
         closeIngredientBox={closeIngredientBox}
         modal= "등록"
@@ -50,7 +66,7 @@ const IngredientBox = styled.button`
     background-color: ${({theme})=> theme.colors.white};
     width: 250px;
     height: 25px;
-    border-radius: 7px;
+    border-radius: 5px;
     margin-top: 15px;
 `;
 

@@ -4,7 +4,7 @@ import SmallButton from './SmallButton';
 import Modal from './ModifyModal';
 import { Axios } from '../api/Axios';
 
-const FoodBoxModal = ({isCloseShowFood, id, isDate, idName, main}) => {
+const FoodBoxModal = ({isCloseShowFood, id, isDate, idName, location}) => {
   const [showModify, setShowModify] = useState(false);
   const [foodData, setFoodData] = useState([]);
 
@@ -75,7 +75,7 @@ const FoodBoxModal = ({isCloseShowFood, id, isDate, idName, main}) => {
                 </SmallWrapper>
                 <ButtonWrapper>
                     <SmallButton text="닫기" onClick={isCloseShowFood}/>
-                      {(!isDate && !main) && <SmallButton text="수정하기" onClick={openModifyModal}/>}
+                      {(!isDate && !location) && <SmallButton text="수정하기" onClick={openModifyModal}/>}
                     {showModify && (
                     <Modal 
                       name = {foodData.ingredientName}
