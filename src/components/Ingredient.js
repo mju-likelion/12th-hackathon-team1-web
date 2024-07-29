@@ -39,7 +39,7 @@ const Ingredient = ({searchValue, storageName, closeIngredientBox}) => {
         {ingredients.map((ingredient) => 
         ingredient.name.includes(searchValue) && (
         <IngredientBox 
-        ingredientId={ingredient.id}
+        id={ingredient.id}
         onClick={() =>openAddModal(ingredient.name, ingredient.id)}>{ingredient.name}</IngredientBox>
         ))}
         {addIngredient && 

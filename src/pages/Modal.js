@@ -11,6 +11,7 @@ const Modal = ({
   month,
   date,
   id,
+  ingredientId,
   closeAddModal,
   ingredientName,
   storageName,
@@ -44,7 +45,7 @@ const Modal = ({
             ingredientName={ingredientName}
             storageName={storageName}
             closeIngredientBox={closeIngredientBox}
-            id = {id}
+            ingredientId = {ingredientId}
           />
         )}
       </ModalBackground>
