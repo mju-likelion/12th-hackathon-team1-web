@@ -3,23 +3,23 @@ import styled from "styled-components";
 import RefrigeratorSection from "./RefrigeratorSection";
 import arrow from "../assets/images/next.svg";
 
-const MainBigBox = ({main}) => {
+const MainBigBox = ({location}) => {
   return (
     <>
       <BigBox>
         <BoxWrapper>
           <WrapperWrapper>
-            <RefrigeratorSection title="냉동실" main={main}/>
+            <RefrigeratorSection title="냉동실" location={location}/>
             <Arrow src={arrow} alt="화살표" />
           </WrapperWrapper>
           <Line />
           <WrapperWrapper>
-            <RefrigeratorSection title="냉장실" main={main}/>
+            <RefrigeratorSection title="냉장실" location={location}/>
             <Arrow src={arrow} alt="화살표" />
           </WrapperWrapper>
           <Line />
           <WrapperWrapper>
-            <RefrigeratorSection title="상온" main={main}/>
+            <RefrigeratorSection title="상온" location={location}/>
             <Arrow src={arrow} alt="화살표" />
           </WrapperWrapper>
         </BoxWrapper>

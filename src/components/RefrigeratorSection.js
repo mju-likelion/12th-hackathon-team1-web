@@ -5,24 +5,23 @@ import IngredientBox from './IngredientBox';
 import plus from '../assets/images/circlePlus.svg';
 import { Axios } from '../api/Axios';
 
-const RefrigeratorSection = ({title, ButtonText, dateRef, main}) => {
+const RefrigeratorSection = ({title, ButtonText, dateRef, location}) => {
     const [showIngredientBox, setShowIngredientBox] = useState(false);
     const [storageName, setStorageName] = useState('');
-    const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [expiredData, setExpiredData] = useState([]);
     const [freezerData, setFreezerData] = useState([]);
     const [fridgeData, setFridgeData] = useState([]);
     const [roomTempData, setRoomTempData] = useState([]);
 
-    useEffect(() => {
-        const loggedInStatus = localStorage.getItem("isLoggedIn") === "true";
-        setIsLoggedIn(loggedInStatus);
-    }, []);
-
     useEffect(()=> {
         const fetchFood = async () => {
             try{
-                const response = await Axios.get(`/fridge/ingredients`);
+                const token = localStorage.getItem(`token`);
+                const response = await Axios.get(`/fridge/ingredients`, {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                });
                 setExpiredData(response.data.data.expirationDate);
                 setFreezerData(response.data.data.frozen);
                 setFridgeData(response.data.data.coldStorage);
@@ -52,16 +51,14 @@ const RefrigeratorSection = ({title, ButtonText, dateRef, main}) => {
                 </TextBox>
                 <LineBox>
                     <VerticalLine />
-                    {isLoggedIn && (
                         <FoodBoxWrapper ref={dateRef}>
                         {title === "유통기한 만료" && 
                             expiredData.map(box => (
                                 <FoodBox
                                     key = {box.id}
                                     id = {box.id}
-                                    idName = {box.ingredientName}
-                                    name = {box.ingredientName}
-                                    isDate="유통기한"
+                                    ingredientName = {box.ingredientName}
+                                    isDate="유통기한만료"
                                     ButtonText={ButtonText}
                                 />
                             ))}
@@ -71,10 +68,9 @@ const RefrigeratorSection = ({title, ButtonText, dateRef, main}) => {
                                 <FoodBox
                                     key = {box.id}
                                     id = {box.id}
-                                    idName = {box.ingredientId}
-                                    name = {box.ingredientName}
+                                    ingredientName = {box.ingredientName}
                                     storage="냉동"
-                                    main={main}
+                                    location={location}
                                     ButtonText={ButtonText}
                                 />
                             ))}
@@ -93,10 +89,9 @@ const RefrigeratorSection = ({title, ButtonText, dateRef, main}) => {
                                 <FoodBox
                                     key = {box.id}
                                     id = {box.id}
-                                    idName = {box.ingredientName}
-                                    name = {box.ingredientName}
+                                    ingredientName = {box.ingredientName}
                                     storage="냉장"
-                                    main={main}
+                                    location={location}
                                     ButtonText={ButtonText}
                                 />
                             ))}
@@ -115,10 +110,9 @@ const RefrigeratorSection = ({title, ButtonText, dateRef, main}) => {
                                 <FoodBox
                                     key = {box.id}
                                     id = {box.id}
-                                    idName = {box.ingredientName}
-                                    name = {box.ingredientName}
+                                    ingredientName = {box.ingredientName}
                                     storage="상온"
-                                    main={main}
+                                    location={location}
                                     ButtonText={ButtonText}
                                 />
                             ))}
@@ -132,12 +126,11 @@ const RefrigeratorSection = ({title, ButtonText, dateRef, main}) => {
                             </>
                             )}
                         </FoodBoxWrapper>
-                    )}
                 </LineBox>
             </AllTextWrapper>
         </Section>
         <IngredientWrapper>
-        {showIngredientBox  && <IngredientBox 
+        {showIngredientBox  && <IngredientBox
             closeIngredientBox = {closeIngredientBox}
             storageName={storageName}
         />}

@@ -5,10 +5,10 @@ import Ingredient from './Ingredient';
 
 const IngredientBox = ({closeIngredientBox, storageName}) => {
     const [searchValue, setSearchValue] = useState('');
+
     const save = (event) => {
         setSearchValue(event.target.value);
     }
-
 
     return (
         <>
@@ -59,6 +59,7 @@ const BottomBox = styled.div`
     height: 260px;
     display: flex;
     justify-content: center;
+    overflow-y: auto; 
 `;
 
 export default IngredientBox;

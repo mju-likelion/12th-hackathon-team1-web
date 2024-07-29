@@ -18,7 +18,7 @@ const Main = () => {
             ? "나의 냉장고"
             : "나만의 냉장고를 만들어보세요! (로그인 후 이용 가능합니다.)"}
         </Title>
-        <MainBigBox main="main"/>
+        <MainBigBox location="main"/>
         <SmallBoxWrapper>
           <SmallTextBox>
             <Text>인기 레시피</Text>
