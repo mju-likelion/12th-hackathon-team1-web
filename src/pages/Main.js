@@ -10,6 +10,7 @@ const Main = () => {
     const loggedInStatus = localStorage.getItem("isLoggedIn") === "true";
     setIsLoggedIn(loggedInStatus);
   }, []);
+
   return (
     <Wrapper>
       <BoxWrapper>
@@ -18,15 +19,15 @@ const Main = () => {
             ? "나의 냉장고"
             : "나만의 냉장고를 만들어보세요! (로그인 후 이용 가능합니다.)"}
         </Title>
-        <MainBigBox location="main"/>
+        <MainBigBox location="main" />
         <SmallBoxWrapper>
           <SmallTextBox>
             <Text>인기 레시피</Text>
-            <MainSmallBox isLoggedIn={true} />
+            <MainSmallBox isLoggedIn={true} type="popular" />
           </SmallTextBox>
           <SmallTextBox>
             <Text>나의 냉장고 레시피</Text>
-            <MainSmallBox isLoggedIn={isLoggedIn} />
+            <MainSmallBox isLoggedIn={isLoggedIn} type="my-refrigerator" />
           </SmallTextBox>
         </SmallBoxWrapper>
       </BoxWrapper>
