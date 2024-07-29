@@ -1,13 +1,15 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import PopularRecipe from "../../components/PopularRecipe";
-import WholeRecipe from '../../components/WholeRecipe';
+import WholeRecipe from "../../components/WholeRecipe";
 import Sidebar from "../../components/Sidebar";
 
 const RecipeMain = () => {
+  const [type, setType] = useState("newest");
+
   return (
     <>
-    <SidebarContainer>
+      <SidebarContainer>
         <Sidebar />
       </SidebarContainer>
       <Wrapper>
@@ -22,11 +24,21 @@ const RecipeMain = () => {
             <TextContainer>
               <BoxTitle>전체 레시피</BoxTitle>
               <TabContainer>
-                <TabText>최신순</TabText>
-                <TabText>인기순</TabText>
+                <TabText
+                  $isActive={type === "newest"}
+                  onClick={() => setType("newest")}
+                >
+                  최신순
+                </TabText>
+                <TabText
+                  $isActive={type === "popularity"}
+                  onClick={() => setType("popularity")}
+                >
+                  인기순
+                </TabText>
               </TabContainer>
             </TextContainer>
-            <WholeRecipe />
+            <WholeRecipe type={type} />
           </div>
         </RecipeContainer>
       </Wrapper>
@@ -50,31 +62,35 @@ const RecipeContainer = styled.div`
   flex-direction: column;
   width: 900px;
 
-  @media screen and (max-width: 1200px){
+  @media screen and (max-width: 1200px) {
     width: 70vw;
     margin-top: 2vw;
   }
-  `;
+`;
 
 const TabContainer = styled.div`
   display: flex;
   justify-content: space-between;
   gap: 10px;
 
-  @media screen and (max-width: 1200px){
+  @media screen and (max-width: 1200px) {
     gap: 0.7vw;
   }
 `;
 
-const TabText = styled.p`
+const TabText = styled.p.attrs((props) => ({
+  isActive: props.isActive,
+}))`
   display: flex;
   font-size: ${({ theme }) => theme.fonts.default16};
   cursor: pointer;
+  font-weight: ${(props) => (props.isActive ? "600" : "400")};
+
   &:hover {
     font-weight: 600;
   }
 
-  @media screen and (max-width: 1200px){
+  @media screen and (max-width: 1200px) {
     font-size: 1.3vw;
   }
 `;
@@ -90,10 +106,9 @@ const TextContainer = styled.div`
   }
 `;
 
-
 const BoxTitle = styled.p`
   font-size: ${({ theme }) => theme.fonts.default18};
-  @media screen and (max-width: 1200px){
+  @media screen and (max-width: 1200px) {
     font-size: 1.3vw;
   }
 `;

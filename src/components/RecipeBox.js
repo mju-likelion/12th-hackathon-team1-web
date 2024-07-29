@@ -1,84 +1,33 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
+import { Axios } from "../api/Axios";
 import Heart from "../assets/images/Heart.svg";
 import FullHeart from "../assets/images/fullHeart.svg";
 import Delete from "../assets/images/delateIcon.svg";
-import Dropdown from "./DropDown";
 import RecipeModal from "./RecipeModal";
-import { useSetRecoilState, useRecoilValue } from "recoil";
-import { LikeAtom } from "../Recoil/Atom";
 
-const RecipeBox = ({
-  menuName,
-  countHeart,
-  isEditing,
-  showMenu,
-  menuPosition,
-  removeRecipeBox,
-  id,
-  state,
-  onClick,
-}) => {
+const RecipeBox = ({ recipeId, isEditing, removeRecipeBox, onClick }) => {
   const [isClicked, setIsClicked] = useState(false);
-  const [maxLength, setMaxLength] = useState(12);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [countHeartNumber, setCountHeartNumber] = useState(countHeart);
-  const setLike = useSetRecoilState(LikeAtom);
-  const Like = useRecoilValue(LikeAtom);
+  const [recipeData, setRecipeData] = useState(null);
+  const [maxLength, setMaxLength] = useState(12);
 
   useEffect(() => {
-    const isLiked = Like.some((like) => like.id === id);
-    setIsClicked(isLiked);
-  }, [Like, id]);
+    const fetchRecipeData = async () => {
+      try {
+        const response = await Axios.get(`/recipes/${recipeId}`);
+        if (response.data && response.data.data) {
+          setRecipeData(response.data.data);
+        } else {
+          throw new Error("응답 데이터 형식이 올바르지 않습니다.");
+        }
+      } catch (error) {
+        console.error("레시피 데이터를 가져오는 데 실패했습니다.", error);
+      }
+    };
 
-  const handlerHeartClick = (e) => {
-    e.stopPropagation();
-    setIsClicked(!isClicked);
-    if (!isClicked) {
-      setCountHeartNumber((preCount) => preCount + 1);
-      pushLike();
-    } else {
-      setCountHeartNumber((preCount) => preCount - 1);
-      removeLike();
-    }
-  };
-
-  const pushLike = () => {
-    setLike((prevLike) => [
-      ...prevLike,
-      { id, menuName, countHeart: countHeartNumber + 1 },
-    ]);
-  };
-
-  const removeLike = () => {
-    setLike((prevLike) => prevLike.filter((like) => like.id !== id));
-  };
-
-  const truncateText = (text, maxLength) => {
-    if (!text) return "";
-    if (text.length > maxLength) {
-      return text.slice(0, maxLength) + "...";
-    }
-    return text;
-  };
-
-  const handleDelete = (e) => {
-    e.stopPropagation();
-    if (window.confirm("레시피를 정말 삭제하시겠습니까?")) {
-      removeRecipeBox(id);
-      console.log("레시피 삭제됨");
-      alert("레시피가 삭제되었습니다.");
-      setIsModalOpen(false); // 삭제 후 모달을 닫습니다.
-    }
-  };
-
-  const handleEdit = () => {
-    setIsModalOpen(true);
-  };
-
-  const handleCloseModal = () => {
-    setIsModalOpen(false);
-  };
+    fetchRecipeData();
+  }, [recipeId]);
 
   useEffect(() => {
     const handleResize = () => {
@@ -98,43 +47,81 @@ const RecipeBox = ({
     };
   }, []);
 
+  const handleHeartClick = (e) => {
+    e.stopPropagation();
+    setIsClicked((prev) => !prev);
+  };
+
+  const truncateText = (text, maxLength) => {
+    if (!text) return "";
+    if (text.length > maxLength) {
+      return text.slice(0, maxLength) + "...";
+    }
+    return text;
+  };
+
+  const handleDelete = async (e) => {
+    e.stopPropagation();
+    if (window.confirm("레시피를 정말 삭제하시겠습니까?")) {
+      try {
+        await Axios.delete(`/recipes/${recipeId}`);
+        removeRecipeBox(recipeId);
+        alert("레시피가 삭제되었습니다.");
+      } catch (error) {
+        console.error("Error deleting recipe:", error);
+        alert("레시피 삭제에 실패했습니다.");
+      } finally {
+        setIsModalOpen(false);
+      }
+    }
+  };
+
+  const handleEdit = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleOpenModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+  };
+
+  const currentRecipe = recipeData || {};
+  const recipeImage = currentRecipe?.image?.url || "";
+  const recipeName = currentRecipe?.name || "";
+  const recipeLikeCount = currentRecipe?.likeCount || 0;
+
   return (
-    <Container onClick={onClick}>
+    <Container onClick={isEditing ? handleEdit : handleOpenModal}>
       <HeadContainer>
-        <MenuName>{truncateText(menuName, maxLength)}</MenuName>
-        <div>
-          {isEditing && (
-            <DeleteIcon src={Delete} alt="삭제 아이콘" onClick={handleDelete} />
-          )}
-        </div>
-      </HeadContainer>
-      <PhotoWrapper />
-      <HeartContainer>
-        {state === "좋아요" || isClicked ? (
-          <HeartImg
-            onClick={handlerHeartClick}
-            src={FullHeart}
-            alt="좋아요 버튼"
-          />
-        ) : (
-          <HeartImg onClick={handlerHeartClick} src={Heart} alt="좋아요 버튼" />
+        <MenuName>{truncateText(recipeName, maxLength)}</MenuName>
+        {isEditing && (
+          <DeleteIcon src={Delete} alt="삭제 아이콘" onClick={handleDelete} />
         )}
-        <Count>{countHeartNumber}</Count>
-      </HeartContainer>
-      {showMenu && (
-        <Dropdown
-          position={menuPosition}
-          onOptionSelect={(option) => {
-            if (option === "edit") handleEdit();
-            if (option === "delete") handleDelete();
-          }}
+      </HeadContainer>
+      <PhotoWrapper
+        onClick={handleOpenModal}
+        style={{ backgroundImage: `url(${recipeImage})` }}
+      />
+      <HeartContainer>
+        <HeartImg
+          onClick={handleHeartClick}
+          src={isClicked ? FullHeart : Heart}
+          alt="좋아요 버튼"
         />
-      )}
+        <Count>{recipeLikeCount}</Count>
+      </HeartContainer>
       {isModalOpen && (
         <>
           <Overlay />
-          <ModalContainer>
-            <RecipeModal closeModal={handleCloseModal} />
+          <ModalContainer onClick={(e) => e.stopPropagation()}>
+            <RecipeModal
+              recipeId={recipeId}
+              closeRecipeModal={handleCloseModal}
+              recipe={recipeData}
+            />
           </ModalContainer>
         </>
       )}
@@ -224,13 +211,13 @@ const Container = styled.div`
   border-radius: 10px;
   align-items: center;
   justify-content: center;
-  margin: 15px;
+  margin: 10px 0;
 
   @media screen and (max-width: 1200px) {
     height: 20vw;
     width: 17.8vw;
     border-radius: 0.7vw;
-    margin: 1vw;
+    margin: 0.8vw;
   }
 `;
 

@@ -1,103 +1,118 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
+import { Axios } from "../api/Axios";
 import RecipeBox from "./RecipeBox";
-import RecipeModal from "./RecipeModal";
+import Next from "../assets/images/next.svg";
 
-const WholeRecipe = () => {
-  const [isModalOpen, setIsModalOpen] = useState(false);
+const WholeRecipe = ({ type }) => {
+  const [recipes, setRecipes] = useState([]);
+  const [page, setPage] = useState(0);
+  const [totalPage, setTotalPage] = useState(1);
+  const [error, setError] = useState(null);
 
-  const openModal = () => setIsModalOpen(true);
-  const closeModal = () => setIsModalOpen(false);
+  useEffect(() => {
+    const fetchRecipes = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        const response = await Axios.get(`/recipes`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          params: {
+            page: page,
+            size: 6,
+            type: type,
+          },
+        });
 
-  // 임시 레시피 데이터
-  const recipeData = [
-    { menuName: "스파게티", countHeart: 5 },
-    { menuName: "짜장면", countHeart: 3 },
-    { menuName: "김치찌개", countHeart: 8 },
-    { menuName: "된장찌개", countHeart: 4 },
-    { menuName: "불고기", countHeart: 7 },
-    { menuName: "갈비찜", countHeart: 6 },
-    { menuName: "비빔밥", countHeart: 9 },
-    { menuName: "삼겹살", countHeart: 10 },
-    { menuName: "순두부찌개", countHeart: 2 },
-    { menuName: "잡채", countHeart: 6 },
-    { menuName: "해물파전", countHeart: 7 },
-    { menuName: "떡볶이", countHeart: 8 },
-    { menuName: "라면", countHeart: 5 },
-    { menuName: "김밥", countHeart: 4 },
-    { menuName: "오징어볶음", countHeart: 5 },
-    { menuName: "부대찌개", countHeart: 7 },
-    { menuName: "크림파스타", countHeart: 7 },
-    { menuName: "파인애플볶음밥", countHeart: 6 },
-    { menuName: "피자", countHeart: 10 },
-    { menuName: "치킨너겟", countHeart: 5 },
-    { menuName: "케밥", countHeart: 8 },
-    { menuName: "초밥", countHeart: 7 },
-    { menuName: "삼계탕", countHeart: 9 },
-    { menuName: "홍합탕", countHeart: 6 },
-    { menuName: "쌀국수", countHeart: 8 },
-    { menuName: "떡국", countHeart: 4 },
-    { menuName: "된장찌개", countHeart: 6 },
-    { menuName: "고추장찌개", countHeart: 5 },
-  ];
+        if (response.data && response.data.data) {
+          const { recipeList, pagination } = response.data.data;
+          setRecipes(recipeList);
+          setTotalPage(pagination.totalPage);
+          setPage(pagination.currentPage);
+        } else {
+          throw new Error("응답 데이터 형식이 올바르지 않습니다.");
+        }
+      } catch (error) {
+        console.error("레시피 데이터를 가져오는 데 실패했습니다.", error);
+        setError("레시피 데이터를 가져오는 데 실패했습니다.");
+      }
+    };
+
+    fetchRecipes();
+  }, [page, type]);
+
+  const handleNextPage = () => {
+    if (page < totalPage - 1) {
+      setPage((prevPage) => prevPage + 1);
+    }
+  };
+
+  const handlePrevPage = () => {
+    if (page > 0) {
+      setPage((prevPage) => prevPage - 1);
+    }
+  };
+
+  if (error) {
+    return <div>{error}</div>;
+  }
 
   return (
     <WholeContainer>
+      <PrevButton onClick={handlePrevPage} disabled={page === 0}>
+        <img src={Next} alt="이전 버튼" />
+      </PrevButton>
       <RecipeContainer>
-        {recipeData.map((recipe, index) => (
+        {recipes.map((recipe) => (
           <RecipeBox
-            key={index}
-            menuName={recipe.menuName}
-            countHeart={recipe.countHeart}
-            onClick={openModal}
+            key={recipe.recipeId}
+            recipeId={recipe.recipeId}
+            name={recipe.name}
+            likeCount={recipe.likeCount}
           />
         ))}
-        {isModalOpen && (
-          <>
-            <Overlay />
-            <ModalContainer>
-              <RecipeModal closeRecipeModal={closeModal} />
-            </ModalContainer>
-          </>
-        )}
       </RecipeContainer>
+      <NextButton onClick={handleNextPage} disabled={page >= totalPage - 1}>
+        <img src={Next} alt="다음 버튼" />
+      </NextButton>
     </WholeContainer>
   );
 };
 
-const Overlay = styled.div`
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(0, 0, 0, 0.5);
-  z-index: 1000;
+const PrevButton = styled.button`
+  transform: rotate(180deg);
+  background: none;
+  border: none;
+  cursor: pointer;
+  opacity: ${(props) => (props.disabled ? 0.5 : 1)};
 `;
 
-const ModalContainer = styled.div`
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  z-index: 1001;
+const NextButton = styled.button`
+  background: none;
+  border: none;
+  cursor: pointer;
+  opacity: ${(props) => (props.disabled ? 0.5 : 1)};
 `;
 
 const RecipeContainer = styled.div`
   display: flex;
+  width: 830px;
   flex-wrap: wrap;
+  justify-content: space-between;
+
+  @media screen and (max-width: 1200px) {
+    width: 70vw;
+  }
 `;
 
 const WholeContainer = styled.div`
+  display: flex;
   background-color: ${({ theme }) => theme.colors.green200};
   width: 900px;
   height: 600px;
-  justify-content: space-evenly;
   align-items: center;
   border-radius: 1vw;
-  margin-bottom: 3px;
-  padding: 0 30px;
-  overflow-y: auto;
 
   @media screen and (max-width: 1200px) {
     width: 70vw;
