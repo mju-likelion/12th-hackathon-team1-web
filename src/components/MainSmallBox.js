@@ -8,7 +8,7 @@ const MainSmallBox = ({ isLoggedIn, type }) => {
   const [recipeData, setRecipeData] = useState([]);
   const [page, setPage] = useState(0);
   const [totalPage, setTotalPage] = useState(1);
-  const [error, setError] = useState(null);
+
   const match = 3;
 
   useEffect(() => {
@@ -52,7 +52,6 @@ const MainSmallBox = ({ isLoggedIn, type }) => {
         }
       } catch (error) {
         console.error("레시피 데이터를 가져오는 데 실패했습니다.", error);
-        setError("레시피 데이터를 가져오는 데 실패했습니다.");
       }
     };
 
