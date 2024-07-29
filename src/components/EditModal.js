@@ -5,7 +5,7 @@ import Plus from "../assets/images/plus.svg";
 import Folder from "../assets/images/imageFolder.svg";
 import { recipeData } from "../data/MockData";
 
-const EditModal = ({ recipeId, onSave, saveEditModal }) => {
+const EditModal = ({ recipeId, onSave, saveEditModal, isNew }) => {
   const [title, setTitle] = useState("");
   const [ingredients, setIngredients] = useState([]);
   const [methods, setMethods] = useState([""]);
@@ -18,8 +18,13 @@ const EditModal = ({ recipeId, onSave, saveEditModal }) => {
       setIngredients(recipe.ingredients || []);
       setMethods(recipe.methods || []);
       setImage(recipe.image || null);
+    } else {
+      setTitle("");
+      setIngredients([""]);
+      setMethods([""]);
+      setImage(null);
     }
-  }, [recipeId]);
+  }, [recipeId, isNew]);
 
   const handleIngredientChange = (index, value) => {
     const newIngredients = [...ingredients];
@@ -52,7 +57,7 @@ const EditModal = ({ recipeId, onSave, saveEditModal }) => {
 
   const handleSave = () => {
     const updatedRecipe = {
-      id: recipeId,
+      id: isNew ? null : recipeId,
       title,
       ingredients,
       methods,
