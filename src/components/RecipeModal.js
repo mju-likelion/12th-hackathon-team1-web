@@ -320,7 +320,7 @@ const RecipeModalContainer = styled.div`
   align-items: center;
   justify-content: center;
   border-radius: 10px;
-  z-index: 1001;
+  z-index: 1200;
 
   @media screen and (max-width: 1200px) {
     width: 57.3vw;

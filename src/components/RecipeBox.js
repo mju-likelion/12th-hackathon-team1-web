@@ -177,7 +177,7 @@ const DeleteIcon = styled.img`
   margin-left: auto;
   right: -15px;
   top: -3px;
-  z-index: 1200;
+  z-index: 900;
   cursor: pointer;
 
   @media screen and (max-width: 1200px) {

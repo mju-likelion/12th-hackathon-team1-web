@@ -5,7 +5,7 @@ import Plus from "../assets/images/plus.svg";
 import Folder from "../assets/images/imageFolder.svg";
 import { recipeData } from "../data/MockData";
 
-const EditModal = ({ recipeId, onSave, saveEditModal }) => {
+const EditModal = ({ recipeId, onSave, saveEditModal, isNew }) => {
   const [title, setTitle] = useState("");
   const [ingredients, setIngredients] = useState([]);
   const [methods, setMethods] = useState([""]);
@@ -18,8 +18,13 @@ const EditModal = ({ recipeId, onSave, saveEditModal }) => {
       setIngredients(recipe.ingredients || []);
       setMethods(recipe.methods || []);
       setImage(recipe.image || null);
+    } else {
+      setTitle("");
+      setIngredients([""]);
+      setMethods([""]);
+      setImage(null);
     }
-  }, [recipeId]);
+  }, [recipeId, isNew]);
 
   const handleIngredientChange = (index, value) => {
     const newIngredients = [...ingredients];
@@ -52,7 +57,7 @@ const EditModal = ({ recipeId, onSave, saveEditModal }) => {
 
   const handleSave = () => {
     const updatedRecipe = {
-      id: recipeId,
+      id: isNew ? null : recipeId,
       title,
       ingredients,
       methods,
@@ -63,7 +68,7 @@ const EditModal = ({ recipeId, onSave, saveEditModal }) => {
   };
 
   return (
-    <RecipeModalContainer>
+    <EditModalContainer>
       <ModalBackground>
         <TitleBox>
           <TitleInput
@@ -122,16 +127,19 @@ const EditModal = ({ recipeId, onSave, saveEditModal }) => {
           </ContentContainer>
         </ModalContentBox>
         <ButtonContainer>
+          <SmallButton text="닫기" onClick={saveEditModal} />
           <SmallButton text="저장" onClick={handleSave} />
         </ButtonContainer>
       </ModalBackground>
-    </RecipeModalContainer>
+    </EditModalContainer>
   );
 };
 
 const ButtonContainer = styled.div`
   display: flex;
-  justify-content: end;
+  justify-content: space-between;
+  width: 50%;
+  margin-left: auto;
 `;
 
 const UploadLabel = styled.label`
@@ -143,7 +151,7 @@ const UploadLabel = styled.label`
   height: 30px;
   margin: 5px;
 
-  @media screen and (max-width: 1200px){
+  @media screen and (max-width: 1200px) {
     width: 2.08vw;
     height: 2.08vw;
     margin: 0.35vw;
@@ -166,7 +174,7 @@ const UploadImg = styled.div`
   background-color: ${({ theme }) => theme.colors.white};
   margin: 5px;
 
-  @media screen and (max-width: 1200px){
+  @media screen and (max-width: 1200px) {
     width: 34.7vw;
     height: 2.56vw;
     border-radius: 0.7vw;
@@ -182,7 +190,7 @@ const UploadButton = styled.input`
   position: absolute;
   cursor: pointer;
 
-  @media screen and (max-width: 1200px){
+  @media screen and (max-width: 1200px) {
     height: 2.77vw;
     width: 2.77vw;
     margin: 0.35vw;
@@ -195,7 +203,7 @@ const TopContainer = styled.div`
   display: flex;
   justify-content: space-between;
 
-  @media screen and (max-width: 1200px){
+  @media screen and (max-width: 1200px) {
     height: 17.36vw;
   }
 `;
@@ -214,7 +222,7 @@ const MethodTextarea = styled.input`
     outline: none;
   }
 
-  @media screen and (max-width: 1200px){
+  @media screen and (max-width: 1200px) {
     font-size: 1.3vw;
     width: 34.7vw;
     height: 2.56vw;
@@ -227,7 +235,6 @@ const IngredientContainer = styled.div`
   display: flex;
   width: 75%;
   flex-wrap: wrap;
-
 `;
 
 const IngredientInput = styled.p`
@@ -238,7 +245,7 @@ const IngredientInput = styled.p`
   border-radius: 10px;
   margin: 5px;
 
-  @media screen and (max-width: 1200px){
+  @media screen and (max-width: 1200px) {
     font-size: 1.1vw;
     width: 5.55vw;
     height: 2.56vw;
@@ -254,7 +261,7 @@ const AddIngredientButton = styled.img`
   margin: 10px;
   cursor: pointer;
 
-  @media screen and (max-width: 1200px){
+  @media screen and (max-width: 1200px) {
     width: 1.4vw;
     height: 1.4vw;
     border-radius: 0.7vw;
@@ -306,7 +313,7 @@ const TitleBox = styled.div`
   display: flex;
   justify-content: start;
   align-items: center;
-  margin:60px 0 10px 0;
+  margin: 60px 0 10px 0;
 
   @media screen and (max-width: 1200px) {
     margin: 4.16vw 0 0.7vw 0;
@@ -341,7 +348,6 @@ const ModalBackground = styled.div`
   display: flex;
   flex-direction: column;
   align-content: space-between;
-  
 
   @media screen and (max-width: 1200px) {
     width: 50vw;
@@ -349,7 +355,7 @@ const ModalBackground = styled.div`
   }
 `;
 
-const RecipeModalContainer = styled.div`
+const EditModalContainer = styled.div`
   background-color: ${({ theme }) => theme.colors.green200};
   width: 800px;
   height: 850px;
@@ -357,7 +363,7 @@ const RecipeModalContainer = styled.div`
   align-items: center;
   justify-content: center;
   border-radius: 10px;
-  z-index: 1001;
+  z-index: 1200;
 
   @media screen and (max-width: 1200px) {
     width: 57.3vw;
