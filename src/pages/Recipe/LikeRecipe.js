@@ -1,9 +1,8 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import RecipeBox from "../../components/RecipeBox";
 import Sidebar from "../../components/Sidebar";
-import { LikeAtom } from "../../Recoil/Atom";
-import { useRecoilValue } from "recoil";
+import { Axios } from "../../api/Axios";
 
 const chunkArray = (array, size) => {
   const result = [];
@@ -14,28 +13,33 @@ const chunkArray = (array, size) => {
 };
 
 const LikeRecipe = () => {
-  const [showMenu, setShowMenu] = useState(false);
-  const [menuPosition, setMenuPosition] = useState({ x: 0, y: 0 });
-  const Like = useRecoilValue(LikeAtom);
+  const [likeRecipes, setLikeRecipes] = useState([]);
 
-  const handleContextMenu = (e) => {
-    e.preventDefault();
-    setMenuPosition({ x: e.clientX, y: e.clientY });
-    setShowMenu(true);
-  };
+  useEffect(() => {
+    const fetchLikeRecipes = async () => {
+      try {
+        const response = await Axios.get("/auth/likes");
+        if (response.data.data.recipeList) {
+          setLikeRecipes(response.data.data.recipeList);
+        } else {
+          throw new Error("응답 데이터 형식이 올바르지 않습니다.");
+        }
+      } catch (error) {
+        console.error("좋아요 레시피를 가져오는 데 실패했습니다.", error);
+      }
+    };
 
-  const handleClickOutside = () => {
-    setShowMenu(false);
-  };
+    fetchLikeRecipes();
+  }, []);
 
-  const groupedLikes = chunkArray(Like, 3);
+  const groupedLikes = chunkArray(likeRecipes, 3);
 
   return (
     <>
       <SidebarContainer>
         <Sidebar />
       </SidebarContainer>
-      <Container onClick={handleClickOutside}>
+      <Container>
         <TitleEditContainer>
           <BoxTitle>좋아요 누른 레시피</BoxTitle>
         </TitleEditContainer>
@@ -45,14 +49,11 @@ const LikeRecipe = () => {
               <Line key={index}>
                 {group.map((box) => (
                   <RecipeBox
-                    key={box.id}
-                    state="좋아요"
-                    menuName={box.menuName}
-                    id={box.id}
-                    countHeart={box.countHeart}
-                    showMenu={showMenu}
-                    menuPosition={menuPosition}
-                    handleContextMenu={handleContextMenu}
+                    key={box.recipeId}
+                    recipeId={box.recipeId}
+                    menuName={box.name}
+                    countHeart={box.likeCount}
+                    isClicked={true}
                   />
                 ))}
               </Line>
@@ -85,12 +86,10 @@ const TitleEditContainer = styled.div`
 const Line = styled.div`
   display: flex;
   width: 830px;
-  justify-content: start;
-  gap: 10px;
+  justify-content: space-between;
 
   @media screen and (max-width: 1200px) {
     width: 64vw;
-    gap: 2.3vw;
   }
 `;
 const Wrapper = styled.div`

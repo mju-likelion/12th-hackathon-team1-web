@@ -6,8 +6,16 @@ import FullHeart from "../assets/images/fullHeart.svg";
 import Delete from "../assets/images/delateIcon.svg";
 import RecipeModal from "./RecipeModal";
 
-const RecipeBox = ({ recipeId, isEditing, removeRecipeBox, onClick }) => {
-  const [isClicked, setIsClicked] = useState(false);
+const RecipeBox = ({
+  recipeId,
+  menuName,
+  countHeart,
+  isClicked: initialClicked,
+  isEditing,
+  removeRecipeBox,
+  onClick,
+}) => {
+  const [isClicked, setIsClicked] = useState(initialClicked);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [recipeData, setRecipeData] = useState(null);
   const [maxLength, setMaxLength] = useState(12);
@@ -88,10 +96,9 @@ const RecipeBox = ({ recipeId, isEditing, removeRecipeBox, onClick }) => {
     setIsModalOpen(false);
   };
 
-  const currentRecipe = recipeData || {};
-  const recipeImage = currentRecipe?.image?.url || "";
-  const recipeName = currentRecipe?.name || "";
-  const recipeLikeCount = currentRecipe?.likeCount || 0;
+  const recipeImage = recipeData?.image?.url || "";
+  const recipeName = recipeData?.name || menuName;
+  const recipeLikeCount = recipeData?.likeCount || 0;
 
   return (
     <Container onClick={isEditing ? handleEdit : handleOpenModal}>
