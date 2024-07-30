@@ -3,6 +3,7 @@ import styled from "styled-components";
 import SmallButton from "./SmallButton";
 import Plus from "../assets/images/plus.svg";
 import Folder from "../assets/images/imageFolder.svg";
+import RecipeIngredient from "./RecipeIngredient";
 import { recipeData } from "../data/MockData";
 
 const EditModal = ({ recipeId, onSave, saveEditModal, isNew }) => {
@@ -10,6 +11,8 @@ const EditModal = ({ recipeId, onSave, saveEditModal, isNew }) => {
   const [ingredients, setIngredients] = useState([]);
   const [methods, setMethods] = useState([""]);
   const [image, setImage] = useState(null);
+  const [showIngredientBox, setShowIngredientBox] = useState(false);
+  const [activeIngredientIndex, setActiveIngredientIndex] = useState(null);
 
   useEffect(() => {
     const recipe = recipeData.find((item) => item.id === recipeId);
@@ -25,6 +28,18 @@ const EditModal = ({ recipeId, onSave, saveEditModal, isNew }) => {
       setImage(null);
     }
   }, [recipeId, isNew]);
+
+  const handleIngredientSelect = (ingredient) => {
+    if (activeIngredientIndex !== null) {
+      const newIngredients = [...ingredients];
+      newIngredients[activeIngredientIndex] = ingredient.name;
+      setIngredients(newIngredients);
+    } else {
+      setIngredients([...ingredients, ingredient.name]);
+    }
+    setActiveIngredientIndex(null);
+    setShowIngredientBox(false);
+  };
 
   const handleIngredientChange = (index, value) => {
     const newIngredients = [...ingredients];
@@ -88,12 +103,24 @@ const EditModal = ({ recipeId, onSave, saveEditModal, isNew }) => {
                     key={index}
                     type="text"
                     value={ingredient}
+                    onClick={() => {
+                      setActiveIngredientIndex(index);
+                      setShowIngredientBox(true);
+                    }}
                     onChange={(e) =>
                       handleIngredientChange(index, e.target.value)
                     }
                     placeholder={`재료 ${index + 1}`}
-                  />
+                  >
+                    {ingredient}
+                  </IngredientInput>
                 ))}
+                {showIngredientBox && (
+                  <RecipeIngredient
+                    closeIngredientBox={() => setShowIngredientBox(false)}
+                    onIngredientSelect={handleIngredientSelect}
+                  />
+                )}
                 <AddIngredientButton src={Plus} onClick={handleAddIngredient} />
               </IngredientContainer>
             </ContentContainer>
@@ -244,6 +271,10 @@ const IngredientInput = styled.p`
   height: 37px;
   border-radius: 10px;
   margin: 5px;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 
   @media screen and (max-width: 1200px) {
     font-size: 1.1vw;
