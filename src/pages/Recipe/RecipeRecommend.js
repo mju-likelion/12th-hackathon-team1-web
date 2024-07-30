@@ -1,9 +1,8 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import RecipeBox from "../../components/RecipeBox";
 import Sidebar from "../../components/Sidebar";
-import { LikeAtom } from "../../Recoil/Atom";
-import { useRecoilValue } from "recoil";
+import { Axios } from "../../api/Axios";
 
 const chunkArray = (array, size) => {
   const result = [];
@@ -14,45 +13,54 @@ const chunkArray = (array, size) => {
 };
 
 const RecipeRecommend = () => {
-  const [showMenu, setShowMenu] = useState(false);
-  const [menuPosition, setMenuPosition] = useState({ x: 0, y: 0 });
-  const Like = useRecoilValue(LikeAtom);
+  const [recipes, setRecipes] = useState([]);
 
-  const handleContextMenu = (e) => {
-    e.preventDefault();
-    setMenuPosition({ x: e.clientX, y: e.clientY });
-    setShowMenu(true);
-  };
+  useEffect(() => {
+    const fetchRecipes = async () => {
+      try {
+        const response = await Axios.get("/recipes/recommendations", {
+          params: {
+            page: 0,
+            size: 10,
+            type: "newest",
+            match: 2,
+          },
+        });
 
-  const handleClickOutside = () => {
-    setShowMenu(false);
-  };
+        if (response.data.data.recipeList) {
+          setRecipes(response.data.data.recipeList);
+        } else {
+          throw new Error("응답 데이터 형식이 올바르지 않습니다.");
+        }
+      } catch (error) {
+        console.error("추천 레시피를 가져오는 데 실패했습니다.", error);
+      }
+    };
 
-  const groupedLikes = chunkArray(Like, 3);
+    fetchRecipes();
+  }, []);
+
+  const groupedRecipes = chunkArray(recipes, 3);
 
   return (
     <>
       <SidebarContainer>
         <Sidebar />
       </SidebarContainer>
-      <Container onClick={handleClickOutside}>
+      <Container>
         <TitleEditContainer>
           <BoxTitle>나의 냉장고 레시피</BoxTitle>
         </TitleEditContainer>
         <RecommendContainer>
           <Wrapper>
-            {groupedLikes.map((group, index) => (
+            {groupedRecipes.map((group, index) => (
               <Line key={index}>
-                {group.map((box) => (
+                {group.map((recipe) => (
                   <RecipeBox
-                    key={box.id}
-                    state="좋아요"
-                    menuName={box.menuName}
-                    id={box.id}
-                    countHeart={box.countHeart}
-                    showMenu={showMenu}
-                    menuPosition={menuPosition}
-                    handleContextMenu={handleContextMenu}
+                    key={recipe.recipeId}
+                    recipeId={recipe.recipeId}
+                    menuName={recipe.name}
+                    countHeart={recipe.likeCount}
                   />
                 ))}
               </Line>
