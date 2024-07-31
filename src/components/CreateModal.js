@@ -1,46 +1,17 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import SmallButton from "./SmallButton";
 import Plus from "../assets/images/plus.svg";
 import Folder from "../assets/images/imageFolder.svg";
 import RecipeIngredient from "./RecipeIngredient";
-import { Axios } from "../api/Axios";
 
-const EditModal = ({ recipeId, onSave, saveEditModal }) => {
+const CreateModal = ({ onSave, saveCreateModal }) => {
   const [title, setTitle] = useState("");
   const [ingredients, setIngredients] = useState([]);
   const [methods, setMethods] = useState([""]);
   const [image, setImage] = useState(null);
   const [showIngredientBox, setShowIngredientBox] = useState(false);
   const [activeIngredientIndex, setActiveIngredientIndex] = useState(null);
-
-  useEffect(() => {
-    const fetchRecipe = async () => {
-      try {
-        const response = await Axios.get(`/recipes/${recipeId}`);
-        const recipe = response.data.data;
-
-        if (recipe) {
-          setTitle(recipe.name || "");
-          setIngredients(
-            recipe.ingredientRecipes.map((ing) => ing.ingredient.name) || []
-          );
-          setMethods(
-            recipe.cookingStep ? recipe.cookingStep.split(". ") : [""]
-          );
-          setImage(recipe.image ? recipe.image : null);
-        } else {
-          console.error("레시피 데이터가 없습니다.");
-        }
-      } catch (error) {
-        console.error("레시피를 가져오는 데 실패했습니다.", error);
-      }
-    };
-
-    if (recipeId) {
-      fetchRecipe();
-    }
-  }, [recipeId]);
 
   const handleIngredientSelect = (ingredient) => {
     if (activeIngredientIndex !== null) {
@@ -83,26 +54,41 @@ const EditModal = ({ recipeId, onSave, saveEditModal }) => {
     setImage(URL.createObjectURL(e.target.files[0]));
   };
 
-  const handleSave = async () => {
-    const updatedRecipe = {
-      name: title,
+  const validateForm = () => {
+    if (!title.trim()) {
+      alert("음식 이름을 입력하세요.");
+      return false;
+    }
+    if (
+      ingredients.length === 0 ||
+      ingredients.some((ingredient) => !ingredient.trim())
+    ) {
+      alert("재료를 입력하세요.");
+      return false;
+    }
+    if (methods.length === 0 || methods.some((method) => !method.trim())) {
+      alert("조리 방법을 입력하세요.");
+      return false;
+    }
+    return true;
+  };
+
+  const handleSave = () => {
+    if (!validateForm()) return;
+
+    const newRecipe = {
+      id: null,
+      title,
       ingredients,
-      cooking_step: methods.join("."),
+      methods,
       image,
     };
-
-    try {
-      await Axios.patch(`/recipes/${recipeId}`, updatedRecipe);
-      onSave(updatedRecipe);
-      saveEditModal();
-    } catch (error) {
-      console.log("Saving recipe:", updatedRecipe);
-      console.error("레시피를 저장하는 데 실패했습니다.", error);
-    }
+    onSave(newRecipe);
+    saveCreateModal();
   };
 
   return (
-    <EditModalContainer>
+    <CreateModalContainer>
       <ModalBackground>
         <TitleBox>
           <TitleInput
@@ -117,24 +103,23 @@ const EditModal = ({ recipeId, onSave, saveEditModal }) => {
             <ContentContainer>
               <Title>재료</Title>
               <IngredientContainer>
-                {Array.isArray(ingredients) &&
-                  ingredients.map((ingredient, index) => (
-                    <IngredientInput
-                      key={index}
-                      type="text"
-                      value={ingredient}
-                      onClick={() => {
-                        setActiveIngredientIndex(index);
-                        setShowIngredientBox(true);
-                      }}
-                      onChange={(e) =>
-                        handleIngredientChange(index, e.target.value)
-                      }
-                      placeholder={`재료 ${index + 1}`}
-                    >
-                      {ingredient}
-                    </IngredientInput>
-                  ))}
+                {ingredients.map((ingredient, index) => (
+                  <IngredientInput
+                    key={index}
+                    type="text"
+                    value={ingredient}
+                    onClick={() => {
+                      setActiveIngredientIndex(index);
+                      setShowIngredientBox(true);
+                    }}
+                    onChange={(e) =>
+                      handleIngredientChange(index, e.target.value)
+                    }
+                    placeholder={`재료 ${index + 1}`}
+                  >
+                    {ingredient}
+                  </IngredientInput>
+                ))}
                 {showIngredientBox && (
                   <RecipeIngredient
                     closeIngredientBox={() => setShowIngredientBox(false)}
@@ -147,16 +132,15 @@ const EditModal = ({ recipeId, onSave, saveEditModal }) => {
           </TopContainer>
           <ContentContainer>
             <Title>조리 방법</Title>
-            {Array.isArray(methods) &&
-              methods.map((method, index) => (
-                <MethodTextarea
-                  key={index}
-                  value={method}
-                  onChange={(e) => handleMethodChange(index, e.target.value)}
-                  onKeyDown={(e) => handleMethodKeyDown(index, e)}
-                  placeholder="ex) 돼지고기는 핏물을 빼주세요"
-                />
-              ))}
+            {methods.map((method, index) => (
+              <MethodTextarea
+                key={index}
+                value={method}
+                onChange={(e) => handleMethodChange(index, e.target.value)}
+                onKeyDown={(e) => handleMethodKeyDown(index, e)}
+                placeholder="ex) 돼지고기는 핏물을 빼주세요"
+              />
+            ))}
           </ContentContainer>
           <ContentContainer>
             <Title>사진</Title>
@@ -175,11 +159,11 @@ const EditModal = ({ recipeId, onSave, saveEditModal }) => {
           </ContentContainer>
         </ModalContentBox>
         <ButtonContainer>
-          <SmallButton text="닫기" onClick={saveEditModal} />
+          <SmallButton text="닫기" onClick={saveCreateModal} />
           <SmallButton text="저장" onClick={handleSave} />
         </ButtonContainer>
       </ModalBackground>
-    </EditModalContainer>
+    </CreateModalContainer>
   );
 };
 
@@ -407,7 +391,7 @@ const ModalBackground = styled.div`
   }
 `;
 
-const EditModalContainer = styled.div`
+const CreateModalContainer = styled.div`
   background-color: ${({ theme }) => theme.colors.green200};
   width: 800px;
   height: 850px;
@@ -424,4 +408,4 @@ const EditModalContainer = styled.div`
   }
 `;
 
-export default EditModal;
+export default CreateModal;
