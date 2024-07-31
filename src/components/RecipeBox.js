@@ -21,8 +21,6 @@ const RecipeBox = ({
   const [maxLength, setMaxLength] = useState(12);
 
   useEffect(() => {
-    console.log("Fetching recipe data for:", recipeId);
-
     const fetchRecipeData = async () => {
       try {
         const response = await Axios.get(`/recipes/${recipeId}`);
