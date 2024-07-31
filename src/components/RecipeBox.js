@@ -21,6 +21,8 @@ const RecipeBox = ({
   const [maxLength, setMaxLength] = useState(12);
 
   useEffect(() => {
+    console.log("Fetching recipe data for:", recipeId);
+
     const fetchRecipeData = async () => {
       try {
         const response = await Axios.get(`/recipes/${recipeId}`);
@@ -84,8 +86,14 @@ const RecipeBox = ({
     }
   };
 
-  const handleEdit = () => {
-    setIsModalOpen(true);
+  const handleClick = (e) => {
+    e.stopPropagation();
+    if (isEditing) {
+      onClick(recipeId);
+      setIsModalOpen(false);
+    } else {
+      handleOpenModal();
+    }
   };
 
   const handleOpenModal = () => {
@@ -101,7 +109,7 @@ const RecipeBox = ({
   const recipeLikeCount = recipeData?.likeCount || 0;
 
   return (
-    <Container onClick={isEditing ? handleEdit : handleOpenModal}>
+    <Container onClick={handleClick}>
       <HeadContainer>
         <MenuName>{truncateText(recipeName, maxLength)}</MenuName>
         {isEditing && (
@@ -125,6 +133,7 @@ const RecipeBox = ({
           <Overlay />
           <ModalContainer onClick={(e) => e.stopPropagation()}>
             <RecipeModal
+              key={recipeId}
               recipeId={recipeId}
               closeRecipeModal={handleCloseModal}
               recipe={recipeData}

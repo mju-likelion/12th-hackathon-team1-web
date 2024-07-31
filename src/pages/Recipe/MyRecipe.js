@@ -30,11 +30,7 @@ const MyRecipe = () => {
         const response = await Axios.get("/users/me/recipes", {
           params: { page: 0, size: 10, type: "newest" },
         });
-        if (
-          response.data &&
-          response.data.data &&
-          Array.isArray(response.data.data.recipeList)
-        ) {
+        if (response.data && response.data.data) {
           setRecipeData(response.data.data.recipeList);
         } else {
           console.error("응답 데이터 형식이 올바르지 않습니다.");
@@ -47,16 +43,6 @@ const MyRecipe = () => {
     fetchRecipes();
   }, []);
 
-  const handleUpdate = (recipeId, updatedRecipe) => {
-    if (!updatedRecipe) return;
-
-    setRecipeData((prevData) =>
-      prevData.map((recipe) =>
-        recipe.recipeId === recipeId ? updatedRecipe : recipe
-      )
-    );
-  };
-
   const handleEditClick = () => {
     setIsEditing((prev) => !prev);
   };
@@ -64,7 +50,7 @@ const MyRecipe = () => {
   const openRecipeModal = (recipeId) => {
     if (!isEditing) {
       setCurrentRecipeId(
-        recipeData.find((recipe) => recipe.recipeId === recipeId)
+        recipeData.find((recipeData) => recipeData.recipeId === recipeId)
       );
       setShowRecipeModal(true);
     }
@@ -110,8 +96,10 @@ const MyRecipe = () => {
   const handleSave = (updatedRecipe) => {
     if (updatedRecipe.recipeId) {
       setRecipeData((prevData) =>
-        prevData.map((recipe) =>
-          recipe.recipeId === updatedRecipe.recipeId ? updatedRecipe : recipe
+        prevData.map((recipeData) =>
+          recipeData.recipeId === updatedRecipe.recipeId
+            ? updatedRecipe
+            : recipeData
         )
       );
     } else {
@@ -140,17 +128,16 @@ const MyRecipe = () => {
             <Wrapper>
               {chunkedData.map((chunk, index) => (
                 <Line key={index}>
-                  {chunk.map((recipeList) => (
+                  {chunk.map((recipeData) => (
                     <RecipeBox
-                      key={recipeList.recipeId}
-                      recipeId={recipeList.recipeId}
-                      menuName={recipeList.name}
-                      countHeart={recipeList.likeCount}
-                      image={recipeList.image}
+                      key={recipeData.recipeId}
+                      recipeId={recipeData.recipeId}
+                      menuName={recipeData.name}
+                      countHeart={recipeData.likeCount}
+                      image={recipeData.image}
                       isEditing={isEditing}
                       removeRecipeBox={removeRecipeBox}
                       onClick={isEditing ? openEditModal : openRecipeModal}
-                      onUpdate={handleUpdate}
                     />
                   ))}
                 </Line>
