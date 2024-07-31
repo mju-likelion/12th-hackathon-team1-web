@@ -8,11 +8,12 @@ import { Axios } from "../api/Axios";
 
 const EditModal = ({ recipeId, onSave, closeEditModal }) => {
   const [title, setTitle] = useState("");
-  const [ingredients, setIngredients] = useState([]);
+  const [ingredients, setIngredients] = useState([{ name: "", id: null }]);
   const [methods, setMethods] = useState([""]);
-  const [image, setImage] = useState(null);
+  const [imageId, setImageId] = useState(null);
   const [showIngredientBox, setShowIngredientBox] = useState(false);
   const [activeIngredientIndex, setActiveIngredientIndex] = useState(null);
+  const [showIngredientOptions, setShowIngredientOptions] = useState(false);
 
   useEffect(() => {
     const fetchRecipe = async () => {
@@ -23,12 +24,15 @@ const EditModal = ({ recipeId, onSave, closeEditModal }) => {
         if (recipe) {
           setTitle(recipe.name || "");
           setIngredients(
-            recipe.ingredientRecipes.map((ing) => ing.ingredient.name) || []
+            recipe.ingredientRecipes.map((ing) => ({
+              name: ing.ingredient.name,
+              id: ing.ingredient.id,
+            })) || []
           );
           setMethods(
             recipe.cookingStep ? recipe.cookingStep.split(". ") : [""]
           );
-          setImage(recipe.image ? recipe.image : null);
+          setImageId(recipe.image && recipe.image.id ? recipe.image.id : null);
         } else {
           console.error("레시피 데이터가 없습니다.");
         }
@@ -42,26 +46,49 @@ const EditModal = ({ recipeId, onSave, closeEditModal }) => {
     }
   }, [recipeId]);
 
-  const handleIngredientSelect = (ingredient) => {
+  const handleIngredientSelect = async (recipe) => {
+    const ingredient = recipe.ingredientRecipes;
+
     if (activeIngredientIndex !== null) {
       const newIngredients = [...ingredients];
-      newIngredients[activeIngredientIndex] = ingredient.name;
+      newIngredients[activeIngredientIndex] = {
+        name: ingredient.name,
+        id: ingredient.id,
+      };
       setIngredients(newIngredients);
+
+      try {
+        await Axios.post(`/recipes/${recipeId}/ingredients`, {
+          ingredients: [ingredient.id],
+        });
+      } catch (error) {
+        console.error("재료를 추가하는 데 실패했습니다.", error);
+      }
     } else {
-      setIngredients([...ingredients, ingredient.name]);
+      setIngredients([
+        ...ingredients,
+        {
+          name: ingredient.name,
+          id: ingredient.id,
+        },
+      ]);
     }
+
     setActiveIngredientIndex(null);
     setShowIngredientBox(false);
   };
 
   const handleIngredientChange = (index, value) => {
     const newIngredients = [...ingredients];
-    newIngredients[index] = value;
+    newIngredients[index] = {
+      ...newIngredients[index],
+      name: value,
+    };
     setIngredients(newIngredients);
   };
 
   const handleAddIngredient = () => {
-    setIngredients([...ingredients, ""]);
+    setIngredients([...ingredients, { name: "", id: null }]);
   };
 
   const handleMethodChange = (index, value) => {
@@ -80,24 +107,80 @@ const EditModal = ({ recipeId, onSave, closeEditModal }) => {
   };
 
   const handleImageChange = (e) => {
-    setImage(URL.createObjectURL(e.target.files[0]));
+    setImageId(URL.createObjectURL(e.target.files[0]));
   };
 
   const handleSave = async () => {
     const updatedRecipe = {
       name: title,
-      ingredients,
-      cooking_step: methods.join("."),
-      image,
+      cookingStep: methods.join(". "),
+      imageId,
     };
 
     try {
       await Axios.patch(`/recipes/${recipeId}`, updatedRecipe);
-      onSave({ ...updatedRecipe, id: recipeId });
+      onSave({ updatedRecipe, id: recipeId });
       closeEditModal();
+      window.location.reload();
     } catch (error) {
-      console.log("Saving recipe:", updatedRecipe);
       console.error("레시피를 저장하는 데 실패했습니다.", error);
+    }
+  };
+
+  const handleIngredientClick = (index, event) => {
+    setActiveIngredientIndex(index);
+    setShowIngredientOptions(true);
+  };
+
+  const IngredientOptionsDropdown = ({
+    onRegister,
+    onDelete,
+    closeOptions,
+  }) => (
+    <DropdownContainer>
+      <DropdownButton
+        onClick={() => {
+          onRegister();
+          closeOptions();
+        }}
+      >
+        등록
+      </DropdownButton>
+      <DropdownButton
+        onClick={() => {
+          onDelete();
+          closeOptions();
+        }}
+      >
+        삭제
+      </DropdownButton>
+    </DropdownContainer>
+  );
+
+  const handleDeleteIngredient = async (index) => {
+    const ingredientToDelete = ingredients[index];
+
+    if (!ingredientToDelete || !ingredientToDelete.id) {
+      console.error("삭제할 재료의 ID가 없습니다.");
+      return;
+    }
+
+    /*
+    -> 재료 등록/삭제 시 받는 ID 변경 가능한지 문의한 상태. 이후 확인 되면 로직 삭제 예정
+    console.log("레시피 ID: ", recipeId);
+    console.log("삭제할 재료 정보:", ingredientToDelete);
+    console.log("삭제할 재료 ID:", ingredientToDelete.id);
+    */
+
+    try {
+      await Axios.delete(`/recipes/${recipeId}/ingredients`, {
+        data: {
+          ingredientRecipeIds: [ingredientToDelete.id],
+        },
+      });
+      setIngredients((prev) => prev.filter((_, i) => i !== index));
+    } catch (error) {
+      console.error("재료 삭제에 실패했습니다.", error);
     }
   };
 
@@ -115,24 +198,32 @@ const EditModal = ({ recipeId, onSave, closeEditModal }) => {
         <ModalContentBox>
           <TopContainer>
             <ContentContainer>
-              <Title>재료</Title>
+              <TitleContainer>
+                <Title>재료</Title>
+                {showIngredientOptions && (
+                  <IngredientOptionsDropdown
+                    onRegister={() => setShowIngredientBox(true)}
+                    onDelete={() =>
+                      handleDeleteIngredient(activeIngredientIndex)
+                    }
+                    closeOptions={() => setShowIngredientOptions(false)}
+                  />
+                )}
+              </TitleContainer>
               <IngredientContainer>
                 {Array.isArray(ingredients) &&
                   ingredients.map((ingredient, index) => (
                     <IngredientInput
                       key={index}
                       type="text"
-                      value={ingredient}
-                      onClick={() => {
-                        setActiveIngredientIndex(index);
-                        setShowIngredientBox(true);
-                      }}
+                      value={ingredient.name}
+                      onClick={(e) => handleIngredientClick(index, e)}
                       onChange={(e) =>
                         handleIngredientChange(index, e.target.value)
                       }
                       placeholder={`재료 ${index + 1}`}
                     >
-                      {ingredient}
+                      {ingredient.name}
                     </IngredientInput>
                   ))}
                 {showIngredientBox && (
@@ -161,7 +252,7 @@ const EditModal = ({ recipeId, onSave, closeEditModal }) => {
           <ContentContainer>
             <Title>사진</Title>
             <UploadImg>
-              {image && <img src={image} alt="Preview" />}
+              {imageId && <img src={imageId} alt="Preview" />}
               <UploadLabel htmlFor="file-upload">
                 <FolderIcon src={Folder} alt="Folder Icon" />
               </UploadLabel>
@@ -182,6 +273,10 @@ const EditModal = ({ recipeId, onSave, closeEditModal }) => {
     </EditModalContainer>
   );
 };
+
+const TitleContainer = styled.div`
+  display: flex;
+`;
 
 const ButtonContainer = styled.div`
   display: flex;
@@ -421,6 +516,27 @@ const EditModalContainer = styled.div`
     width: 57.3vw;
     height: 60vw;
     border-radius: 1vw;
+  }
+`;
+
+const DropdownContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  background-color: ${({ theme }) => theme.colors.green100};
+  border: 1px solid ${({ theme }) => theme.colors.helperText};
+  border-radius: 7px;
+  z-index: 1000;
+`;
+
+const DropdownButton = styled.button`
+  background: none;
+  border: none;
+  padding: 5px 7px;
+  cursor: pointer;
+  ${({ theme }) => theme.fonts.helpText14};
+
+  &:hover {
+    background-color: ${({ theme }) => theme.colors.green200};
   }
 `;
 

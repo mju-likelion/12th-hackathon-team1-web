@@ -4,6 +4,7 @@ import RecipeBox from "../../components/RecipeBox";
 import Plus from "../../assets/images/plus.svg";
 import Sidebar from "../../components/Sidebar";
 import RecipeModal from "../../components/RecipeModal";
+import EditModal from "../../components/EditModal";
 import CreateModal from "../../components/CreateModal";
 import { Axios } from "../../api/Axios";
 
@@ -19,6 +20,7 @@ const MyRecipe = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [showRecipeModal, setShowRecipeModal] = useState(false);
   const [showCreateModal, setShowCreateModal] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
   const [currentRecipeId, setCurrentRecipeId] = useState(null);
   const [recipeData, setRecipeData] = useState([]);
 
@@ -68,6 +70,15 @@ const MyRecipe = () => {
     setShowRecipeModal(false);
   };
 
+  const openEditModal = (recipeId) => {
+    setCurrentRecipeId(recipeId);
+    setShowEditModal(true);
+  };
+
+  const closeEditModal = () => {
+    setShowEditModal(false);
+  };
+
   const removeRecipeBox = (recipeId) => {
     setRecipeData((prevBox) => {
       const newData = prevBox.filter((box) => box.recipeId !== recipeId);
@@ -92,6 +103,7 @@ const MyRecipe = () => {
       setRecipeData((prevData) => [updatedRecipe, ...prevData]);
     }
     setShowCreateModal(false);
+    setShowEditModal(false);
   };
 
   const chunkedData = chunkArray(recipeData || [], 3);
@@ -123,6 +135,7 @@ const MyRecipe = () => {
                       isEditing={isEditing}
                       removeRecipeBox={removeRecipeBox}
                       onClick={openRecipeModal}
+                      onEdit={openEditModal}
                       onSave={handleSave}
                     />
                   ))}
@@ -153,6 +166,18 @@ const MyRecipe = () => {
               <CreateModal
                 onSave={handleSave}
                 saveCreateModal={closeCreateModal}
+              />
+            </ModalContent>
+          </>
+        )}
+        {showEditModal && (
+          <>
+            <Overlay />
+            <ModalContent>
+              <EditModal
+                recipeId={currentRecipeId}
+                onSave={handleSave}
+                closeEditModal={closeEditModal}
               />
             </ModalContent>
           </>
