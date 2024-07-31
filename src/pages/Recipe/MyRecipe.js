@@ -4,6 +4,7 @@ import RecipeBox from "../../components/RecipeBox";
 import Plus from "../../assets/images/plus.svg";
 import Sidebar from "../../components/Sidebar";
 import RecipeModal from "../../components/RecipeModal";
+import CreateModal from "../../components/CreateModal";
 import EditModal from "../../components/EditModal";
 import { Axios } from "../../api/Axios";
 
@@ -18,6 +19,7 @@ const chunkArray = (array, size) => {
 const MyRecipe = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [showRecipeModal, setShowRecipeModal] = useState(false);
+  const [showCreateModal, setShowCreateModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
   const [currentRecipeId, setCurrentRecipeId] = useState(null);
   const [recipeData, setRecipeData] = useState([]);
@@ -28,7 +30,15 @@ const MyRecipe = () => {
         const response = await Axios.get("/users/me/recipes", {
           params: { page: 0, size: 10, type: "newest" },
         });
-        setRecipeData(response.data.data.recipeList);
+        if (
+          response.data &&
+          response.data.data &&
+          Array.isArray(response.data.data.recipeList)
+        ) {
+          setRecipeData(response.data.data.recipeList);
+        } else {
+          console.error("응답 데이터 형식이 올바르지 않습니다.");
+        }
       } catch (error) {
         console.error("레시피 데이터를 가져오는 데 실패했습니다.", error);
       }
@@ -37,23 +47,44 @@ const MyRecipe = () => {
     fetchRecipes();
   }, []);
 
+  const handleUpdate = (recipeId, updatedRecipe) => {
+    if (!updatedRecipe) return;
+
+    setRecipeData((prevData) =>
+      prevData.map((recipe) =>
+        recipe.recipeId === recipeId ? updatedRecipe : recipe
+      )
+    );
+  };
+
   const handleEditClick = () => {
     setIsEditing((prev) => !prev);
   };
 
-  const openRecipeModal = (id) => {
-    setCurrentRecipeId(id);
-    setShowRecipeModal(true);
+  const openRecipeModal = (recipeId) => {
+    if (!isEditing) {
+      setCurrentRecipeId(
+        recipeData.find((recipe) => recipe.recipeId === recipeId)
+      );
+      setShowRecipeModal(true);
+    }
   };
 
-  const openEditModal = (id) => {
-    setCurrentRecipeId(id);
-    setShowEditModal(true);
-  };
-
-  const openAddRecipeModal = () => {
+  const openCreateModal = () => {
     setCurrentRecipeId(null);
-    setShowEditModal(true);
+    setShowCreateModal(true);
+  };
+
+  const openEditModal = (recipeId) => {
+    if (isEditing) {
+      setCurrentRecipeId(recipeId);
+      setShowEditModal(true);
+    }
+  };
+
+  const closeCreateModal = () => {
+    setShowCreateModal(false);
+    setCurrentRecipeId(null);
   };
 
   const closeEditModal = () => {
@@ -65,13 +96,13 @@ const MyRecipe = () => {
     setShowRecipeModal(false);
   };
 
-  const removeRecipeBox = (id) => {
+  const removeRecipeBox = (recipeId) => {
     setRecipeData((prevBox) => {
-      const newData = prevBox.filter((box) => box.id !== id);
-      if (currentRecipeId === id) {
+      const newData = prevBox.filter((box) => box.recipeId !== recipeId);
+      if (currentRecipeId?.recipeId === recipeId) {
         setCurrentRecipeId(null);
       }
-      setShowEditModal(false);
+      setShowCreateModal(false);
       return newData;
     });
   };
@@ -86,10 +117,11 @@ const MyRecipe = () => {
     } else {
       setRecipeData((prevData) => [updatedRecipe, ...prevData]);
     }
-    closeEditModal();
+    if (isEditing) closeEditModal();
+    else closeCreateModal();
   };
 
-  const chunkedData = chunkArray(recipeData, 3);
+  const chunkedData = chunkArray(recipeData || [], 3);
 
   return (
     <>
@@ -108,20 +140,17 @@ const MyRecipe = () => {
             <Wrapper>
               {chunkedData.map((chunk, index) => (
                 <Line key={index}>
-                  {chunk.map((data) => (
+                  {chunk.map((recipeList) => (
                     <RecipeBox
-                      key={data.recipeId}
-                      recipeId={data.recipeId}
-                      menuName={data.name}
-                      countHeart={data.likeCount}
-                      image={data.image}
+                      key={recipeList.recipeId}
+                      recipeId={recipeList.recipeId}
+                      menuName={recipeList.name}
+                      countHeart={recipeList.likeCount}
+                      image={recipeList.image}
                       isEditing={isEditing}
                       removeRecipeBox={removeRecipeBox}
-                      onClick={() =>
-                        isEditing
-                          ? openEditModal(data.recipeId)
-                          : openRecipeModal(data.recipeId)
-                      }
+                      onClick={isEditing ? openEditModal : openRecipeModal}
+                      onUpdate={handleUpdate}
                     />
                   ))}
                 </Line>
@@ -132,7 +161,7 @@ const MyRecipe = () => {
             <PlusButton
               src={Plus}
               alt="레시피 추가 버튼"
-              onClick={openAddRecipeModal}
+              onClick={openCreateModal}
             />
           )}
         </AddWrapper>
@@ -144,6 +173,17 @@ const MyRecipe = () => {
             </ModalContent>
           </>
         )}
+        {showCreateModal && (
+          <>
+            <Overlay />
+            <ModalContent>
+              <CreateModal
+                onSave={handleSave}
+                saveCreateModal={closeCreateModal}
+              />
+            </ModalContent>
+          </>
+        )}
         {showEditModal && (
           <>
             <Overlay />
@@ -152,7 +192,6 @@ const MyRecipe = () => {
                 recipeId={currentRecipeId}
                 onSave={handleSave}
                 saveEditModal={closeEditModal}
-                isNew={currentRecipeId === null}
               />
             </ModalContent>
           </>
