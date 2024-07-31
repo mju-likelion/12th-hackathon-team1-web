@@ -6,7 +6,7 @@ import Folder from "../assets/images/imageFolder.svg";
 import RecipeIngredient from "./RecipeIngredient";
 import { Axios } from "../api/Axios";
 
-const EditModal = ({ recipeId, onSave, saveEditModal }) => {
+const EditModal = ({ recipeId, onSave, closeEditModal }) => {
   const [title, setTitle] = useState("");
   const [ingredients, setIngredients] = useState([]);
   const [methods, setMethods] = useState([""]);
@@ -93,8 +93,8 @@ const EditModal = ({ recipeId, onSave, saveEditModal }) => {
 
     try {
       await Axios.patch(`/recipes/${recipeId}`, updatedRecipe);
-      onSave(updatedRecipe);
-      saveEditModal();
+      onSave({ ...updatedRecipe, id: recipeId });
+      closeEditModal();
     } catch (error) {
       console.log("Saving recipe:", updatedRecipe);
       console.error("레시피를 저장하는 데 실패했습니다.", error);
@@ -175,7 +175,7 @@ const EditModal = ({ recipeId, onSave, saveEditModal }) => {
           </ContentContainer>
         </ModalContentBox>
         <ButtonContainer>
-          <SmallButton text="닫기" onClick={saveEditModal} />
+          <SmallButton text="닫기" onClick={closeEditModal} />
           <SmallButton text="저장" onClick={handleSave} />
         </ButtonContainer>
       </ModalBackground>
