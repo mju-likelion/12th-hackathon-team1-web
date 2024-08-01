@@ -35,11 +35,7 @@ const FoodBox = ({ingredientName, ButtonText, year, month, date, isDate, id, exp
 
     useEffect(() => {
         const handleResize = () => {
-            if(window.innerWidth <= 1200) {
-                setMaxLength(11);
-            }else {
-                setMaxLength(12);
-            }
+            setMaxLength(7);
         };
         window.addEventListener("resize", handleResize);
         handleResize();
@@ -60,7 +56,7 @@ const FoodBox = ({ingredientName, ButtonText, year, month, date, isDate, id, exp
         <Wrapper expirationDate={expirationDate}>
             <TextWrapper onClick={isOpenShowFood}>
                 {showFoodBox &&(
-                <Modal 
+                <Modal
                     id={id}
                     isCloseShowFood={isCloseShowFood}
                     modal = "단건조회"
@@ -86,6 +82,7 @@ const AllWrapper = styled.div`
     align-items : center;
     justify-content: center;
     height: 140px;
+    position: relative;
 
     @media screen and (max-width: 1200px){
         height: 9.72vw;
@@ -134,9 +131,10 @@ const TextWrapper = styled.div`
 const DdayText = styled.div`
     margin-bottom: 100px;
     position: absolute;
+    top: 15px;
     background-color: ${({theme})=>theme.colors.error};
     width: 60px;
-    height: 40px;
+    height: 25px;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -145,9 +143,10 @@ const DdayText = styled.div`
 
     @media screen and (max-width: 1200px){
         width: 5vw;
-        height: 3vw;
-        font-size: 1.5vw;
+        height: 1.8vw;
+        font-size: 1.3vw;
         margin-bottom: 6.95vw;
+        top: 1vw;
     }
 `;
 
