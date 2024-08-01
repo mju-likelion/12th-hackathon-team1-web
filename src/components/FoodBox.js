@@ -4,7 +4,7 @@ import remove from '../assets/images/delateIcon.svg'
 import Modal from '../pages/Modal';
 import { Axios } from '../api/Axios';
 
-const FoodBox = ({ingredientName, ButtonText, year, month, date, isDate, id, expiryDate, location}) => {
+const FoodBox = ({ingredientName, ButtonText, year, month, date, isDate, id, expirationDate, location}) => {
     const [showFoodBox, setShowFoodBox] = useState(false);
     const [maxLength, setMaxLength] = useState(5);
 
@@ -36,9 +36,9 @@ const FoodBox = ({ingredientName, ButtonText, year, month, date, isDate, id, exp
     useEffect(() => {
         const handleResize = () => {
             if(window.innerWidth <= 1200) {
-                setMaxLength(4);
+                setMaxLength(11);
             }else {
-                setMaxLength(5);
+                setMaxLength(12);
             }
         };
         window.addEventListener("resize", handleResize);
@@ -51,13 +51,13 @@ const FoodBox = ({ingredientName, ButtonText, year, month, date, isDate, id, exp
 
     return (
         <AllWrapper>
-            {expiryDate <=3 &&
-        (expiryDate === 0 ?
+            {expirationDate <=3 &&
+        (expirationDate === 0 ?
             <DdayText>D-DAY</DdayText>
-            : <DdayText>D-{ expiryDate }</DdayText>
+            : <DdayText>D-{ expirationDate }</DdayText>
             )
         }
-        <Wrapper expiryDate={expiryDate}>
+        <Wrapper expirationDate={expirationDate}>
             <TextWrapper onClick={isOpenShowFood}>
                 {showFoodBox &&(
                 <Modal 
@@ -94,10 +94,10 @@ const AllWrapper = styled.div`
 `;
 
 const Wrapper = styled.div`
-    background-color: ${({ theme, expiryDate }) => 
-        expiryDate === 3 ? '#FFD8D9' :
-        expiryDate === 2 ? '#FFBAB7' :
-        expiryDate === 1 ? '#FF9F9F' :
+    background-color: ${({ theme, expirationDate }) => 
+        expirationDate === 2 ? '#FFD8D9' :
+    expirationDate === 1 ? '#FFBAB7' :
+    expirationDate === 0 ? '#FF9F9F' :
         theme.colors.white};
     display: flex;
     flex-direction: row;
