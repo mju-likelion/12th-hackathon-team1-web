@@ -24,10 +24,12 @@ const EditModal = ({ recipeId, onSave, closeEditModal }) => {
         if (recipe) {
           setTitle(recipe.name || "");
           setIngredients(
-            recipe.ingredientRecipes.map((ing) => ({
-              name: ing.ingredient.name,
-              id: ing.ingredient.id,
-            })) || []
+            recipe.ingredientRecipes
+              ? recipe.ingredientRecipes.map((ing) => ({
+                  name: ing.ingredient.name,
+                  id: ing.id,
+                }))
+              : []
           );
           setMethods(
             recipe.cookingStep ? recipe.cookingStep.split(". ") : [""]
@@ -46,32 +48,23 @@ const EditModal = ({ recipeId, onSave, closeEditModal }) => {
     }
   }, [recipeId]);
 
-  const handleIngredientSelect = async (recipe) => {
-    const ingredient = recipe.ingredientRecipes;
+  const handleIngredientSelect = async (selectedIngredient) => {
+    const postIngredient = selectedIngredient;
 
     if (activeIngredientIndex !== null) {
       const newIngredients = [...ingredients];
-      newIngredients[activeIngredientIndex] = {
-        name: ingredient.name,
-        id: ingredient.id,
-      };
+      newIngredients[activeIngredientIndex] = selectedIngredient;
       setIngredients(newIngredients);
-
-      try {
-        await Axios.post(`/recipes/${recipeId}/ingredients`, {
-          ingredients: [ingredient.id],
-        });
-      } catch (error) {
-        console.error("재료를 추가하는 데 실패했습니다.", error);
-      }
     } else {
-      setIngredients([
-        ...ingredients,
-        {
-          name: ingredient.name,
-          id: ingredient.id,
-        },
-      ]);
+      setIngredients([...ingredients, selectedIngredient]);
+    }
+
+    try {
+      await Axios.post(`/recipes/${recipeId}/ingredients`, {
+        ingredientIds: [postIngredient.id],
+      });
+    } catch (error) {
+      console.error("재료를 추가하는 데 실패했습니다.", error);
     }
 
     setActiveIngredientIndex(null);
@@ -164,13 +157,6 @@ const EditModal = ({ recipeId, onSave, closeEditModal }) => {
       console.error("삭제할 재료의 ID가 없습니다.");
       return;
     }
-
-    /*
-    -> 재료 등록/삭제 시 받는 ID 변경 가능한지 문의한 상태. 이후 확인 되면 로직 삭제 예정
-    console.log("레시피 ID: ", recipeId);
-    console.log("삭제할 재료 정보:", ingredientToDelete);
-    console.log("삭제할 재료 ID:", ingredientToDelete.id);
-    */
 
     try {
       await Axios.delete(`/recipes/${recipeId}/ingredients`, {
