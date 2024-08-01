@@ -48,32 +48,23 @@ const EditModal = ({ recipeId, onSave, closeEditModal }) => {
     }
   }, [recipeId]);
 
-  const handleIngredientSelect = async (recipe) => {
-    const ingredient = recipe.ingredientRecipes;
+  const handleIngredientSelect = async (selectedIngredient) => {
+    const postIngredient = selectedIngredient;
 
     if (activeIngredientIndex !== null) {
       const newIngredients = [...ingredients];
-      newIngredients[activeIngredientIndex] = {
-        name: ingredient.name,
-        id: ingredient.id,
-      };
+      newIngredients[activeIngredientIndex] = selectedIngredient;
       setIngredients(newIngredients);
-
-      try {
-        await Axios.post(`/recipes/${recipeId}/ingredients`, {
-          ingredients: [ingredient.id],
-        });
-      } catch (error) {
-        console.error("재료를 추가하는 데 실패했습니다.", error);
-      }
     } else {
-      setIngredients([
-        ...ingredients,
-        {
-          name: ingredient.name,
-          id: ingredient.id,
-        },
-      ]);
+      setIngredients([...ingredients, selectedIngredient]);
+    }
+
+    try {
+      await Axios.post(`/recipes/${recipeId}/ingredients`, {
+        ingredientIds: [postIngredient.id],
+      });
+    } catch (error) {
+      console.error("재료를 추가하는 데 실패했습니다.", error);
     }
 
     setActiveIngredientIndex(null);
@@ -123,7 +114,7 @@ const EditModal = ({ recipeId, onSave, closeEditModal }) => {
       await Axios.patch(`/recipes/${recipeId}`, updatedRecipe);
       onSave({ updatedRecipe, id: recipeId });
       closeEditModal();
-      // window.location.reload();
+      window.location.reload();
     } catch (error) {
       console.error("레시피를 저장하는 데 실패했습니다.", error);
     }
@@ -166,10 +157,6 @@ const EditModal = ({ recipeId, onSave, closeEditModal }) => {
       console.error("삭제할 재료의 ID가 없습니다.");
       return;
     }
-
-    console.log("레시피 ID: ", recipeId);
-    console.log("삭제할 재료 정보:", ingredientToDelete);
-    console.log("삭제할 재료 ID:", ingredientToDelete.id);
 
     try {
       await Axios.delete(`/recipes/${recipeId}/ingredients`, {
