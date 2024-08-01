@@ -13,6 +13,15 @@ const RefrigeratorSection = ({title, ButtonText, dateRef, location}) => {
     const [fridgeData, setFridgeData] = useState([]);
     const [roomTempData, setRoomTempData] = useState([]);
 
+    const today = new Date();
+
+    const isDateDDay = (expirationDate) => {
+        const expiryDate = new Date(expirationDate);
+        const diffTime = expiryDate - today;
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+        return diffDays;
+    };
+
     useEffect(()=> {
         const fetchFood = async () => {
             try{
@@ -42,6 +51,7 @@ const RefrigeratorSection = ({title, ButtonText, dateRef, location}) => {
     const closeIngredientBox = () => {
         setShowIngredientBox(false);
     }
+
     return (
         <>
         <Section>
@@ -70,6 +80,10 @@ const RefrigeratorSection = ({title, ButtonText, dateRef, location}) => {
                                     id = {box.id}
                                     ingredientName = {box.ingredientName}
                                     storage="냉동"
+                                    year={box.expirationDate.split('-')[0]}
+                                    month={box.expirationDate.split('-')[1]}
+                                    date={box.expirationDate.split('-')[2]}
+                                    expirationDate={isDateDDay(box.expirationDate)}
                                     location={location}
                                     ButtonText={ButtonText}
                                 />
@@ -91,6 +105,10 @@ const RefrigeratorSection = ({title, ButtonText, dateRef, location}) => {
                                     id = {box.id}
                                     ingredientName = {box.ingredientName}
                                     storage="냉장"
+                                    year={box.expirationDate.split('-')[0]}
+                                    month={box.expirationDate.split('-')[1]}
+                                    date={box.expirationDate.split('-')[2]}
+                                    expirationDate={isDateDDay(box.expirationDate)}
                                     location={location}
                                     ButtonText={ButtonText}
                                 />
@@ -112,6 +130,10 @@ const RefrigeratorSection = ({title, ButtonText, dateRef, location}) => {
                                     id = {box.id}
                                     ingredientName = {box.ingredientName}
                                     storage="상온"
+                                    year={box.expirationDate.split('-')[0]}
+                                    month={box.expirationDate.split('-')[1]}
+                                    date={box.expirationDate.split('-')[2]}
+                                    expirationDate={isDateDDay(box.expirationDate)}
                                     location={location}
                                     ButtonText={ButtonText}
                                 />
