@@ -75,27 +75,31 @@ const MainSmallBox = ({ isLoggedIn, type }) => {
 
   return (
     <SmallBox>
-      <ArrowButton onClick={handlePreviousPage} disabled={page === 0}>
-        <Img src={arrow} alt="이전" style={{ transform: "rotate(180deg)" }} />
-      </ArrowButton>
-      <RecipeBoxWrapper>
+      <AllWrapper>
         {isLoggedIn ? (
-          recipeData.map((recipe) => (
-            <PopularRecipeBox
-              key={recipe.recipeId}
-              recipeId={recipe.recipeId}
-              recipeLikeId={likeRecipes}
-            />
-          ))
-        ) : (
+          <>
+          <ArrowButton onClick={handlePreviousPage} disabled={page === 0}>
+            <Img src={arrow} alt="이전" style={{ transform: "rotate(180deg)" }} />
+          </ArrowButton>
+          <RecipeBoxWrapper>
+            {recipeData.map((recipe) => (
+                <PopularRecipeBox
+                  key={recipe.recipeId}
+                  recipeId={recipe.recipeId}
+                  recipeLikeId={likeRecipes}
+                />
+              ))}
+          </RecipeBoxWrapper>
+          <ArrowButton onClick={handleNextPage} disabled={page >= totalPage - 1}>
+        <Img src={arrow} alt="다음" />
+      </ArrowButton>
+          </>
+        ):(
           <LoginPrompt>
             나만의 좋아요 레시피를 추가해주세요! (로그인 후 이용가능합니다.)
           </LoginPrompt>
         )}
-      </RecipeBoxWrapper>
-      <ArrowButton onClick={handleNextPage} disabled={page >= totalPage - 1}>
-        <Img src={arrow} alt="다음" />
-      </ArrowButton>
+      </AllWrapper>
     </SmallBox>
   );
 };
@@ -107,8 +111,6 @@ const SmallBox = styled.div`
   border-radius: 10px;
   display: flex;
   align-items: center;
-  /* justify-content: space-between; */
-  padding: 0 10px;
 
   @media screen and (max-width: 1200px) {
     width: 38.5vw;
@@ -117,23 +119,43 @@ const SmallBox = styled.div`
   }
 `;
 
-const RecipeBoxWrapper = styled.div`
-  display: flex;
-  gap: 15px;
-  align-items: center;
+const AllWrapper = styled.div`
   width: 100%;
+  height: 220px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 
-  @media screen and (max-width: 1200px) {
+  @media screen and (max-width: 1200px){
+    height: 15.3vw;
+  }
+  `;
+
+const RecipeBoxWrapper = styled.div`
+  width: 500px;
+  height: 220px;
+  display: flex;
+  gap: 35px;
+  align-items: center;
+
+  @media screen and (max-width: 1200px){
+    width: 34.7vw;
+    height: 15.3vw;
     gap: 1vw;
   }
 `;
 
-const ArrowButton = styled.button`
+const ArrowButton = styled.div`
   background-color: transparent;
   border: none;
   cursor: pointer;
   display: flex;
-  align-items: center;
+
+  @media screen and (max-width: 1200px) {
+    height: 2vw;
+    width: 2vw;
+  }
+
 `;
 
 const Img = styled.img`
@@ -141,8 +163,8 @@ const Img = styled.img`
   height: 30px;
 
   @media screen and (max-width: 1200px) {
-    width: 2.08vw;
-    height: 2.08vw;
+    width: 2vw;
+    height: 2vw;
   }
 `;
 
