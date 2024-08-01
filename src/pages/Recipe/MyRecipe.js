@@ -301,11 +301,6 @@ const MyRecipeContainer = styled.div`
 
   @media screen and (max-width: 1200px) {
     width: 70vw;
-    height: 45vw;
-  }
-
-  @media screen and (max-width: 1200px) {
-    width: 70vw;
     min-height: 70vw;
   }
 `;
