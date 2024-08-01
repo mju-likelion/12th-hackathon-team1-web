@@ -1,11 +1,30 @@
-import React, { useState } from "react";
-import styled from "styled-components";
+import React, { useState, useEffect } from "react";
+import styled, {keyframes} from "styled-components";
 import PopularRecipe from "../../components/PopularRecipe";
 import WholeRecipe from "../../components/WholeRecipe";
 import Sidebar from "../../components/Sidebar";
 
 const RecipeMain = () => {
   const [type, setType] = useState("newest");
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchData = async () => {
+        setIsLoading(true);
+        await new Promise(resolve => setTimeout(resolve, 300)); // 2초 지연 시뮬레이션
+        setIsLoading(false);
+    };
+
+    fetchData();
+}, []);
+
+if (isLoading) {
+    return (
+        <LoadingWrapper>
+            <LoadingSpinner />
+        </LoadingWrapper>
+    );
+}
 
   return (
     <>
@@ -45,6 +64,35 @@ const RecipeMain = () => {
     </>
   );
 };
+
+const LoadingWrapper = styled.div`
+    height: 70vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    @media screen and (max-width: 1200px) {
+        height: 50vh;
+    }
+`;
+
+const rotate = keyframes`
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+`;
+
+const LoadingSpinner = styled.div`
+    border: 16px solid #f3f3f3;
+    border-top: 16px solid ${({theme})=>theme.colors.green200};
+    border-radius: 50%;
+    width: 120px;
+    height: 120px;
+    animation: ${rotate} 2s linear infinite;
+`;
 
 const SidebarContainer = styled.div`
   position: absolute;
