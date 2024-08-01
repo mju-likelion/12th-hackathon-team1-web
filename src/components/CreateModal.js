@@ -1,94 +1,38 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import SmallButton from "./SmallButton";
 import Plus from "../assets/images/plus.svg";
 import Folder from "../assets/images/imageFolder.svg";
 import RecipeIngredient from "./RecipeIngredient";
-import { Axios } from "../api/Axios";
 
-const EditModal = ({ recipeId, onSave, closeEditModal }) => {
+const CreateModal = ({ onSave, saveCreateModal }) => {
   const [title, setTitle] = useState("");
-  const [ingredients, setIngredients] = useState([{ name: "", id: null }]);
+  const [ingredients, setIngredients] = useState([]);
   const [methods, setMethods] = useState([""]);
-  const [imageId, setImageId] = useState(null);
+  const [image, setImage] = useState(null);
   const [showIngredientBox, setShowIngredientBox] = useState(false);
   const [activeIngredientIndex, setActiveIngredientIndex] = useState(null);
-  const [showIngredientOptions, setShowIngredientOptions] = useState(false);
 
-  useEffect(() => {
-    const fetchRecipe = async () => {
-      try {
-        const response = await Axios.get(`/recipes/${recipeId}`);
-        const recipe = response.data.data;
-
-        if (recipe) {
-          setTitle(recipe.name || "");
-          setIngredients(
-            recipe.ingredientRecipes.map((ing) => ({
-              name: ing.ingredient.name,
-              id: ing.ingredient.id,
-            })) || []
-          );
-          setMethods(
-            recipe.cookingStep ? recipe.cookingStep.split(". ") : [""]
-          );
-          setImageId(recipe.image && recipe.image.id ? recipe.image.id : null);
-        } else {
-          console.error("레시피 데이터가 없습니다.");
-        }
-      } catch (error) {
-        console.error("레시피를 가져오는 데 실패했습니다.", error);
-      }
-    };
-
-    if (recipeId) {
-      fetchRecipe();
-    }
-  }, [recipeId]);
-
-  const handleIngredientSelect = async (recipe) => {
-    const ingredient = recipe.ingredientRecipes;
-
+  const handleIngredientSelect = (ingredient) => {
     if (activeIngredientIndex !== null) {
       const newIngredients = [...ingredients];
-      newIngredients[activeIngredientIndex] = {
-        name: ingredient.name,
-        id: ingredient.id,
-      };
+      newIngredients[activeIngredientIndex] = ingredient.name;
       setIngredients(newIngredients);
-
-      try {
-        await Axios.post(`/recipes/${recipeId}/ingredients`, {
-          ingredients: [ingredient.id],
-        });
-      } catch (error) {
-        console.error("재료를 추가하는 데 실패했습니다.", error);
-      }
     } else {
-      setIngredients([
-        ...ingredients,
-        {
-          name: ingredient.name,
-          id: ingredient.id,
-        },
-      ]);
+      setIngredients([...ingredients, ingredient.name]);
     }
-
     setActiveIngredientIndex(null);
     setShowIngredientBox(false);
   };
 
   const handleIngredientChange = (index, value) => {
     const newIngredients = [...ingredients];
-    newIngredients[index] = {
-      ...newIngredients[index],
-      name: value,
-    };
+    newIngredients[index] = value;
     setIngredients(newIngredients);
   };
 
   const handleAddIngredient = () => {
-    setIngredients([...ingredients, { name: "", id: null }]);
+    setIngredients([...ingredients, ""]);
   };
 
   const handleMethodChange = (index, value) => {
@@ -107,85 +51,44 @@ const EditModal = ({ recipeId, onSave, closeEditModal }) => {
   };
 
   const handleImageChange = (e) => {
-    setImageId(URL.createObjectURL(e.target.files[0]));
+    setImage(URL.createObjectURL(e.target.files[0]));
   };
 
-  const handleSave = async () => {
-    const updatedRecipe = {
-      name: title,
-      cookingStep: methods.join(". "),
-      imageId,
+  const validateForm = () => {
+    if (!title.trim()) {
+      alert("음식 이름을 입력하세요.");
+      return false;
+    }
+    if (
+      ingredients.length === 0 ||
+      ingredients.some((ingredient) => !ingredient.trim())
+    ) {
+      alert("재료를 입력하세요.");
+      return false;
+    }
+    if (methods.length === 0 || methods.some((method) => !method.trim())) {
+      alert("조리 방법을 입력하세요.");
+      return false;
+    }
+    return true;
+  };
+
+  const handleSave = () => {
+    if (!validateForm()) return;
+
+    const newRecipe = {
+      id: null,
+      title,
+      ingredients,
+      methods,
+      image,
     };
-
-    try {
-      await Axios.patch(`/recipes/${recipeId}`, updatedRecipe);
-      onSave({ updatedRecipe, id: recipeId });
-      closeEditModal();
-      window.location.reload();
-    } catch (error) {
-      console.error("레시피를 저장하는 데 실패했습니다.", error);
-    }
-  };
-
-  const handleIngredientClick = (index, event) => {
-    setActiveIngredientIndex(index);
-    setShowIngredientOptions(true);
-  };
-
-  const IngredientOptionsDropdown = ({
-    onRegister,
-    onDelete,
-    closeOptions,
-  }) => (
-    <DropdownContainer>
-      <DropdownButton
-        onClick={() => {
-          onRegister();
-          closeOptions();
-        }}
-      >
-        등록
-      </DropdownButton>
-      <DropdownButton
-        onClick={() => {
-          onDelete();
-          closeOptions();
-        }}
-      >
-        삭제
-      </DropdownButton>
-    </DropdownContainer>
-  );
-
-  const handleDeleteIngredient = async (index) => {
-    const ingredientToDelete = ingredients[index];
-
-    if (!ingredientToDelete || !ingredientToDelete.id) {
-      console.error("삭제할 재료의 ID가 없습니다.");
-      return;
-    }
-
-    /*
-    -> 재료 등록/삭제 시 받는 ID 변경 가능한지 문의한 상태. 이후 확인 되면 로직 삭제 예정
-    console.log("레시피 ID: ", recipeId);
-    console.log("삭제할 재료 정보:", ingredientToDelete);
-    console.log("삭제할 재료 ID:", ingredientToDelete.id);
-    */
-
-    try {
-      await Axios.delete(`/recipes/${recipeId}/ingredients`, {
-        data: {
-          ingredientRecipeIds: [ingredientToDelete.id],
-        },
-      });
-      setIngredients((prev) => prev.filter((_, i) => i !== index));
-    } catch (error) {
-      console.error("재료 삭제에 실패했습니다.", error);
-    }
+    onSave(newRecipe);
+    saveCreateModal();
   };
 
   return (
-    <EditModalContainer>
+    <CreateModalContainer>
       <ModalBackground>
         <TitleBox>
           <TitleInput
@@ -198,34 +101,25 @@ const EditModal = ({ recipeId, onSave, closeEditModal }) => {
         <ModalContentBox>
           <TopContainer>
             <ContentContainer>
-              <TitleContainer>
-                <Title>재료</Title>
-                {showIngredientOptions && (
-                  <IngredientOptionsDropdown
-                    onRegister={() => setShowIngredientBox(true)}
-                    onDelete={() =>
-                      handleDeleteIngredient(activeIngredientIndex)
-                    }
-                    closeOptions={() => setShowIngredientOptions(false)}
-                  />
-                )}
-              </TitleContainer>
+              <Title>재료</Title>
               <IngredientContainer>
-                {Array.isArray(ingredients) &&
-                  ingredients.map((ingredient, index) => (
-                    <IngredientInput
-                      key={index}
-                      type="text"
-                      value={ingredient.name}
-                      onClick={(e) => handleIngredientClick(index, e)}
-                      onChange={(e) =>
-                        handleIngredientChange(index, e.target.value)
-                      }
-                      placeholder={`재료 ${index + 1}`}
-                    >
-                      {ingredient.name}
-                    </IngredientInput>
-                  ))}
+                {ingredients.map((ingredient, index) => (
+                  <IngredientInput
+                    key={index}
+                    type="text"
+                    value={ingredient}
+                    onClick={() => {
+                      setActiveIngredientIndex(index);
+                      setShowIngredientBox(true);
+                    }}
+                    onChange={(e) =>
+                      handleIngredientChange(index, e.target.value)
+                    }
+                    placeholder={`재료 ${index + 1}`}
+                  >
+                    {ingredient}
+                  </IngredientInput>
+                ))}
                 {showIngredientBox && (
                   <RecipeIngredient
                     closeIngredientBox={() => setShowIngredientBox(false)}
@@ -238,21 +132,20 @@ const EditModal = ({ recipeId, onSave, closeEditModal }) => {
           </TopContainer>
           <ContentContainer>
             <Title>조리 방법</Title>
-            {Array.isArray(methods) &&
-              methods.map((method, index) => (
-                <MethodTextarea
-                  key={index}
-                  value={method}
-                  onChange={(e) => handleMethodChange(index, e.target.value)}
-                  onKeyDown={(e) => handleMethodKeyDown(index, e)}
-                  placeholder="ex) 돼지고기는 핏물을 빼주세요"
-                />
-              ))}
+            {methods.map((method, index) => (
+              <MethodTextarea
+                key={index}
+                value={method}
+                onChange={(e) => handleMethodChange(index, e.target.value)}
+                onKeyDown={(e) => handleMethodKeyDown(index, e)}
+                placeholder="ex) 돼지고기는 핏물을 빼주세요"
+              />
+            ))}
           </ContentContainer>
           <ContentContainer>
             <Title>사진</Title>
             <UploadImg>
-              {imageId && <img src={imageId} alt="Preview" />}
+              {image && <img src={image} alt="Preview" />}
               <UploadLabel htmlFor="file-upload">
                 <FolderIcon src={Folder} alt="Folder Icon" />
               </UploadLabel>
@@ -266,17 +159,13 @@ const EditModal = ({ recipeId, onSave, closeEditModal }) => {
           </ContentContainer>
         </ModalContentBox>
         <ButtonContainer>
-          <SmallButton text="닫기" onClick={closeEditModal} />
+          <SmallButton text="닫기" onClick={saveCreateModal} />
           <SmallButton text="저장" onClick={handleSave} />
         </ButtonContainer>
       </ModalBackground>
-    </EditModalContainer>
+    </CreateModalContainer>
   );
 };
-
-const TitleContainer = styled.div`
-  display: flex;
-`;
 
 const ButtonContainer = styled.div`
   display: flex;
@@ -502,7 +391,7 @@ const ModalBackground = styled.div`
   }
 `;
 
-const EditModalContainer = styled.div`
+const CreateModalContainer = styled.div`
   background-color: ${({ theme }) => theme.colors.green200};
   width: 800px;
   height: 850px;
@@ -519,25 +408,4 @@ const EditModalContainer = styled.div`
   }
 `;
 
-const DropdownContainer = styled.div`
-  display: flex;
-  justify-content: center;
-  background-color: ${({ theme }) => theme.colors.green100};
-  border: 1px solid ${({ theme }) => theme.colors.helperText};
-  border-radius: 7px;
-  z-index: 1000;
-`;
-
-const DropdownButton = styled.button`
-  background: none;
-  border: none;
-  padding: 5px 7px;
-  cursor: pointer;
-  ${({ theme }) => theme.fonts.helpText14};
-
-  &:hover {
-    background-color: ${({ theme }) => theme.colors.green200};
-  }
-`;
-
-export default EditModal;
+export default CreateModal;

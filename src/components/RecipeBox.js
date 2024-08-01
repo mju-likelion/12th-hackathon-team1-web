@@ -5,6 +5,7 @@ import Heart from "../assets/images/Heart.svg";
 import FullHeart from "../assets/images/fullHeart.svg";
 import Delete from "../assets/images/delateIcon.svg";
 import RecipeModal from "./RecipeModal";
+import EditModal from "./EditModal";
 
 const RecipeBox = ({
   recipeId,
@@ -19,6 +20,7 @@ const RecipeBox = ({
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [recipeData, setRecipeData] = useState(null);
   const [maxLength, setMaxLength] = useState(12);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
   useEffect(() => {
     const fetchRecipeData = async () => {
@@ -55,11 +57,6 @@ const RecipeBox = ({
     };
   }, []);
 
-  const handleHeartClick = (e) => {
-    e.stopPropagation();
-    setIsClicked((prev) => !prev);
-  };
-
   const truncateText = (text, maxLength) => {
     if (!text) return "";
     if (text.length > maxLength) {
@@ -68,53 +65,54 @@ const RecipeBox = ({
     return text;
   };
 
-  const handleDelete = async (e) => {
-    e.stopPropagation();
-    if (window.confirm("레시피를 정말 삭제하시겠습니까?")) {
-      try {
-        await Axios.delete(`/recipes/${recipeId}`);
-        removeRecipeBox(recipeId);
-        alert("레시피가 삭제되었습니다.");
-      } catch (error) {
-        console.error("Error deleting recipe:", error);
-        alert("레시피 삭제에 실패했습니다.");
-      } finally {
-        setIsModalOpen(false);
-      }
+  const openModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+  };
+
+  const openEditModal = () => {
+    setIsEditModalOpen(true);
+  };
+
+  const closeEditModal = () => {
+    setIsEditModalOpen(false);
+  };
+
+  const handleSave = (updatedRecipe) => {
+    setRecipeData(updatedRecipe);
+    setIsEditModalOpen(false);
+  };
+
+  const onClickHeart = async () => {
+    setIsClicked(!isClicked);
+    try {
+      await Axios.post(`/recipes/${recipeId}/likes`);
+    } catch (error) {
+      console.error("좋아요 클릭 에러:", error);
     }
   };
 
-  const handleEdit = () => {
-    setIsModalOpen(true);
-  };
-
-  const handleOpenModal = () => {
-    setIsModalOpen(true);
-  };
-
-  const handleCloseModal = () => {
-    setIsModalOpen(false);
-  };
+  if (!recipeData) {
+    return <div>Loading...</div>;
+  }
 
   const recipeImage = recipeData?.image?.url || "";
   const recipeName = recipeData?.name || menuName;
   const recipeLikeCount = recipeData?.likeCount || 0;
 
   return (
-    <Container onClick={isEditing ? handleEdit : handleOpenModal}>
+    <Container onClick={isEditing ? openEditModal : openModal}>
       <HeadContainer>
         <MenuName>{truncateText(recipeName, maxLength)}</MenuName>
-        {isEditing && (
-          <DeleteIcon src={Delete} alt="삭제 아이콘" onClick={handleDelete} />
-        )}
+        {isEditing && <DeleteIcon src={Delete} alt="삭제 아이콘" />}
       </HeadContainer>
-      <PhotoWrapper
-        onClick={handleOpenModal}
-        style={{ backgroundImage: `url(${recipeImage})` }}
-      />
+      <PhotoWrapper style={{ backgroundImage: `url(${recipeImage})` }} />
       <HeartContainer>
         <HeartImg
-          onClick={handleHeartClick}
+          onClick={onClickHeart}
           src={isClicked ? FullHeart : Heart}
           alt="좋아요 버튼"
         />
@@ -125,9 +123,21 @@ const RecipeBox = ({
           <Overlay />
           <ModalContainer onClick={(e) => e.stopPropagation()}>
             <RecipeModal
+              menuName={menuName}
               recipeId={recipeId}
-              closeRecipeModal={handleCloseModal}
-              recipe={recipeData}
+              closeRecipeModal={closeModal}
+            />
+          </ModalContainer>
+        </>
+      )}
+      {isEditModalOpen && (
+        <>
+          <Overlay />
+          <ModalContainer onClick={(e) => e.stopPropagation()}>
+            <EditModal
+              recipeId={recipeId}
+              onSave={handleSave}
+              closeEditModal={closeEditModal}
             />
           </ModalContainer>
         </>
