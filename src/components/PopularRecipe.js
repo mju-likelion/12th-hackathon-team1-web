@@ -3,8 +3,11 @@ import styled from "styled-components";
 import { Axios } from "../api/Axios";
 import PopularRecipeBox from "./PopularRecipeBox";
 import Next from "../assets/images/next.svg";
+import { LikeAtom } from "../Recoil/Atom";
+import { useRecoilValue } from "recoil";
 
 const PopularRecipe = () => {
+  const likeRecipes = useRecoilValue(LikeAtom);
   const [recipeData, setRecipeData] = useState([]);
   const [page, setPage] = useState(0);
   const [totalPage, setTotalPage] = useState(1);
@@ -69,7 +72,7 @@ const PopularRecipe = () => {
         />
       </PrevButton>
       {recipeData.map((recipe) => (
-        <PopularRecipeBox key={recipe.recipeId} recipeId={recipe.recipeId} />
+        <PopularRecipeBox key={recipe.recipeId} recipeId={recipe.recipeId} recipeLikeId={likeRecipes}/>
       ))}
       <NextButton onClick={handleNextPage} disabled={page >= totalPage - 1}>
         <img src={Next} alt="다음 버튼" />

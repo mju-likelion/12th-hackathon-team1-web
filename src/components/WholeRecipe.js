@@ -3,8 +3,11 @@ import styled from "styled-components";
 import { Axios } from "../api/Axios";
 import RecipeBox from "./RecipeBox";
 import Next from "../assets/images/next.svg";
+import { LikeAtom } from "../Recoil/Atom";
+import { useRecoilValue } from "recoil";
 
 const WholeRecipe = ({ type }) => {
+  const likeRecipes = useRecoilValue(LikeAtom);
   const [recipes, setRecipes] = useState([]);
   const [page, setPage] = useState(0);
   const [totalPage, setTotalPage] = useState(1);
@@ -70,6 +73,7 @@ const WholeRecipe = ({ type }) => {
             recipeId={recipe.recipeId}
             name={recipe.name}
             likeCount={recipe.likeCount}
+            recipeLikeId={likeRecipes}
           />
         ))}
       </RecipeContainer>

@@ -3,6 +3,8 @@ import styled from "styled-components";
 import RecipeBox from "../../components/RecipeBox";
 import Sidebar from "../../components/Sidebar";
 import { Axios } from "../../api/Axios";
+import { LikeAtom } from "../../Recoil/Atom";
+import { useRecoilValue } from "recoil";
 
 const chunkArray = (array, size) => {
   const result = [];
@@ -13,6 +15,7 @@ const chunkArray = (array, size) => {
 };
 
 const RecipeRecommend = () => {
+  const likeRecipes = useRecoilValue(LikeAtom)
   const [recipes, setRecipes] = useState([]);
 
   useEffect(() => {
@@ -61,6 +64,7 @@ const RecipeRecommend = () => {
                     recipeId={recipe.recipeId}
                     menuName={recipe.name}
                     countHeart={recipe.likeCount}
+                    recipeLikeId={likeRecipes}
                   />
                 ))}
               </Line>

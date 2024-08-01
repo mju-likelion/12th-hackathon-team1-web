@@ -15,7 +15,7 @@ const AddModal = ({closeAddModal, ingredientName, storageName, closeIngredientBo
 
   const handleSave = async() => {
     try{
-        const response = await Axios.post(`fridge/ingredients`, {
+        await Axios.post(`fridge/ingredients`, {
         ingredientId: ingredientId,
         expiredDate: `${year}-${month}-${date}`,
         quantity: quantity,
@@ -23,7 +23,6 @@ const AddModal = ({closeAddModal, ingredientName, storageName, closeIngredientBo
         memo: memo,
       },
     )
-    console.log("rrr: ", response);
     }catch(error)
     {
       console.log(error);

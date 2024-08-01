@@ -9,25 +9,43 @@ import EditModal from "./EditModal";
 
 const RecipeBox = ({
   recipeId,
+  recipeLikeId,
   menuName,
   countHeart,
-  isClicked: initialClicked,
+  isClicked,
   isEditing,
   removeRecipeBox,
   onClick,
 }) => {
-  const [isClicked, setIsClicked] = useState(initialClicked);
+  const [likeId, setLikeId] = useState([]);
+
+  useEffect(() => {
+    const findLikeId = () => {
+      for (let i = 0; i < recipeLikeId.length; i++) {
+        if (recipeLikeId[i].recipeId === recipeId) {
+          setLikeId(recipeLikeId[i].recipeId);
+          return;
+        }
+      }
+      setLikeId(null);
+    };
+
+    findLikeId();
+  }, [recipeId, recipeLikeId]);
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [recipeData, setRecipeData] = useState(null);
   const [maxLength, setMaxLength] = useState(12);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [likeCount, setLikeCount] = useState(countHeart);
 
   useEffect(() => {
     const fetchRecipeData = async () => {
       try {
-        const response = await Axios.get(`/recipes/${recipeId}`);
+        const response = await Axios.get(`/recipes/${recipeId || recipeLikeId}`);
         if (response.data && response.data.data) {
           setRecipeData(response.data.data);
+          setLikeCount(response.data.data.likeCount || 0);
         } else {
           throw new Error("응답 데이터 형식이 올바르지 않습니다.");
         }
@@ -37,7 +55,7 @@ const RecipeBox = ({
     };
 
     fetchRecipeData();
-  }, [recipeId]);
+  }, [recipeId, recipeLikeId]);
 
   useEffect(() => {
     const handleResize = () => {
@@ -86,12 +104,25 @@ const RecipeBox = ({
     setIsEditModalOpen(false);
   };
 
-  const onClickHeart = async () => {
-    setIsClicked(!isClicked);
-    try {
-      await Axios.post(`/recipes/${recipeId}/likes`);
-    } catch (error) {
-      console.error("좋아요 클릭 에러:", error);
+  const onClickHeart = async (e) => {
+    e.stopPropagation(); 
+
+    if (likeId !== recipeId) {
+      try {
+        await Axios.post(`/recipes/${recipeId}/likes`);
+        setLikeId(recipeId);
+        setLikeCount((prevCount) => prevCount + 1);
+      } catch (error) {
+        console.error("좋아요 클릭 에러:", error);
+      }
+    } else {
+      try {
+        await Axios.delete(`/recipes/${recipeId}/likes`);
+        setLikeId(null);
+        setLikeCount((prevCount) => prevCount - 1);
+      } catch (error) {
+        console.error("좋아요 취소 에러:", error);
+      }
     }
   };
 
@@ -101,7 +132,6 @@ const RecipeBox = ({
 
   const recipeImage = recipeData?.image?.url || "";
   const recipeName = recipeData?.name || menuName;
-  const recipeLikeCount = recipeData?.likeCount || 0;
 
   return (
     <Container onClick={isEditing ? openEditModal : openModal}>
@@ -113,10 +143,10 @@ const RecipeBox = ({
       <HeartContainer>
         <HeartImg
           onClick={onClickHeart}
-          src={isClicked ? FullHeart : Heart}
+          src={likeId === recipeId ? FullHeart : Heart}
           alt="좋아요 버튼"
         />
-        <Count>{recipeLikeCount}</Count>
+        <Count>{likeCount}</Count>
       </HeartContainer>
       {isModalOpen && (
         <>
