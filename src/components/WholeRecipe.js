@@ -25,7 +25,7 @@ const WholeRecipe = ({ type }) => {
         },
         params: {
           page: page,
-          size: 9, // 한번에 9개의 레시피를 불러옵니다.
+          size: 9,
           type: type,
         },
       });
@@ -34,7 +34,7 @@ const WholeRecipe = ({ type }) => {
         const { recipeList, pagination } = response.data.data;
         setRecipes((prevRecipes) => [...prevRecipes, ...recipeList]);
         setTotalPage(pagination.totalPage);
-        setPage(pagination.currentPage + 1); // 다음 페이지를 로드하도록 페이지 증가
+        setPage(pagination.currentPage + 1);
       } else {
         throw new Error("응답 데이터 형식이 올바르지 않습니다.");
       }
