@@ -5,10 +5,25 @@ import Heart from "../assets/images/Heart.svg";
 import FullHeart from "../assets/images/fullHeart.svg";
 import RecipeModal from "./RecipeModal";
 
-const PopularRecipeBox = ({ recipeId }) => {
-  const [isClicked, setIsClicked] = useState(false);
+const PopularRecipeBox = ({ recipeId, recipeLikeId, countHeart }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [recipeData, setRecipeData] = useState(null);
+  const [likeId, setLikeId] = useState([]);
+  const [likeCount, setLikeCount] = useState(countHeart); 
+
+  useEffect(() => {
+    const findLikeId = () => {
+      for (let i = 0; i < recipeLikeId.length; i++) {
+        if (recipeLikeId[i].recipeId === recipeId) {
+          setLikeId(recipeLikeId[i].recipeId);
+          return;
+        }
+      }
+      setLikeId(null);
+    };
+
+    findLikeId();
+  }, [recipeId, recipeLikeId]);
 
   useEffect(() => {
     const fetchRecipeData = async () => {
@@ -16,6 +31,7 @@ const PopularRecipeBox = ({ recipeId }) => {
         const response = await Axios.get(`/recipes/${recipeId}`);
         if (response.data && response.data.data) {
           setRecipeData(response.data.data);
+          setLikeCount(response.data.data.likeCount || 0);
         } else {
           throw new Error("응답 데이터 형식이 올바르지 않습니다.");
         }
@@ -27,8 +43,26 @@ const PopularRecipeBox = ({ recipeId }) => {
     fetchRecipeData();
   }, [recipeId]);
 
-  const handlerHeartClick = () => {
-    setIsClicked(!isClicked);
+  const onClickHeart = async (e) => {
+    e.stopPropagation(); 
+
+    if (likeId !== recipeId) {
+      try {
+        await Axios.post(`/recipes/${recipeId}/likes`);
+        setLikeId(recipeId);
+        setLikeCount((prevCount) => prevCount + 1);
+      } catch (error) {
+        console.error("좋아요 클릭 에러:", error);
+      }
+    } else {
+      try {
+        await Axios.delete(`/recipes/${recipeId}/likes`);
+        setLikeId(null);
+        setLikeCount((prevCount) => prevCount - 1);
+      } catch (error) {
+        console.error("좋아요 취소 에러:", error);
+      }
+    }
   };
 
   const handleOpenModal = () => {
@@ -54,11 +88,11 @@ const PopularRecipeBox = ({ recipeId }) => {
         <MenuName>{recipeData.name}</MenuName>
         <HeartContainer>
           <HeartImg
-            onClick={handlerHeartClick}
-            src={isClicked ? FullHeart : Heart}
+            onClick={onClickHeart}
+            src={likeId === recipeId ? FullHeart : Heart}
             alt="좋아요 버튼"
           />
-          <CountHeart>{recipeData.likeCount}</CountHeart>
+          <CountHeart>{likeCount}</CountHeart>
         </HeartContainer>
       </PopularContainer>
       {isModalOpen && (

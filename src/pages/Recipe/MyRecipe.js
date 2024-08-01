@@ -7,6 +7,8 @@ import RecipeModal from "../../components/RecipeModal";
 import EditModal from "../../components/EditModal";
 import CreateModal from "../../components/CreateModal";
 import { Axios } from "../../api/Axios";
+import { LikeAtom } from "../../Recoil/Atom";
+import { useRecoilValue } from "recoil";
 
 const chunkArray = (array, size) => {
   const chunked = [];
@@ -17,6 +19,7 @@ const chunkArray = (array, size) => {
 };
 
 const MyRecipe = () => {
+  const likeRecipes = useRecoilValue(LikeAtom); 
   const [isEditing, setIsEditing] = useState(false);
   const [showRecipeModal, setShowRecipeModal] = useState(false);
   const [showCreateModal, setShowCreateModal] = useState(false);
@@ -137,6 +140,7 @@ const MyRecipe = () => {
                       onClick={openRecipeModal}
                       onEdit={openEditModal}
                       onSave={handleSave}
+                      recipeLikeId={likeRecipes}
                     />
                   ))}
                 </Line>

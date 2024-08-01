@@ -3,8 +3,11 @@ import styled from "styled-components";
 import arrow from "../assets/images/next.svg";
 import PopularRecipeBox from "./PopularRecipeBox";
 import { Axios } from "../api/Axios";
+import { LikeAtom } from "../Recoil/Atom";
+import { useRecoilValue } from "recoil";
 
 const MainSmallBox = ({ isLoggedIn, type }) => {
+  const likeRecipes = useRecoilValue(LikeAtom)
   const [recipeData, setRecipeData] = useState([]);
   const [page, setPage] = useState(0);
   const [totalPage, setTotalPage] = useState(1);
@@ -81,6 +84,7 @@ const MainSmallBox = ({ isLoggedIn, type }) => {
             <PopularRecipeBox
               key={recipe.recipeId}
               recipeId={recipe.recipeId}
+              recipeLikeId={likeRecipes}
             />
           ))
         ) : (
