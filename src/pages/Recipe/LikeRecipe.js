@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import styled from "styled-components";
 import RecipeBox from "../../components/RecipeBox";
 import Sidebar from "../../components/Sidebar";
-import { Axios } from "../../api/Axios";
+import { LikeAtom } from "../../Recoil/Atom";
+import { useRecoilValue } from "recoil";
 
 const chunkArray = (array, size) => {
   const result = [];
@@ -13,25 +14,7 @@ const chunkArray = (array, size) => {
 };
 
 const LikeRecipe = () => {
-  const [likeRecipes, setLikeRecipes] = useState([]);
-
-  useEffect(() => {
-    const fetchLikeRecipes = async () => {
-      try {
-        const response = await Axios.get("/auth/likes");
-        if (response.data.data.recipeList) {
-          setLikeRecipes(response.data.data.recipeList);
-        } else {
-          throw new Error("응답 데이터 형식이 올바르지 않습니다.");
-        }
-      } catch (error) {
-        console.error("좋아요 레시피를 가져오는 데 실패했습니다.", error);
-      }
-    };
-
-    fetchLikeRecipes();
-  }, []);
-
+  const likeRecipes = useRecoilValue(LikeAtom);
   const groupedLikes = chunkArray(likeRecipes, 3);
 
   return (
@@ -50,10 +33,9 @@ const LikeRecipe = () => {
                 {group.map((box) => (
                   <RecipeBox
                     key={box.recipeId}
-                    recipeId={box.recipeId}
+                    recipeLikeId={box.recipeId}
                     menuName={box.name}
                     countHeart={box.likeCount}
-                    isClicked={true}
                   />
                 ))}
               </Line>

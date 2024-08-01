@@ -9,14 +9,30 @@ import EditModal from "./EditModal";
 
 const RecipeBox = ({
   recipeId,
+  recipeLikeId,
   menuName,
   countHeart,
-  isClicked: initialClicked,
+  isClicked,
   isEditing,
   removeRecipeBox,
   onClick,
 }) => {
-  const [isClicked, setIsClicked] = useState(initialClicked);
+  const [likeId, setLikeId] = useState([]);
+
+  useEffect(() => {
+    const findLikeId = () => {
+      for (let i = 0; i < recipeLikeId.length; i++) {
+        if (recipeLikeId[i].recipeId === recipeId) {
+          setLikeId(recipeLikeId[i].recipeId);
+          return;
+        }
+      }
+      setLikeId(null);
+    };
+
+    findLikeId();
+  }, [recipeId, recipeLikeId]);
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [recipeData, setRecipeData] = useState(null);
   const [maxLength, setMaxLength] = useState(12);
@@ -25,7 +41,7 @@ const RecipeBox = ({
   useEffect(() => {
     const fetchRecipeData = async () => {
       try {
-        const response = await Axios.get(`/recipes/${recipeId}`);
+        const response = await Axios.get(`/recipes/${recipeId || recipeLikeId}`);
         if (response.data && response.data.data) {
           setRecipeData(response.data.data);
         } else {
@@ -37,7 +53,7 @@ const RecipeBox = ({
     };
 
     fetchRecipeData();
-  }, [recipeId]);
+  }, [recipeId, recipeLikeId]);
 
   useEffect(() => {
     const handleResize = () => {
@@ -86,12 +102,23 @@ const RecipeBox = ({
     setIsEditModalOpen(false);
   };
 
-  const onClickHeart = async () => {
-    setIsClicked(!isClicked);
-    try {
-      await Axios.post(`/recipes/${recipeId}/likes`);
-    } catch (error) {
-      console.error("좋아요 클릭 에러:", error);
+  const onClickHeart = async (e) => {
+    e.stopPropagation(); 
+
+    if (likeId !== recipeId) {
+      try {
+        await Axios.post(`/recipes/${recipeId}/likes`);
+        setLikeId(recipeId);
+      } catch (error) {
+        console.error("좋아요 클릭 에러:", error);
+      }
+    } else {
+      try {
+        await Axios.delete(`/recipes/${recipeId}/likes`);
+        setLikeId(null);
+      } catch (error) {
+        console.error("좋아요 취소 에러:", error);
+      }
     }
   };
 
@@ -113,7 +140,7 @@ const RecipeBox = ({
       <HeartContainer>
         <HeartImg
           onClick={onClickHeart}
-          src={isClicked ? FullHeart : Heart}
+          src={likeId === recipeId ? FullHeart : Heart}
           alt="좋아요 버튼"
         />
         <Count>{recipeLikeCount}</Count>
