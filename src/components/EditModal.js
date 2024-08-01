@@ -24,10 +24,12 @@ const EditModal = ({ recipeId, onSave, closeEditModal }) => {
         if (recipe) {
           setTitle(recipe.name || "");
           setIngredients(
-            recipe.ingredientRecipes.map((ing) => ({
-              name: ing.ingredient.name,
-              id: ing.ingredient.id,
-            })) || []
+            recipe.ingredientRecipes
+              ? recipe.ingredientRecipes.map((ing) => ({
+                  name: ing.ingredient.name,
+                  id: ing.id,
+                }))
+              : []
           );
           setMethods(
             recipe.cookingStep ? recipe.cookingStep.split(". ") : [""]
@@ -121,7 +123,7 @@ const EditModal = ({ recipeId, onSave, closeEditModal }) => {
       await Axios.patch(`/recipes/${recipeId}`, updatedRecipe);
       onSave({ updatedRecipe, id: recipeId });
       closeEditModal();
-      window.location.reload();
+      // window.location.reload();
     } catch (error) {
       console.error("레시피를 저장하는 데 실패했습니다.", error);
     }
@@ -165,12 +167,9 @@ const EditModal = ({ recipeId, onSave, closeEditModal }) => {
       return;
     }
 
-    /*
-    -> 재료 등록/삭제 시 받는 ID 변경 가능한지 문의한 상태. 이후 확인 되면 로직 삭제 예정
     console.log("레시피 ID: ", recipeId);
     console.log("삭제할 재료 정보:", ingredientToDelete);
     console.log("삭제할 재료 ID:", ingredientToDelete.id);
-    */
 
     try {
       await Axios.delete(`/recipes/${recipeId}/ingredients`, {
