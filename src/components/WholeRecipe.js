@@ -1,8 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import styled from "styled-components";
 import { Axios } from "../api/Axios";
 import RecipeBox from "./RecipeBox";
-import Next from "../assets/images/next.svg";
 import { LikeAtom } from "../Recoil/Atom";
 import { useRecoilValue } from "recoil";
 
@@ -11,61 +10,72 @@ const WholeRecipe = ({ type }) => {
   const [recipes, setRecipes] = useState([]);
   const [page, setPage] = useState(0);
   const [totalPage, setTotalPage] = useState(1);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  useEffect(() => {
-    const fetchRecipes = async () => {
-      try {
-        const token = localStorage.getItem("token");
-        const response = await Axios.get(`/recipes`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-          params: {
-            page: page,
-            size: 6,
-            type: type,
-          },
-        });
+  const fetchRecipes = useCallback(async () => {
+    if (loading || page >= totalPage) return;
 
-        if (response.data && response.data.data) {
-          const { recipeList, pagination } = response.data.data;
-          setRecipes(recipeList);
-          setTotalPage(pagination.totalPage);
-          setPage(pagination.currentPage);
-        } else {
-          throw new Error("응답 데이터 형식이 올바르지 않습니다.");
-        }
-      } catch (error) {
-        console.error("레시피 데이터를 가져오는 데 실패했습니다.", error);
-        setError("레시피 데이터를 가져오는 데 실패했습니다.");
+    setLoading(true);
+    try {
+      const token = localStorage.getItem("token");
+      const response = await Axios.get(`/recipes`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        params: {
+          page: page,
+          size: 9, // 한번에 9개의 레시피를 불러옵니다.
+          type: type,
+        },
+      });
+
+      if (response.data && response.data.data) {
+        const { recipeList, pagination } = response.data.data;
+        setRecipes((prevRecipes) => [...prevRecipes, ...recipeList]);
+        setTotalPage(pagination.totalPage);
+        setPage(pagination.currentPage + 1); // 다음 페이지를 로드하도록 페이지 증가
+      } else {
+        throw new Error("응답 데이터 형식이 올바르지 않습니다.");
       }
-    };
+    } catch (error) {
+      console.error("레시피 데이터를 가져오는 데 실패했습니다.", error);
+      setError("레시피 데이터를 가져오는 데 실패했습니다.");
+    } finally {
+      setLoading(false);
+    }
+  }, [page, totalPage, loading, type]);
 
+  useEffect(() => {
     fetchRecipes();
-  }, [page, type]);
+  }, [fetchRecipes]);
 
-  const handleNextPage = () => {
-    if (page < totalPage - 1) {
-      setPage((prevPage) => prevPage + 1);
-    }
-  };
+  const handleScroll = useCallback(
+    (event) => {
+      const { scrollTop, scrollHeight, clientHeight } = event.currentTarget;
+      if (scrollHeight - scrollTop === clientHeight && !loading) {
+        fetchRecipes();
+      }
+    },
+    [fetchRecipes, loading]
+  );
 
-  const handlePrevPage = () => {
-    if (page > 0) {
-      setPage((prevPage) => prevPage - 1);
+  useEffect(() => {
+    const container = document.getElementById("recipe-container");
+    if (container) {
+      container.addEventListener("scroll", handleScroll);
+      return () => {
+        container.removeEventListener("scroll", handleScroll);
+      };
     }
-  };
+  }, [handleScroll]);
 
   if (error) {
     return <div>{error}</div>;
   }
 
   return (
-    <WholeContainer>
-      <PrevButton onClick={handlePrevPage} disabled={page === 0}>
-        <img src={Next} alt="이전 버튼" />
-      </PrevButton>
+    <WholeContainer id="recipe-container">
       <RecipeContainer>
         {recipes.map((recipe) => (
           <RecipeBox
@@ -77,33 +87,14 @@ const WholeRecipe = ({ type }) => {
           />
         ))}
       </RecipeContainer>
-      <NextButton onClick={handleNextPage} disabled={page >= totalPage - 1}>
-        <img src={Next} alt="다음 버튼" />
-      </NextButton>
+      {loading && <LoadingSpinner>Loading...</LoadingSpinner>}
     </WholeContainer>
   );
 };
 
-const PrevButton = styled.button`
-  transform: rotate(180deg);
-  background: none;
-  border: none;
-  cursor: pointer;
-  opacity: ${(props) => (props.disabled ? 0.5 : 1)};
-`;
-
-const NextButton = styled.button`
-  background: none;
-  border: none;
-  cursor: pointer;
-  opacity: ${(props) => (props.disabled ? 0.5 : 1)};
-`;
-
 const RecipeContainer = styled.div`
   display: flex;
-  width: 830px;
   flex-wrap: wrap;
-  justify-content: space-between;
 
   @media screen and (max-width: 1200px) {
     width: 70vw;
@@ -115,13 +106,31 @@ const WholeContainer = styled.div`
   background-color: ${({ theme }) => theme.colors.green200};
   width: 900px;
   height: 600px;
-  align-items: center;
+  overflow-y: scroll;
+  align-items: start;
   border-radius: 1vw;
+  &::-webkit-scrollbar-button {
+    display: none;
+  }
+  &::-webkit-scrollbar {
+    width: 5px;
+  }
+  &::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    background: #ccc;
+  }
 
   @media screen and (max-width: 1200px) {
     width: 70vw;
     height: 45vw;
   }
+`;
+
+const LoadingSpinner = styled.div`
+  width: 100%;
+  text-align: center;
+  padding: 10px;
+  color: ${({ theme }) => theme.colors.primary};
 `;
 
 export default WholeRecipe;
