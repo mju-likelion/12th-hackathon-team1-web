@@ -181,6 +181,8 @@ const Title = styled.p`
 
   @media screen and (max-width: 1200px){
     font-size: 1.5vw;
+    margin-left: 2vw;
+    margin-bottom: 1vw;
   }
 `;
 
