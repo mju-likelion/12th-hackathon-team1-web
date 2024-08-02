@@ -128,6 +128,23 @@ const RecipeBox = ({
     }
   };
 
+  const handleDelete = async (e) => {
+    e.stopPropagation();
+    const confirmDelete = window.confirm("정말 삭제하시겠습니까?");
+    if (confirmDelete) {
+      try {
+        await Axios.delete(`/recipes/${recipeId}`, {
+          params: { recipe_id: recipeId },
+        });
+        removeRecipeBox(recipeId);
+        alert("레시피가 삭제되었습니다.");
+      } catch (error) {
+        console.error("레시피 삭제 에러:", error);
+        alert("레시피 삭제에 실패했습니다.");
+      }
+    }
+  };
+
   if (!recipeData) {
     return <div>Loading...</div>;
   }
@@ -139,7 +156,9 @@ const RecipeBox = ({
     <Container onClick={isEditing ? openEditModal : openModal}>
       <HeadContainer>
         <MenuName>{truncateText(recipeName, maxLength)}</MenuName>
-        {isEditing && <DeleteIcon src={Delete} alt="삭제 아이콘" />}
+        {isEditing && (
+          <DeleteIcon src={Delete} alt="삭제 아이콘" onClick={handleDelete} />
+        )}
       </HeadContainer>
       <PhotoWrapper style={{ backgroundImage: `url(${recipeImage})` }} />
       <HeartContainer>
