@@ -8,6 +8,29 @@ const Ingredient = ({searchValue, storageName, closeIngredientBox}) => {
     const [ingredientName, setIngredientName] = useState('');
     const [ingredientId, setIngredientId] = useState('');
     const [ingredients, setIngredients] = useState([]);
+    const [maxLength, setMaxLength] = useState('');
+
+    useEffect(() => {
+        const handleResize = () => {
+                setMaxLength(20);
+            };
+        
+            window.addEventListener("resize", handleResize);
+        
+            handleResize();
+        
+            return () => {
+            window.removeEventListener("resize", handleResize);
+            };
+        }, []);
+
+    const truncateText = (text, maxLength) => {
+        if (!text) return "";
+        if (text.length > maxLength) {
+            return text.slice(0, maxLength) + "...";
+            }
+            return text;
+        };
 
     useEffect(() => {
         const fetchRec = async() => {
@@ -40,7 +63,7 @@ const Ingredient = ({searchValue, storageName, closeIngredientBox}) => {
         ingredient.name.includes(searchValue) && (
         <IngredientBox 
         ingredientId={ingredient.id}
-        onClick={() =>openAddModal(ingredient.name, ingredient.id)}>{ingredient.name}</IngredientBox>
+        onClick={() =>openAddModal(ingredient.name, ingredient.id)}>{truncateText(ingredient.name, maxLength)}</IngredientBox>
         ))}
         {addIngredient && 
         <Modal 
@@ -68,6 +91,12 @@ const IngredientBox = styled.button`
     height: 25px;
     border-radius: 5px;
     margin-top: 15px;
+
+    @media screen and (max-width: 480px){
+        width: 50vw;
+        height: 8vw;
+        font-size: 3vw;
+    }
 `;
 
 export default Ingredient;

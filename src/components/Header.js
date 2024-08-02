@@ -5,7 +5,7 @@ import menu from "../assets/images/Menu.svg";
 import search from "../assets/images/search.svg";
 import Heart from "../assets/images/Heart.svg";
 import { Link, useNavigate } from "react-router-dom";
-import { Axios } from "../api/Axios"; // Axios 임포트
+import { Axios } from "../api/Axios";
 
 const Header = ({ isLoggedIn, setIsLoggedIn }) => {
   const navigate = useNavigate();
@@ -148,8 +148,8 @@ const Search = styled.input`
     font-size: 1.3vw;
   }
 
-  @media screen and (max-width: 500px) {
-    font-size: 1.8vw;
+  @media screen and (max-width: 480px) {
+    font-size: 2.5vw;
   }
 `;
 
@@ -182,6 +182,10 @@ const HeaderContent = styled.div`
   background-color: ${({ theme }) => theme.colors.white};
   border: 1px solid ${({ theme }) => theme.colors.headerLine};
   z-index: 1000;
+
+  @media screen and (max-width: 480px){
+    padding: 0 6vw;
+  }
 `;
 
 const LogoImg = styled.img`
@@ -201,8 +205,8 @@ const PageText = styled.p`
     font-size: 1.3vw;
   }
 
-  @media screen and (max-width: 500px) {
-    font-size: 1.8vw;
+  @media screen and (max-width: 480px) {
+    font-size: 2.5vw;
   }
 `;
 

@@ -106,6 +106,12 @@ const WrapperBox = styled.div`
         height: 60vw;
         border-radius: 1vw;
     }
+
+    @media screen and (max-width: 480px){
+        width: 77.2vw;
+        height: 104vw;
+        border-radius: 2vw;
+    }
     `;
     
 
@@ -116,6 +122,11 @@ const Wrapper = styled.div`
 
     @media screen and (max-width: 1200px){
         height: 54.5vw;
+    }
+
+    @media screen and (max-width: 480px){
+        height: 96vw;
+        justify-content: space-between;
     }
 `;
 
@@ -128,6 +139,9 @@ const TitleBox = styled.div`
   @media screen and (max-width: 1200px){
     margin-bottom: 1.5vw;
   }
+  @media screen and (max-width: 1200px){
+    margin-top: 1.5vw;
+  }
 `;
 
 const MainTitle = styled.p`
@@ -135,6 +149,10 @@ const MainTitle = styled.p`
 
   @media screen and (max-width: 1200px){
     font-size: 3vw;
+  }
+
+  @media screen and (max-width: 480px){
+    font-size: 4.8vw;
   }
 `;
 
@@ -153,6 +171,13 @@ const SmallWrapper = styled.div`
         border-radius: 0.52vw;
         margin-bottom: 1.5vw;
     }
+
+    @media screen and (max-width: 480px){
+        width: 70vw;
+        height: 78.6vw;
+        border-radius: 2vw;
+        margin-bottom: 0;
+    }
 `;
 
 const TextBoxWrapper = styled.div`
@@ -164,7 +189,10 @@ const TextBoxWrapper = styled.div`
 
   @media screen and (max-width: 1200px){
     height: 38vw;
+  }
 
+  @media screen and (max-width: 480px){
+    height: 70vw;
   }
 `;
 
@@ -184,6 +212,10 @@ const Title = styled.p`
     margin-left: 2vw;
     margin-bottom: 1vw;
   }
+
+  @media screen and (max-width: 480px){
+    font-size: 3vw;
+  }
 `;
 
 const NameBox = styled.div`
@@ -200,15 +232,25 @@ const NameBox = styled.div`
     border-radius: 2vw;
     margin-left: 2vw;
   }
+
+  @media screen and (max-width: 480px){
+    height: 5.5vw;
+  }
   
 `;
 
 const TextBox = styled.p`
-${({theme})=>theme.fonts.helpText14}
+  ${({theme})=>theme.fonts.helpText14}
   margin: 0 15px;
+
   @media screen and (max-width: 1200px){
     font-size: 1.2vw;
     margin: 0 1.5vw;
+  }
+
+  @media screen and (max-width: 480px){
+    font-size: 2.5vw;
+    margin: 0 3vw;
   }
 `;
 

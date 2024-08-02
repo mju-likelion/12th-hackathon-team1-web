@@ -22,6 +22,13 @@ const Container = styled.button`
     border-radius: 1vw;
     font-size: 1.5vw;
   }
+
+  @media screen and (max-width: 480px){
+    width: 15vw;
+    height: 7.2vw;
+    border-radius: 1.5vw;
+    font-size: 3vw;
+  }
 `;
 
 export default SmallButton;
