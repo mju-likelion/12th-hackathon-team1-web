@@ -107,6 +107,7 @@ const CreateModal = ({ onSave, saveCreateModal }) => {
     await Axios.post("/recipes", newRecipe);
     onSave(newRecipe);
     saveCreateModal();
+    window.location.reload();
   };
 
   return (
