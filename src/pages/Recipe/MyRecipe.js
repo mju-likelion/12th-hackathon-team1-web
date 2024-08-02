@@ -125,10 +125,12 @@ const MyRecipe = () => {
         </TitleEditContainer>
         <AddWrapper>
           <MyRecipeContainer>
+            <div>
             {chunkedData.map((chunk, index) => (
               <Line key={index}>
                 {chunk.map((recipeData) => (
-                  <RecipeBox
+                  <div>
+                    <RecipeBox
                     key={recipeData.recipeId}
                     recipeId={recipeData.recipeId}
                     menuName={recipeData.name}
@@ -141,9 +143,11 @@ const MyRecipe = () => {
                     onSave={handleSave}
                     recipeLikeId={likeRecipes}
                   />
+                  </div>
                 ))}
               </Line>
             ))}
+            </div>
           </MyRecipeContainer>
           {isEditing && (
             <PlusButton
@@ -271,10 +275,14 @@ const TitleEditContainer = styled.div`
 
 const Line = styled.div`
   display: flex;
-  justify-content: start;
+  width: 810px;
+  gap: 45px;
+  margin: 20px 0;
 
   @media screen and (max-width: 1200px) {
-    width: 64vw;
+    width: 62.4vw;
+    gap: 4.5vw;
+    margin-top: 1.4vw;
   }
 `;
 
@@ -284,7 +292,7 @@ const MyRecipeContainer = styled.div`
   background-color: ${({ theme }) => theme.colors.green200};
   width: 900px;
   height: 850px;
-  justify-content: start;
+  justify-content: center;
   overflow-y: scroll;
   align-items: start;
   border-radius: 1vw;
