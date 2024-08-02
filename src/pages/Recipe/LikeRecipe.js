@@ -67,11 +67,17 @@ const TitleEditContainer = styled.div`
 
 const Line = styled.div`
   display: flex;
-  width: 830px;
-  justify-content: space-between;
+  width: auto;
+  gap: 45px;
+  justify-content: start;
+  margin: 20px 0;
+  width: 810px;
 
   @media screen and (max-width: 1200px) {
-    width: 64vw;
+    width: 62.4vw;
+    gap: 4.5vw;
+    margin: 1.4vw 0;
+    
   }
 `;
 const Wrapper = styled.div`

@@ -19,7 +19,7 @@ const chunkArray = (array, size) => {
 };
 
 const MyRecipe = () => {
-  const likeRecipes = useRecoilValue(LikeAtom); 
+  const likeRecipes = useRecoilValue(LikeAtom);
   const [isEditing, setIsEditing] = useState(false);
   const [showRecipeModal, setShowRecipeModal] = useState(false);
   const [showCreateModal, setShowCreateModal] = useState(false);
@@ -125,27 +125,29 @@ const MyRecipe = () => {
         </TitleEditContainer>
         <AddWrapper>
           <MyRecipeContainer>
-            <Wrapper>
-              {chunkedData.map((chunk, index) => (
-                <Line key={index}>
-                  {chunk.map((recipeData) => (
+            <div>
+            {chunkedData.map((chunk, index) => (
+              <Line key={index}>
+                {chunk.map((recipeData) => (
+                  <div>
                     <RecipeBox
-                      key={recipeData.recipeId}
-                      recipeId={recipeData.recipeId}
-                      menuName={recipeData.name}
-                      countHeart={recipeData.likeCount}
-                      image={recipeData.image}
-                      isEditing={isEditing}
-                      removeRecipeBox={removeRecipeBox}
-                      onClick={openRecipeModal}
-                      onEdit={openEditModal}
-                      onSave={handleSave}
-                      recipeLikeId={likeRecipes}
-                    />
-                  ))}
-                </Line>
-              ))}
-            </Wrapper>
+                    key={recipeData.recipeId}
+                    recipeId={recipeData.recipeId}
+                    menuName={recipeData.name}
+                    countHeart={recipeData.likeCount}
+                    image={recipeData.image}
+                    isEditing={isEditing}
+                    removeRecipeBox={removeRecipeBox}
+                    onClick={openRecipeModal}
+                    onEdit={openEditModal}
+                    onSave={handleSave}
+                    recipeLikeId={likeRecipes}
+                  />
+                  </div>
+                ))}
+              </Line>
+            ))}
+            </div>
           </MyRecipeContainer>
           {isEditing && (
             <PlusButton
@@ -273,30 +275,37 @@ const TitleEditContainer = styled.div`
 
 const Line = styled.div`
   display: flex;
-  width: 830px;
-  justify-content: space-between;
-  gap: 10px;
+  width: 810px;
+  gap: 45px;
+  margin: 20px 0;
 
   @media screen and (max-width: 1200px) {
-    width: 64vw;
-    gap: 2.3vw;
+    width: 62.4vw;
+    gap: 4.5vw;
+    margin-top: 1.4vw;
   }
 `;
 
-const Wrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-`;
-
 const MyRecipeContainer = styled.div`
+  display: flex;
+  flex-wrap: wrap;
   background-color: ${({ theme }) => theme.colors.green200};
   width: 900px;
-  min-height: 900px;
-  overflow-y: auto;
-  justify-content: space-evenly;
-  align-items: center;
+  height: 850px;
+  justify-content: center;
+  overflow-y: scroll;
+  align-items: start;
   border-radius: 1vw;
+  &::-webkit-scrollbar-button {
+    display: none;
+  }
+  &::-webkit-scrollbar {
+    width: 5px;
+  }
+  &::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    background: #ccc;
+  }
 
   @media screen and (max-width: 1200px) {
     width: 70vw;

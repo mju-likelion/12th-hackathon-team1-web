@@ -3,6 +3,7 @@ import styled from "styled-components";
 import SmallButton from "./SmallButton";
 import Plus from "../assets/images/plus.svg";
 import Folder from "../assets/images/imageFolder.svg";
+import DeleteIcon from "../assets/images/x.svg";
 import RecipeIngredient from "./RecipeIngredient";
 import { Axios } from "../api/Axios";
 
@@ -11,6 +12,7 @@ const EditModal = ({ recipeId, onSave, closeEditModal }) => {
   const [ingredients, setIngredients] = useState([{ name: "", id: null }]);
   const [methods, setMethods] = useState([""]);
   const [imageId, setImageId] = useState(null);
+  const [imageUrl, setImageUrl] = useState(null);
   const [showIngredientBox, setShowIngredientBox] = useState(false);
   const [activeIngredientIndex, setActiveIngredientIndex] = useState(null);
   const [showIngredientOptions, setShowIngredientOptions] = useState(false);
@@ -34,7 +36,10 @@ const EditModal = ({ recipeId, onSave, closeEditModal }) => {
           setMethods(
             recipe.cookingStep ? recipe.cookingStep.split(". ") : [""]
           );
-          setImageId(recipe.image && recipe.image.id ? recipe.image.id : null);
+          if (recipe.image && recipe.image.id) {
+            setImageId(recipe.image.id);
+            setImageUrl(recipe.image.url);
+          }
         } else {
           console.error("레시피 데이터가 없습니다.");
         }
@@ -99,8 +104,45 @@ const EditModal = ({ recipeId, onSave, closeEditModal }) => {
     }
   };
 
-  const handleImageChange = (e) => {
-    setImageId(URL.createObjectURL(e.target.files[0]));
+  const handleImageChange = async (e) => {
+    const image = e.target.files[0];
+    if (image) {
+      const formData = new FormData();
+      formData.append("file", image);
+
+      try {
+        const response = await Axios.post("/recipes/images", formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        });
+
+        console.log(response);
+
+        if (response.data.statusCode === "200") {
+          setImageId(response.data.data.id);
+          setImageUrl(response.data.data.url);
+        } else {
+          console.error("이미지 등록에 실패했습니다.");
+        }
+      } catch (error) {
+        console.error("이미지 등록 중 오류가 발생했습니다.", error);
+      }
+    }
+  };
+
+  const handleDeleteImage = async () => {
+    if (!imageId) return;
+
+    console.log(imageId);
+
+    try {
+      await Axios.delete(`/recipes/images/${imageId}`);
+      setImageId(null);
+      setImageUrl(null);
+    } catch (error) {
+      console.error("이미지 삭제에 실패했습니다.", error);
+    }
   };
 
   const handleSave = async () => {
@@ -238,14 +280,18 @@ const EditModal = ({ recipeId, onSave, closeEditModal }) => {
           <ContentContainer>
             <Title>사진</Title>
             <UploadImg>
-              {imageId && <img src={imageId} alt="Preview" />}
+              {imageId && (
+                <ImageContainer>
+                  <ImagePreview src={imageUrl} alt="업로드한 이미지" />
+                  <DeleteButton src={DeleteIcon} onClick={handleDeleteImage} />
+                </ImageContainer>
+              )}
               <UploadLabel htmlFor="file-upload">
-                <FolderIcon src={Folder} alt="Folder Icon" />
+                <FolderIcon src={Folder} alt="파일 불러오기" />
               </UploadLabel>
-              <UploadButton
+              <UploadInput
                 id="file-upload"
                 type="file"
-                accept="image/*"
                 onChange={handleImageChange}
               />
             </UploadImg>
@@ -259,6 +305,32 @@ const EditModal = ({ recipeId, onSave, closeEditModal }) => {
     </EditModalContainer>
   );
 };
+
+const ImageContainer = styled.div`
+  display: flex;
+  width: 250px;
+  margin: 10px;
+`;
+
+const ImagePreview = styled.img`
+  height: 183px;
+  width: 210px;
+  background-color: ${({ theme }) => theme.colors.green200};
+  border-radius: 10px;
+
+  @media screen and (max-width: 1200px) {
+    height: 12.8vw;
+    width: 15.5vw;
+    border-radius: 0.7vw;
+  }
+`;
+
+const DeleteButton = styled.img`
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  margin-left: 10px;
+`;
 
 const TitleContainer = styled.div`
   display: flex;
@@ -278,7 +350,7 @@ const UploadLabel = styled.label`
   justify-content: center;
   width: 30px;
   height: 30px;
-  margin: 5px;
+  margin: 30px;
 
   @media screen and (max-width: 1200px) {
     width: 2.08vw;
@@ -290,14 +362,16 @@ const UploadLabel = styled.label`
 const FolderIcon = styled.img`
   width: 100%;
   height: 100%;
+  cursor: pointer;
 `;
 
 const UploadImg = styled.div`
   display: flex;
+  align-items: center;
   width: 500px;
-  height: 37px;
+  min-height: 37px;
   border-radius: 10px;
-  justify-content: end;
+  justify-content: space-between;
   border: none;
   ${({ theme }) => theme.fonts.default16}
   background-color: ${({ theme }) => theme.colors.white};
@@ -305,13 +379,13 @@ const UploadImg = styled.div`
 
   @media screen and (max-width: 1200px) {
     width: 34.7vw;
-    height: 2.56vw;
+    min-height: 2.56vw;
     border-radius: 0.7vw;
     margin: 0.35vw;
   }
 `;
 
-const UploadButton = styled.input`
+const UploadInput = styled.input`
   height: 40px;
   width: 40px;
   margin: 5px;
