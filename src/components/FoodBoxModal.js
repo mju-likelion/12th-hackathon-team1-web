@@ -6,7 +6,7 @@ import { Axios } from '../api/Axios';
 
 const FoodBoxModal = ({isCloseShowFood, id, isDate, idName, location}) => {
   const [showModify, setShowModify] = useState(false);
-  const [foodData, setFoodData] = useState([]);
+  const [foodData, setFoodData] = useState([null]);
 
   useEffect(()=> {
     const ShowFood = async () => {
@@ -33,7 +33,6 @@ const FoodBoxModal = ({isCloseShowFood, id, isDate, idName, location}) => {
   const closeModifyModal = () => {
     setShowModify(false);
   }
-
   return (
         <div>
         <WrapperBox onClick={stopPropagation}>
@@ -95,8 +94,8 @@ const FoodBoxModal = ({isCloseShowFood, id, isDate, idName, location}) => {
 
 const WrapperBox = styled.div`
     background-color: ${({theme}) => theme.colors.green200};
-    width: 800px;
-    height: 836px;
+    width: 650px;
+    height: 680px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -132,7 +131,7 @@ const TitleBox = styled.div`
 `;
 
 const MainTitle = styled.p`
-  ${({theme})=>theme.fonts.title40}
+  ${({theme})=>theme.fonts.title32}
 
   @media screen and (max-width: 1200px){
     font-size: 3vw;
@@ -141,8 +140,8 @@ const MainTitle = styled.p`
 
 const SmallWrapper = styled.div`
     background-color: ${({theme})=>theme.colors.green100};
-    width: 725px;
-    height: 630px;
+    width: 580px;
+    height: 500px;
     border-radius: 10px;
     margin-bottom: 25px;
     display: flex;
@@ -158,7 +157,7 @@ const SmallWrapper = styled.div`
 
 const TextBoxWrapper = styled.div`
   width: 100%;
-  height: 530px;
+  height: 430px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -176,35 +175,40 @@ const TextWrapper = styled.div`
 `;
 
 const Title = styled.p`
-  ${({theme})=>theme.fonts.default18}
+  ${({theme})=>theme.fonts.default16}
   margin-left: 20px;
   margin-bottom: 10px;
 
   @media screen and (max-width: 1200px){
     font-size: 1.5vw;
+    margin-left: 2vw;
+    margin-bottom: 1vw;
   }
 `;
 
 const NameBox = styled.div`
   background-color: ${({theme})=> theme.colors.white};
-  width: 200px;
-  height: 40px;
-  border-radius: 10px;
+  width: auto;
+  height: 35px;
+  border-radius: 20px;
   display: flex;
   align-items: center;
   margin-left: 20px;
 
   @media screen and (max-width: 1200px){
-    width: 13.89vw;
     height: 2.78vw;
+    border-radius: 2vw;
+    margin-left: 2vw;
   }
   
 `;
 
 const TextBox = styled.p`
-  margin-left: 10px;
+${({theme})=>theme.fonts.helpText14}
+  margin: 0 15px;
   @media screen and (max-width: 1200px){
     font-size: 1.2vw;
+    margin: 0 1.5vw;
   }
 `;
 

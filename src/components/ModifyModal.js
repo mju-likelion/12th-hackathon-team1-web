@@ -137,7 +137,7 @@ const ModifyModal = ({ name, id, isCloseShowFood}) => {
                         </option>
                       ))}
                     </Text>
-                          <Title>년</Title>
+                          <Year>년</Year>
                         </YearBox>
                         <YearBox>
                         <Text value={month} onChange={(e) => setMonth(e.target.value)}>
@@ -147,7 +147,7 @@ const ModifyModal = ({ name, id, isCloseShowFood}) => {
                         </option>
                       ))}
                     </Text>
-                          <Title>월</Title>
+                          <Year>월</Year>
                         </YearBox>
                         <YearBox>
                         <Text value={date} onChange={(e) => setDate(e.target.value)}>
@@ -157,7 +157,7 @@ const ModifyModal = ({ name, id, isCloseShowFood}) => {
                         </option>
                       ))}
                     </Text>
-                          <Title>일</Title>
+                          <Year>일</Year>
                         </YearBox>
                       </YearWrapper>
                     </TextWrapper>
@@ -213,8 +213,8 @@ const ModalWrapper = styled.div`
 
 const WrapperBox = styled.div`
     background-color: ${({theme}) => theme.colors.green200};
-    width: 800px;
-    height: 836px;
+    width: 650px;
+    height: 680px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -250,7 +250,7 @@ const TitleBox = styled.div`
 `;
 
 const MainTitle = styled.p`
-  ${({theme})=>theme.fonts.title40}
+  ${({theme})=>theme.fonts.title32}
 
   @media screen and (max-width: 1200px){
     font-size: 3vw;
@@ -259,8 +259,8 @@ const MainTitle = styled.p`
 
 const SmallWrapper = styled.div`
     background-color: ${({theme})=>theme.colors.green100};
-    width: 725px;
-    height: 630px;
+    width: 580px;
+    height: 500px;
     border-radius: 10px;
     margin-bottom: 25px;
     display: flex;
@@ -276,7 +276,7 @@ const SmallWrapper = styled.div`
 
 const TextBoxWrapper = styled.div`
   width: 100%;
-  height: 580px;
+  height: 450px;
   display: flex;
   flex-direction: column;
   align-items: start;
@@ -292,35 +292,39 @@ const TextWrapper = styled.div`
 `;
 
 const Title = styled.p`
-  ${({theme})=>theme.fonts.default18}
+  ${({theme})=>theme.fonts.default16}
   margin-left: 20px;
   margin-bottom: 10px;
   display: flex;
 
   @media screen and (max-width: 1200px){
     font-size: 1.5vw;
+    margin-left: 2vw;
+    margin-bottom: 1vw;
   }
 `;
 
 const NameBox = styled.div`
   background-color: ${({theme})=> theme.colors.white};
-  width: 200px;
-  height: 40px;
-  border-radius: 10px;
+  width: auto;
+  height: 35px;
+  border-radius: 20px;
   display: flex;
   align-items: center;
   margin-left: 20px;
 
   @media screen and (max-width: 1200px){
-    width: 13.89vw;
     height: 2.78vw;
+    border-radius: 2vw;
+    margin-left: 2vw;
   }
   
 `;
 
 const Name = styled.p`
-  margin-left: 10px;
+  ${({theme})=>theme.fonts.helpText14}
   color: ${({theme})=>theme.colors.dateGray};
+  margin:0 15px;
   @media screen and (max-width: 1200px){
     font-size: 1.2vw;
   }
@@ -328,11 +332,11 @@ const Name = styled.p`
 
 const Text = styled.select`
   background-color: ${({theme})=>theme.colors.white};
-  ${({theme})=>theme.fonts.default16};
-  width: 80px;
-  height: 40px;
+  ${({theme})=>theme.fonts.helpText14}
+  width: 90px;
+  height: 35px;
   border: none;
-  border-radius: 10px;
+  border-radius: 20px;
   margin-left: 20px;
   &:focus {
     outline: none;
@@ -342,6 +346,21 @@ const Text = styled.select`
     width: 5.6vw;
     height: 2.78vw;
     font-size: 1.3vw;
+    border-radius: 2vw;
+    margin-left: 2vw;
+  }
+`;
+
+const Year = styled.p`
+  ${({theme})=>theme.fonts.default16}
+  margin-left: 5px;
+  margin-bottom: 10px;
+  display: flex;
+
+  @media screen and (max-width: 1200px){
+    font-size: 1.5vw;
+    margin-left: 0.35vw;
+    margin-bottom: 0.7vw;
   }
 `;
 
@@ -351,15 +370,14 @@ const YearWrapper = styled.div`
 
 const YearBox = styled.div`
   display: flex;
-  justify-content: start;
   align-items: end;
 
 `;
 
 const LongText = styled.input`
   background-color: ${({theme})=>theme.colors.white};
-  width: 450px;
-  height: 150px;
+  width: 350px;
+  height: 120px;
   border: none;
   border-radius: 10px;
   margin-left: 20px;
@@ -371,6 +389,7 @@ const LongText = styled.input`
     width: 31.25vw;
     height: 10.41vw;
     font-size: 1.5vw;
+    margin-left: 2vw;
   }
 `;
 

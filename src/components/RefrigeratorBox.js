@@ -1,5 +1,5 @@
-import React, {useState, useRef} from 'react';
-import styled from 'styled-components';
+import React, {useState, useRef, useEffect} from 'react';
+import styled, {keyframes} from 'styled-components';
 import RefrigeratorSection from './RefrigeratorSection';
 import arrow from '../assets/images/next.svg'
 
@@ -9,6 +9,7 @@ const RefrigeratorBox = () => {
     const dateRefTwo = useRef(null);
     const dateRefThree = useRef(null);
     const dateRefFour = useRef(null);
+    const [isLoading, setIsLoading] = useState(true);
 
     const toggleButton = () => {
         setButtonText((prevText) => (prevText === '편집' ? '저장' : '편집'));
@@ -19,6 +20,24 @@ const RefrigeratorBox = () => {
             ref.current.scrollBy({ left: 220, behavior: 'smooth' });
         }
     };
+
+    useEffect(() => {
+        const fetchData = async () => {
+            setIsLoading(true);
+            await new Promise(resolve => setTimeout(resolve, 300)); // 2초 지연 시뮬레이션
+            setIsLoading(false);
+        };
+
+        fetchData();
+    }, []);
+
+    if (isLoading) {
+        return (
+            <LoadingWrapper>
+                <LoadingSpinner />
+            </LoadingWrapper>
+        );
+    }
 
     return (
         <Wrapper>
@@ -70,6 +89,36 @@ const RefrigeratorBox = () => {
         </Wrapper>
     );
 };
+
+const LoadingWrapper = styled.div`
+    height: 70vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    @media screen and (max-width: 1200px) {
+        height: 50vh;
+    }
+`;
+
+const rotate = keyframes`
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+`;
+
+const LoadingSpinner = styled.div`
+    border: 16px solid #f3f3f3;
+    border-top: 16px solid ${({theme})=>theme.colors.green200};
+    border-radius: 50%;
+    width: 120px;
+    height: 120px;
+    animation: ${rotate} 2s linear infinite;
+`;
+
 
 const Wrapper = styled.div`
     background-color: ${({theme})=> theme.colors.green200};
