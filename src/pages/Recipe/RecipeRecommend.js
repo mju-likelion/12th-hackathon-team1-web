@@ -17,6 +17,19 @@ const chunkArray = (array, size) => {
 const RecipeRecommend = () => {
   const likeRecipes = useRecoilValue(LikeAtom)
   const [recipes, setRecipes] = useState([]);
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+
+    useEffect(() => {
+        const handleResize = () => {
+            setWindowWidth(window.innerWidth);
+        };
+
+        window.addEventListener('resize', handleResize);
+
+        return () => {
+            window.removeEventListener('resize', handleResize);
+        };
+    }, []);
 
   useEffect(() => {
     const fetchRecipes = async () => {
@@ -52,7 +65,7 @@ const RecipeRecommend = () => {
       </SidebarContainer>
       <Container>
         <TitleEditContainer>
-          <BoxTitle>나의 냉장고 레시피</BoxTitle>
+          {windowWidth > 480 &&<BoxTitle>나의 냉장고 레시피</BoxTitle>}
         </TitleEditContainer>
         <RecommendContainer>
           <Wrapper>
@@ -80,6 +93,12 @@ const SidebarContainer = styled.div`
   position: absolute;
   display: flex;
   position: fixed;
+
+  @media screen and (max-width: 480px){
+    position: static;
+    margin-top: 3vw;
+    margin-bottom: 1vw;
+  }
 `;
 
 const TitleEditContainer = styled.div`
@@ -126,6 +145,13 @@ const RecommendContainer = styled.div`
   @media screen and (max-width: 1200px) {
     width: 70vw;
     min-height: 70vw;
+  }
+
+  @media screen and (max-width: 480px) {
+    width: 90vw;
+    height: 145.8vw;
+    border-radius: 2vw;
+    margin-top: 5vw;
   }
 `;
 

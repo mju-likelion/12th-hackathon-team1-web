@@ -75,7 +75,7 @@ const WholeRecipe = ({ type }) => {
   }
 
   return (
-    <WholeContainer id="recipe-container">
+      <WholeContainer id="recipe-container">
       <RecipeContainer>
         {recipes.map((recipe) => (
           <div>

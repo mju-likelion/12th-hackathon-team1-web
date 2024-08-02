@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useEffect, useState} from "react";
 import styled from "styled-components";
 import RecipeBox from "../../components/RecipeBox";
 import Sidebar from "../../components/Sidebar";
@@ -16,6 +16,19 @@ const chunkArray = (array, size) => {
 const LikeRecipe = () => {
   const likeRecipes = useRecoilValue(LikeAtom);
   const groupedLikes = chunkArray(likeRecipes, 3);
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+
+    useEffect(() => {
+        const handleResize = () => {
+            setWindowWidth(window.innerWidth);
+        };
+
+        window.addEventListener('resize', handleResize);
+
+        return () => {
+            window.removeEventListener('resize', handleResize);
+        };
+    }, []);
 
   return (
     <>
@@ -24,7 +37,7 @@ const LikeRecipe = () => {
       </SidebarContainer>
       <Container>
         <TitleEditContainer>
-          <BoxTitle>좋아요 누른 레시피</BoxTitle>
+          {windowWidth > 480 &&<BoxTitle>좋아요 누른 레시피</BoxTitle>}
         </TitleEditContainer>
         <MyRecipeContainer>
           <Wrapper>
@@ -51,6 +64,12 @@ const SidebarContainer = styled.div`
   position: absolute;
   display: flex;
   position: fixed;
+
+  @media screen and (max-width: 480px){
+    position: static;
+    margin-top: 3vw;
+    margin-bottom: 1vw;
+  }
 `;
 
 const TitleEditContainer = styled.div`
@@ -98,6 +117,13 @@ const MyRecipeContainer = styled.div`
   @media screen and (max-width: 1200px) {
     width: 70vw;
     min-height: 70vw;
+  }
+
+  @media screen and (max-width: 480px) {
+    width: 90vw;
+    height: 145.8vw;
+    border-radius: 2vw;
+    margin-top: 5vw;
   }
 `;
 
