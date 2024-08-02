@@ -104,11 +104,13 @@ const RecipeContainer = styled.div`
   justify-content: start;
   gap: 50px;
   width: 820px;
+  margin-bottom: 10px;
 
   @media screen and (max-width: 1200px) {
     width: auto;
     width: 61.4vw;
     gap: 4vw;
+    margin-bottom: 0.7vw;
   }
 `;
 
