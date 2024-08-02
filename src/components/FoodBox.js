@@ -249,6 +249,7 @@ const ImgBox = styled.div`
         margin-bottom: 8vw;
         width: 4.5vw;
         height: 4.5vw;
+        z-index: 500;
     }
 `;
 
@@ -265,6 +266,7 @@ const DeleteImg = styled.img`
     @media screen and (max-width: 480px){
         width: 4.5vw;
         height: 4.5vw;
+        position: absolute;
     }
 `;
 

@@ -228,7 +228,7 @@ const LineBox = styled.div`
     align-items: center;
 
     @media screen and (max-width: 1200px){
-        max-width: 65vw;
+        width: 65vw;
     }
 
     @media screen and (max-width: 480px){
@@ -271,6 +271,7 @@ const FoodBoxWrapper = styled.div`
 
     @media screen and (max-width: 1200px){
         height: 8.2vw;
+        width: 62vw;
         margin-left: 2.5vw;
         gap: 2.5vw;
         margin-right: 2.5vw;
@@ -308,6 +309,17 @@ const IngredientWrapper = styled.div`
     flex-direction: column;
     margin-top: 40px;
     margin-left: 300px;
+
+
+    @media screen and (max-width: 1200px){
+        right: 60vw;
+        top: 60vw;
+    }
+
+    @media screen and (max-width: 480px){
+        right: 60vw;
+        top: 120vw;
+    }
 `;
 
 export default RefrigeratorSection;
