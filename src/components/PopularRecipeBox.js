@@ -136,6 +136,10 @@ const CountHeart = styled.p`
     margin-left: 0.35vw;
     font-size: 1.3vw;
   }
+
+  @media screen and (max-width: 480px) {
+    font-size: 3vw;
+  }
 `;
 
 const HeartImg = styled.img`
@@ -146,6 +150,11 @@ const HeartImg = styled.img`
   @media screen and (max-width: 1200px) {
     height: 2vw;
     width: 2vw;
+  }
+
+  @media screen and (max-width: 480px) {
+    height: 5vw;
+    width: 5vw;
   }
 `;
 
@@ -164,6 +173,11 @@ const MenuName = styled.p`
     width: 9vw;
     margin: 0.7vw 0 1.4vw;
     font-size: 1.2vw;
+  }
+
+  @media screen and (max-width: 480px) {
+    font-size: 2.5vw;
+    width: 19vw;
   }
 `;
 
@@ -188,6 +202,12 @@ const PopularContainer = styled.div`
     width: 11.3vw;
     height: 13.8vw;
     border-radius: 0.7vw;
+  }
+
+  @media screen and (max-width: 480px) {
+    width: 22.2vw;
+    height: 27.7vw;
+    border-radius: 2vw;
   }
 `;
 

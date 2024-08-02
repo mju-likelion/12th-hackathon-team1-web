@@ -1,9 +1,22 @@
-import React from "react";
+import React, {useState, useEffect} from "react";
 import styled from "styled-components";
 import RefrigeratorSection from "./RefrigeratorSection";
 import arrow from "../assets/images/next.svg";
 
 const MainBigBox = ({location}) => {
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+
+    useEffect(() => {
+        const handleResize = () => {
+            setWindowWidth(window.innerWidth);
+        };
+
+        window.addEventListener('resize', handleResize);
+
+        return () => {
+            window.removeEventListener('resize', handleResize);
+        };
+    }, []);
   return (
     <>
       <BigBox>
@@ -12,12 +25,12 @@ const MainBigBox = ({location}) => {
             <RefrigeratorSection title="냉동실" location={location}/>
             <Arrow src={arrow} alt="화살표" />
           </WrapperWrapper>
-          <Line />
+          {windowWidth > 480 && <Line />}
           <WrapperWrapper>
             <RefrigeratorSection title="냉장실" location={location}/>
             <Arrow src={arrow} alt="화살표" />
           </WrapperWrapper>
-          <Line />
+          {windowWidth > 480 && <Line />}
           <WrapperWrapper>
             <RefrigeratorSection title="상온" location={location}/>
             <Arrow src={arrow} alt="화살표" />
@@ -42,6 +55,12 @@ const BigBox = styled.div`
     height: 35.6vw;
     border-radius: 0.7vw;
   }
+
+  @media screen and (max-width: 480px){
+      width: 90vw;
+      height: 71.6vw;
+      border-radius: 2vw;
+    }
 `;
 
 const BoxWrapper = styled.div`
@@ -53,6 +72,10 @@ const BoxWrapper = styled.div`
 
   @media screen and (max-width: 1200px) {
     gap: 1.38vw;
+  }
+
+  @media screen and (max-width: 480px) {
+    gap: 4.5vw;
   }
 `;
 

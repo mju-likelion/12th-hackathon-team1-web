@@ -15,7 +15,7 @@ const Main = () => {
   useEffect(() => {
     const fetchData = async () => {
         setIsLoading(true);
-        await new Promise(resolve => setTimeout(resolve, 300)); // 2초 지연 시뮬레이션
+        await new Promise(resolve => setTimeout(resolve, 300));
         setIsLoading(false);
     };
 
@@ -97,8 +97,13 @@ const BoxWrapper = styled.div`
   width: 1150px;
   display: flex;
   flex-direction: column;
+
   @media screen and (max-width: 1200px) {
     width: 80vw;
+  }
+
+  @media screen and (max-width: 480px){
+    width: 90vw;
   }
 `;
 
@@ -112,11 +117,20 @@ const Title = styled.p`
     height: 3vw;
     font-size: 1.3vw;
   }
+
+  @media screen and (max-width: 480px){
+    height: 8vw;
+    font-size: 3vw;
+  }
 `;
 
 const SmallBoxWrapper = styled.div`
   display: flex;
   justify-content: space-between;
+
+  @media screen and (max-width: 480px){
+    flex-direction: column;
+  }
 `;
 
 const SmallTextBox = styled.div`
@@ -134,6 +148,11 @@ const Text = styled.p`
   @media screen and (max-width: 1200px) {
     height: 3vw;
     font-size: 1.3vw;
+  }
+
+  @media screen and (max-width: 480px) {
+    height: 7vw;
+    font-size: 3vw;
   }
 `;
 
