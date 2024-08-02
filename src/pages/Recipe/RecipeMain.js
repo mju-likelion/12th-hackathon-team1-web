@@ -11,7 +11,7 @@ const RecipeMain = () => {
   useEffect(() => {
     const fetchData = async () => {
         setIsLoading(true);
-        await new Promise(resolve => setTimeout(resolve, 300)); // 2초 지연 시뮬레이션
+        await new Promise((resolve) => setTimeout(resolve, 300));
         setIsLoading(false);
     };
 

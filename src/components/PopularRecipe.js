@@ -28,7 +28,6 @@ const PopularRecipe = () => {
           },
         });
 
-        // 응답 데이터 구조에 맞게 변경
         if (response.data && response.data.data) {
           const { recipeList, pagination } = response.data.data;
           setRecipeData(recipeList);
@@ -72,7 +71,12 @@ const PopularRecipe = () => {
         />
       </PrevButton>
       {recipeData.map((recipe) => (
-        <PopularRecipeBox key={recipe.recipeId} recipeId={recipe.recipeId} recipeLikeId={likeRecipes}/>
+        <PopularRecipeBox 
+        key={recipe.recipeId} 
+        recipeId={recipe.recipeId} 
+        recipeLikeId={likeRecipes}
+        countHeart={recipe.likeCount}
+        />
       ))}
       <NextButton onClick={handleNextPage} disabled={page >= totalPage - 1}>
         <img src={Next} alt="다음 버튼" />
