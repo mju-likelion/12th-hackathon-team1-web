@@ -7,6 +7,7 @@ import { Axios } from '../api/Axios';
 const FoodBox = ({ingredientName, ButtonText, year, month, date, isDate, id, expirationDate, location}) => {
     const [showFoodBox, setShowFoodBox] = useState(false);
     const [maxLength, setMaxLength] = useState(5);
+    const [windowWidth, setWindowWidth] = useState(window.innerWidth);
 
         const handleDelete = async () => {
             try {
@@ -28,14 +29,19 @@ const FoodBox = ({ingredientName, ButtonText, year, month, date, isDate, id, exp
     const truncateText = (text, maxLength) => {
         if (!text) return "";
         if (text.length > maxLength) {
-        return text.slice(0, maxLength) + "...";
+        return text.slice(0, maxLength) + "..";
         }
         return text;
     };
 
     useEffect(() => {
         const handleResize = () => {
-            setMaxLength(7);
+            if (window.innerWidth <= 480) {
+                setMaxLength(6);
+                } else {
+                setMaxLength(7);
+                }
+            setWindowWidth(window.innerWidth);
         };
         window.addEventListener("resize", handleResize);
         handleResize();
@@ -47,12 +53,11 @@ const FoodBox = ({ingredientName, ButtonText, year, month, date, isDate, id, exp
 
     return (
         <AllWrapper>
-            {expirationDate <=3 &&
-        (expirationDate === 0 ?
-            <DdayText>D-DAY</DdayText>
-            : <DdayText>D-{ expirationDate }</DdayText>
-            )
-        }
+            {windowWidth > 480 && expirationDate<=3&&
+            (expirationDate === 0 ?
+                <DdayText>D-DAY</DdayText>
+                : <DdayText>D-{ expirationDate }</DdayText>
+                )}
         <Wrapper expirationDate={expirationDate}>
             <TextWrapper onClick={isOpenShowFood}>
                 {showFoodBox &&(
@@ -63,13 +68,23 @@ const FoodBox = ({ingredientName, ButtonText, year, month, date, isDate, id, exp
                     location = {location}
                     isDate={isDate}
                 />)}
-                <HighWrapper>
-                <IngredientName $isDate={isDate}>{truncateText(ingredientName, maxLength)}</IngredientName>
-                <ImgBox>
+                {windowWidth <= 480 && 
+                    <ImgBox>
                     {ButtonText === '저장' && <DeleteImg onClick={handleDelete} src={remove} alt='삭제'/>}
-                </ImgBox>
+                    </ImgBox>
+                    }
+                <HighWrapper>
+                    <IngredientName $isDate={isDate}>{truncateText(ingredientName, maxLength)}</IngredientName>
+                    {windowWidth > 480 && 
+                        <ImgBox>
+                        {ButtonText === '저장' && <DeleteImg onClick={handleDelete} src={remove} alt='삭제'/>}
+                        </ImgBox>
+                    }
                 </HighWrapper>
+                {windowWidth > 480 &&
                 <IngredientDate $isDate={isDate}>유통기한: {year}.{month}.{date}</IngredientDate>
+                }
+                
             </TextWrapper>
         </Wrapper>
     </AllWrapper>
@@ -86,6 +101,10 @@ const AllWrapper = styled.div`
 
     @media screen and (max-width: 1200px){
         height: 9.72vw;
+    }
+
+    @media screen and (max-width: 480px){
+        height: 13.88vw;
     }
 
 `;
@@ -109,6 +128,15 @@ const Wrapper = styled.div`
         height: 7vw;
         border-radius: 1.5vw;
     }
+
+    @media screen and (max-width: 480px) {
+        width: 22.2vw;
+        height: 13.88vw;
+        border-radius: 2vw;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
 `;
 
 const TextWrapper = styled.div`
@@ -125,6 +153,12 @@ const TextWrapper = styled.div`
         height: 7vw;
         gap: 1.39vw;
         margin-left: 0.7vw;
+    }
+
+    @media screen and (max-width: 480px){
+        width: 18vw;
+        align-items: center;
+        position: relative;
     }
 `;
 
@@ -148,6 +182,8 @@ const DdayText = styled.div`
         margin-bottom: 6.95vw;
         top: 1vw;
     }
+
+
 `;
 
 const HighWrapper = styled.div`
@@ -159,6 +195,10 @@ const HighWrapper = styled.div`
     @media screen and (max-width: 1200px){
         width: 11.25vw;
         height: 2.78vw;
+    }
+
+    @media screen and (max-width: 480px){
+        justify-content: center;
     }
 `;
 
@@ -173,6 +213,11 @@ const IngredientName = styled.p`
         font-size: 1.3vw;
         height: 2.78vw;
         margin-top: 1.4vw;
+    }
+
+    @media screen and (max-width: 480px){
+        font-size: 3.2vw;
+        margin: 0;
     }
 `;
 
@@ -197,6 +242,14 @@ const ImgBox = styled.div`
         height: 2.78vw;
         margin-right: 0.35vw;
     }
+
+    @media screen and (max-width: 480px){
+        position: absolute;
+        margin-left: 16vw;
+        margin-bottom: 8vw;
+        width: 4.5vw;
+        height: 4.5vw;
+    }
 `;
 
 const DeleteImg = styled.img`
@@ -207,6 +260,11 @@ const DeleteImg = styled.img`
     @media screen and (max-width: 1200px){
         width: 2.78vw;
         height: 2.78vw;
+    }
+
+    @media screen and (max-width: 480px){
+        width: 4.5vw;
+        height: 4.5vw;
     }
 `;
 

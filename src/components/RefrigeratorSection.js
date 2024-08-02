@@ -172,6 +172,12 @@ const Section = styled.div`
         height: 8.3vw;
         border-radius: 0.7vw;
     }
+
+    @media screen and (max-width: 480px){
+        width: 83.3vw;
+        height: 16.6vw;
+        border-radius: 2vw;
+    }
 `;
 
 const AllTextWrapper = styled.div`
@@ -184,6 +190,11 @@ const AllTextWrapper = styled.div`
         width: 73.5vw;
         height: 8.5vw;
     }
+
+    @media screen and (max-width: 480px){
+        width: 83.3vw;
+        height: 16.6vw;
+    }
 `;
 
 const TextBox = styled.div`
@@ -195,11 +206,19 @@ const TextBox = styled.div`
     @media screen and (max-width: 1200px){
         width: 8.3vw;
     }
+
+    @media screen and (max-width: 480vw){
+        width: 15.8vw;
+    }
 `;
 
 const Text = styled.p`
     @media screen and (max-width: 1200px){
         font-size: 1.3vw;
+    }
+
+    @media screen and (max-width: 480px){
+        font-size: 2.5vw;
     }
 `;
 
@@ -211,6 +230,10 @@ const LineBox = styled.div`
     @media screen and (max-width: 1200px){
         max-width: 65vw;
     }
+
+    @media screen and (max-width: 480px){
+        max-width: auto;
+    }
 `;
 
 const VerticalLine = styled.div`
@@ -221,6 +244,12 @@ const VerticalLine = styled.div`
     @media screen and (max-width: 1200px){
         width: 0.4vw;
         height: 4.5vw;
+    }
+
+    @media screen and (max-width: 480px){
+        width: 0.8vw;
+        height: 12vw;
+        margin-right: 3vw;
     }
 `;
 
@@ -246,6 +275,13 @@ const FoodBoxWrapper = styled.div`
         gap: 2.5vw;
         margin-right: 2.5vw;
     }
+
+    @media screen and (max-width: 480px){
+        height: 16.6vw;
+        width: 62vw;
+        margin-left: 0;
+        gap: 4vw;
+    }
 `;
 
 const PlusImg = styled.img`
@@ -258,6 +294,11 @@ const PlusImg = styled.img`
         margin-left: 3vw;
         width: 2.5vw;
         height: 2.5vw;
+    }
+
+    @media screen and (max-width: 480px){
+        width: 4.5vw;
+        height: 4.5vw;
     }
 `;
 

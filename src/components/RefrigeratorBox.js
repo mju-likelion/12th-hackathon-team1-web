@@ -10,6 +10,7 @@ const RefrigeratorBox = () => {
     const dateRefThree = useRef(null);
     const dateRefFour = useRef(null);
     const [isLoading, setIsLoading] = useState(true);
+    const [windowWidth, setWindowWidth] = useState(window.innerWidth);
 
     const toggleButton = () => {
         setButtonText((prevText) => (prevText === '편집' ? '저장' : '편집'));
@@ -24,13 +25,22 @@ const RefrigeratorBox = () => {
     useEffect(() => {
         const fetchData = async () => {
             setIsLoading(true);
-            await new Promise(resolve => setTimeout(resolve, 300)); // 2초 지연 시뮬레이션
+            await new Promise(resolve => setTimeout(resolve, 300));
             setIsLoading(false);
         };
 
         fetchData();
-    }, []);
 
+        const handleResize = () => {
+            setWindowWidth(window.innerWidth);
+        };
+
+        window.addEventListener('resize', handleResize);
+
+        return () => {
+            window.removeEventListener('resize', handleResize);
+        };
+    }, []);
     if (isLoading) {
         return (
             <LoadingWrapper>
@@ -55,7 +65,7 @@ const RefrigeratorBox = () => {
                             <Arrow src={arrow} alt="화살표"/>
                         </ArrowBox>
                     </WrapperWrapper>
-                    <Line />
+                    {windowWidth > 480 && <Line />}
                     <WrapperWrapper>
                             <RefrigeratorSection 
                                 title="냉동실"
@@ -65,7 +75,7 @@ const RefrigeratorBox = () => {
                             <Arrow src={arrow} alt="화살표"/>
                         </ArrowBox>
                     </WrapperWrapper>
-                    <Line />
+                    {windowWidth > 480 && <Line />}
                     <WrapperWrapper>
                             <RefrigeratorSection 
                                 title="냉장실"
@@ -75,7 +85,7 @@ const RefrigeratorBox = () => {
                             <Arrow src={arrow} alt="화살표"/>
                         </ArrowBox>
                     </WrapperWrapper>
-                    <Line />
+                    {windowWidth > 480 && <Line />}
                     <WrapperWrapper>
                             <RefrigeratorSection 
                                 title="상온"
@@ -135,6 +145,13 @@ const Wrapper = styled.div`
         border-radius: 0.52vw;
     }
 
+    @media screen and (max-width: 480px){
+        width: 90vw;
+        height: 105vw;
+        border-radius: 2.8vw;
+        margin-top: 8vw;
+    }
+
 `;
 
 const BoxWrapper = styled.div`
@@ -150,6 +167,12 @@ const BoxWrapper = styled.div`
         width: 73.5vw;
         height: 48.7vw;
         gap: 1.05vw;
+    }
+
+    @media screen and (max-width: 480px){
+        width: 83.3vw;
+        height: 98.88vw;
+        justify-content: space-between;
     }
 `;
 
@@ -168,6 +191,13 @@ const TopLine = styled.div`
         height: 4.24vw;
         border-radius: 0.52vw;
         margin-bottom: 1vw;
+    }
+
+    @media screen and (max-width: 480px){
+        width: 83.3vw;
+        height: 12vw;
+        border-radius: 2vw;
+        margin-bottom: 3vw;
     }
 `;
 
@@ -188,6 +218,13 @@ const Button = styled.button`
         height: 2.57vw;
         border-radius: 0.7vw;
         font-size: 1.3vw;
+    }
+
+    @media screen and (max-width: 480px){
+        width: 15vw;
+        height: 8.3vw;
+        border-radius: 2vw;
+        font-size: 3vw;
     }
 `;
 
@@ -211,7 +248,7 @@ const ArrowBox = styled.div`
 `;
 
 const Arrow = styled.img`
-position: absolute;
+    position: absolute;
     width: 25px;
     height: 25px;
     margin-left: 10px;
@@ -221,6 +258,12 @@ position: absolute;
         width: 1.5vw;
         height: 1.5vw;
         margin: 0.9vw;
+    }
+
+    @media screen and (max-width: 480px){
+        width: 4vw;
+        height: 4vw;
+        right: 3.8vw;
     }
 `;
 
