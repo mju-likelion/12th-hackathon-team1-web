@@ -78,6 +78,7 @@ const WholeRecipe = ({ type }) => {
     <WholeContainer id="recipe-container">
       <RecipeContainer>
         {recipes.map((recipe) => (
+          <BoxWrapper>
           <RecipeBox
             key={recipe.recipeId}
             recipeId={recipe.recipeId}
@@ -85,6 +86,7 @@ const WholeRecipe = ({ type }) => {
             likeCount={recipe.likeCount}
             recipeLikeId={likeRecipes}
           />
+          </BoxWrapper>
         ))}
       </RecipeContainer>
       {loading && <LoadingSpinner>Loading...</LoadingSpinner>}
@@ -92,12 +94,21 @@ const WholeRecipe = ({ type }) => {
   );
 };
 
+const BoxWrapper = styled.div`
+background-color: yellow;
+`;
+
 const RecipeContainer = styled.div`
   display: flex;
   flex-wrap: wrap;
+  justify-content: start;
+  gap: 50px;
+  width: 820px;
 
   @media screen and (max-width: 1200px) {
-    width: 70vw;
+    width: auto;
+    width: 61.4vw;
+    gap: 4vw;
   }
 `;
 
@@ -105,10 +116,12 @@ const WholeContainer = styled.div`
   display: flex;
   background-color: ${({ theme }) => theme.colors.green200};
   width: 900px;
-  height: 600px;
+  height: 650px;
   overflow-y: scroll;
-  align-items: start;
+  align-items: center;
+  justify-content: center;
   border-radius: 1vw;
+  
   &::-webkit-scrollbar-button {
     display: none;
   }
@@ -122,7 +135,7 @@ const WholeContainer = styled.div`
 
   @media screen and (max-width: 1200px) {
     width: 70vw;
-    height: 45vw;
+    height: 48vw;
   }
 `;
 

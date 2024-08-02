@@ -260,13 +260,11 @@ const Container = styled.div`
   border-radius: 10px;
   align-items: center;
   justify-content: center;
-  margin: 10px 29px;
 
   @media screen and (max-width: 1200px) {
     height: 20vw;
     width: 17.8vw;
     border-radius: 0.7vw;
-    margin: 0.8vw 2.68vw;
   }
 `;
 
