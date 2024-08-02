@@ -4,10 +4,12 @@ import SmallButton from "./SmallButton";
 import Plus from "../assets/images/plus.svg";
 import Folder from "../assets/images/imageFolder.svg";
 import RecipeIngredient from "./RecipeIngredient";
+import { Axios } from "../api/Axios";
 
 const CreateModal = ({ onSave, saveCreateModal }) => {
   const [title, setTitle] = useState("");
   const [ingredients, setIngredients] = useState([]);
+  const [ingredientIds, setIngredientIds] = useState([]);
   const [methods, setMethods] = useState([""]);
   const [image, setImage] = useState(null);
   const [showIngredientBox, setShowIngredientBox] = useState(false);
@@ -15,10 +17,14 @@ const CreateModal = ({ onSave, saveCreateModal }) => {
 
   const handleIngredientSelect = (ingredient) => {
     if (activeIngredientIndex !== null) {
+      const newIds = [...ingredientIds];
+      newIds[activeIngredientIndex] = ingredient.id;
       const newIngredients = [...ingredients];
       newIngredients[activeIngredientIndex] = ingredient.name;
       setIngredients(newIngredients);
+      setIngredientIds(newIds);
     } else {
+      setIngredientIds([...ingredientIds, ingredient.id]);
       setIngredients([...ingredients, ingredient.name]);
     }
     setActiveIngredientIndex(null);
@@ -51,7 +57,10 @@ const CreateModal = ({ onSave, saveCreateModal }) => {
   };
 
   const handleImageChange = (e) => {
-    setImage(URL.createObjectURL(e.target.files[0]));
+    const file = e.target.files[0];
+    if (file) {
+      setImage(file);
+    }
   };
 
   const validateForm = () => {
@@ -73,16 +82,29 @@ const CreateModal = ({ onSave, saveCreateModal }) => {
     return true;
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
     if (!validateForm()) return;
 
+    let imageId = null;
+    if (image) {
+      const formData = new FormData();
+      formData.append("file", image);
+      const imageResponse = await Axios.post("/recipes/images", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+      imageId = imageResponse.data.id;
+    }
+
     const newRecipe = {
-      id: null,
-      title,
-      ingredients,
-      methods,
-      image,
+      name: title,
+      ingredientIds: ingredientIds,
+      cookingStep: methods.join("+"),
+      imageId: imageId,
     };
+
+    await Axios.post("/recipes", newRecipe);
     onSave(newRecipe);
     saveCreateModal();
   };
@@ -166,7 +188,6 @@ const CreateModal = ({ onSave, saveCreateModal }) => {
     </CreateModalContainer>
   );
 };
-
 const ButtonContainer = styled.div`
   display: flex;
   justify-content: space-between;

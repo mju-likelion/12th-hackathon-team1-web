@@ -22,8 +22,8 @@ const RecipeIngredient = ({ closeIngredientBox, onIngredientSelect }) => {
     fetchIngredients();
   }, [searchValue]);
 
-  const handleIngredientSelect = (ingredient) => {
-    onIngredientSelect(ingredient);
+  const handleIngredientSelect = (ingredients) => {
+    onIngredientSelect({ name: ingredients.name, id: ingredients.id }); // ID를 함께 전달
     closeIngredientBox();
   };
 
