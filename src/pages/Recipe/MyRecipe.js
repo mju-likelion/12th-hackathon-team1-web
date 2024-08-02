@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import styled from "styled-components";
 import RecipeBox from "../../components/RecipeBox";
 import Plus from "../../assets/images/plus.svg";
@@ -10,14 +10,6 @@ import { Axios } from "../../api/Axios";
 import { LikeAtom } from "../../Recoil/Atom";
 import { useRecoilValue } from "recoil";
 
-const chunkArray = (array, size) => {
-  const chunked = [];
-  for (let i = 0; i < array.length; i += size) {
-    chunked.push(array.slice(i, i + size));
-  }
-  return chunked;
-};
-
 const MyRecipe = () => {
   const likeRecipes = useRecoilValue(LikeAtom);
   const [isEditing, setIsEditing] = useState(false);
@@ -26,25 +18,37 @@ const MyRecipe = () => {
   const [showEditModal, setShowEditModal] = useState(false);
   const [currentRecipeId, setCurrentRecipeId] = useState(null);
   const [recipeData, setRecipeData] = useState([]);
+  const [page, setPage] = useState(0);
+  const [hasMore, setHasMore] = useState(true);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const fetchRecipes = async () => {
+      if (loading || !hasMore) return;
+
+      setLoading(true);
       try {
         const response = await Axios.get("/users/me/recipes", {
-          params: { page: 0, size: 10, type: "newest" },
+          params: { page, size: 12, type: "newest" },
         });
         if (response.data && response.data.data) {
-          setRecipeData(response.data.data.recipeList);
+          const newRecipes = response.data.data.recipeList;
+          setRecipeData((prevData) => [...prevData, ...newRecipes]);
+          setHasMore(newRecipes.length === 12);
+          setPage((prevPage) => prevPage + 1);
         } else {
           console.error("응답 데이터 형식이 올바르지 않습니다.");
+          setHasMore(false);
         }
       } catch (error) {
         console.error("레시피 데이터를 가져오는 데 실패했습니다.", error);
+      } finally {
+        setLoading(false);
       }
     };
 
     fetchRecipes();
-  }, []);
+  }, [page, loading, hasMore]);
 
   const handleEditClick = () => {
     setIsEditing((prev) => !prev);
@@ -109,7 +113,25 @@ const MyRecipe = () => {
     setShowEditModal(false);
   };
 
-  const chunkedData = chunkArray(recipeData || [], 3);
+  const handleScroll = useCallback(() => {
+    const container = document.getElementById("recipe-container");
+    if (
+      container.scrollTop + container.clientHeight >=
+      container.scrollHeight - 5
+    ) {
+      if (!loading && hasMore) {
+        setPage((prevPage) => prevPage + 1);
+      }
+    }
+  }, [loading, hasMore]);
+
+  useEffect(() => {
+    const container = document.getElementById("recipe-container");
+    container.addEventListener("scroll", handleScroll);
+    return () => {
+      container.removeEventListener("scroll", handleScroll);
+    };
+  }, [handleScroll]);
 
   return (
     <>
@@ -124,30 +146,25 @@ const MyRecipe = () => {
           </EditButton>
         </TitleEditContainer>
         <AddWrapper>
-          <MyRecipeContainer>
-            <div>
-            {chunkedData.map((chunk, index) => (
-              <Line key={index}>
-                {chunk.map((recipeData) => (
-                  <div>
-                    <RecipeBox
-                    key={recipeData.recipeId}
-                    recipeId={recipeData.recipeId}
-                    menuName={recipeData.name}
-                    countHeart={recipeData.likeCount}
-                    image={recipeData.image}
-                    isEditing={isEditing}
-                    removeRecipeBox={removeRecipeBox}
-                    onClick={openRecipeModal}
-                    onEdit={openEditModal}
-                    onSave={handleSave}
-                    recipeLikeId={likeRecipes}
-                  />
-                  </div>
-                ))}
-              </Line>
+          <MyRecipeContainer id="recipe-container">
+            {recipeData.map((recipeData) => (
+              <div>
+                <RecipeBox
+                  key={recipeData.recipeId}
+                  recipeId={recipeData.recipeId}
+                  menuName={recipeData.name}
+                  countHeart={recipeData.likeCount}
+                  image={recipeData.image}
+                  isEditing={isEditing}
+                  removeRecipeBox={removeRecipeBox}
+                  onClick={openRecipeModal}
+                  onEdit={openEditModal}
+                  onSave={handleSave}
+                  recipeLikeId={likeRecipes}
+                />
+              </div>
             ))}
-            </div>
+            {loading && <LoadingSpinner>Loading...</LoadingSpinner>}
           </MyRecipeContainer>
           {isEditing && (
             <PlusButton
@@ -273,29 +290,18 @@ const TitleEditContainer = styled.div`
   }
 `;
 
-const Line = styled.div`
-  display: flex;
-  width: 810px;
-  gap: 45px;
-  margin: 20px 0;
-
-  @media screen and (max-width: 1200px) {
-    width: 62.4vw;
-    gap: 4.5vw;
-    margin-top: 1.4vw;
-  }
-`;
-
 const MyRecipeContainer = styled.div`
   display: flex;
   flex-wrap: wrap;
   background-color: ${({ theme }) => theme.colors.green200};
   width: 900px;
   height: 850px;
+  padding: 20px 0;
   justify-content: center;
   overflow-y: scroll;
   align-items: start;
   border-radius: 1vw;
+  gap: 45px;
   &::-webkit-scrollbar-button {
     display: none;
   }
@@ -311,6 +317,12 @@ const MyRecipeContainer = styled.div`
     width: 70vw;
     min-height: 70vw;
   }
+`;
+
+const LoadingSpinner = styled.div`
+  width: 100%;
+  text-align: center;
+  margin: 20px 0;
 `;
 
 const Container = styled.div`
