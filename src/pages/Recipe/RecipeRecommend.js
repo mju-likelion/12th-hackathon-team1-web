@@ -96,13 +96,15 @@ const TitleEditContainer = styled.div`
 
 const Line = styled.div`
   display: flex;
-  width: 830px;
+  width: 810px;
   justify-content: start;
-  gap: 10px;
+  gap: 45px;
+  margin: 20px 0;
 
   @media screen and (max-width: 1200px) {
-    width: 64vw;
-    gap: 2.3vw;
+    width: 62.4vw;
+    gap: 4.5vw;
+    margin: 1.4vw 0;
   }
 `;
 
