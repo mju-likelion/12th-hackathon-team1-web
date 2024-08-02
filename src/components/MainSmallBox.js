@@ -117,6 +117,12 @@ const SmallBox = styled.div`
     height: 16vw;
     border-radius: 1vw;
   }
+
+  @media screen and (max-width: 1200px) {
+    width: 90vw;
+    height: 33.3vw;
+    border-radius: 2vw;
+  }
 `;
 
 const AllWrapper = styled.div`
@@ -143,6 +149,13 @@ const RecipeBoxWrapper = styled.div`
     height: 15.3vw;
     gap: 1vw;
   }
+
+  @media screen and (max-width: 480px){
+    width: 85vw;
+    height: 30vw;
+    gap: 3vw;
+    margin-left: 2vw;
+  }
 `;
 
 const ArrowButton = styled.div`
@@ -156,6 +169,11 @@ const ArrowButton = styled.div`
     width: 2vw;
   }
 
+  @media screen and (max-width: 480px) {
+    height: 7vw;
+    width: 7vw;
+  }
+
 `;
 
 const Img = styled.img`
@@ -165,6 +183,11 @@ const Img = styled.img`
   @media screen and (max-width: 1200px) {
     width: 2vw;
     height: 2vw;
+  }
+
+  @media screen and (max-width: 1200px) {
+    height: 7vw;
+    width: 7vw;
   }
 `;
 
@@ -177,6 +200,10 @@ const LoginPrompt = styled.div`
 
   @media screen and (max-width: 1200px) {
     font-size: 1.3vw;
+  }
+
+  @media screen and (max-width: 480px) {
+    font-size: 3vw;
   }
 `;
 
