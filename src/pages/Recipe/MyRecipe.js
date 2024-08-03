@@ -21,6 +21,19 @@ const MyRecipe = () => {
   const [page, setPage] = useState(0);
   const [hasMore, setHasMore] = useState(true);
   const [loading, setLoading] = useState(false);
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setWindowWidth(window.innerWidth);
+    };
+
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
 
   useEffect(() => {
     const fetchRecipes = async () => {
@@ -140,7 +153,7 @@ const MyRecipe = () => {
       </SidebarContainer>
       <Container>
         <TitleEditContainer>
-          <BoxTitle>내 레시피</BoxTitle>
+          {windowWidth > 480 && <BoxTitle>내 레시피</BoxTitle>}
           <EditButton type="submit" onClick={handleEditClick}>
             {isEditing ? "저장" : "편집"}
           </EditButton>
@@ -232,6 +245,12 @@ const SidebarContainer = styled.div`
   position: absolute;
   display: flex;
   position: fixed;
+
+  @media screen and (max-width: 480px) {
+    position: static;
+    margin-top: 3vw;
+    margin-bottom: 1vw;
+  }
 `;
 
 const AddWrapper = styled.div`
@@ -273,6 +292,13 @@ const EditButton = styled.button`
     border-radius: 0.35vw;
     font-size: 1.3vw;
   }
+
+  @media screen and (max-width: 480px) {
+    width: 12vw;
+    height: 7vw;
+    border-radius: 1.5vw;
+    font-size: 3vw;
+  }
 `;
 
 const TitleEditContainer = styled.div`
@@ -287,6 +313,12 @@ const TitleEditContainer = styled.div`
     width: 70vw;
     height: 5vw;
     padding: 0 0.21vw;
+  }
+
+  @media screen and (max-width: 480px) {
+    width: 90vw;
+    height: 9vw;
+    padding: 0;
   }
 `;
 
@@ -316,6 +348,12 @@ const MyRecipeContainer = styled.div`
   @media screen and (max-width: 1200px) {
     width: 70vw;
     min-height: 70vw;
+  }
+
+  @media screen and (max-width: 480px) {
+    width: 90vw;
+    height: 145.8vw;
+    border-radius: 2vw;
   }
 `;
 
