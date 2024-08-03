@@ -1,26 +1,41 @@
-import React from "react";
+import React, {useState, useEffect} from "react";
 import { Link, useLocation } from "react-router-dom";
 import styled, { css } from "styled-components";
 import Arrow from "../assets/images/next.svg";
 
 function Sidebar() {
   const location = useLocation();
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+
+    useEffect(() => {
+        const handleResize = () => {
+            setWindowWidth(window.innerWidth);
+        };
+
+        window.addEventListener('resize', handleResize);
+
+        return () => {
+            window.removeEventListener('resize', handleResize);
+        };
+    }, []);
 
   return (
-    <SidebarContainer>
+    <>
+    {windowWidth > 480 ?
+      (
+        <SidebarContainer>
       <MenuText>Menu</MenuText>
       <Grayline />
       <Text>
         <>
           <Link to="/recipes/my_recipes">
             <ItemContainer
-              $isSelected={location.pathname === "/recipes/my_recipes"}
-            >
-              내 레시피 보기
-              {location.pathname === "/recipes/my_recipes" && (
-                <ArrowImg src={Arrow} alt="화살표 아이콘" />
-              )}
-            </ItemContainer>
+            $isSelected={location.pathname === "/recipes/my_recipes"}>
+            내 레시피 보기
+                {location.pathname === "/recipes/my_recipes" && (
+                  <ArrowImg src={Arrow} alt="화살표 아이콘" />
+                )}
+              </ItemContainer>
           </Link>
           <Link to="/auth/likes">
             <ItemContainer $isSelected={location.pathname === "/auth/likes"}>
@@ -43,8 +58,64 @@ function Sidebar() {
         </>
       </Text>
     </SidebarContainer>
+      ) : (
+        <Wrapper>
+          <ButtonWrapper>
+          <Link to="/recipes">
+            <Button 
+            buttonText={location.pathname === "/recipes"}>
+              <ButtonText>전체 레시피</ButtonText>
+              </Button>
+          </Link>
+          <Link to="/recipes/my_recipes">
+            <Button
+            buttonText={location.pathname === "/recipes/my_recipes"}>
+              <ButtonText>내 레시피</ButtonText>
+            </Button>
+          </Link>
+          <Link to="/auth/likes">
+            <Button 
+            buttonText={location.pathname === "/auth/likes"}>
+              <ButtonText>좋아요 누른 레시피</ButtonText>
+            </Button>
+          </Link>
+          <Link to="/recipes/recommendations">
+            <Button 
+            buttonText={location.pathname === "/recipes/recommendations"}>
+              <ButtonText>내 냉장고 재료 레시피</ButtonText>
+            </Button>
+          </Link>
+          </ButtonWrapper>
+        </Wrapper>
+      )
+    }
+    </>
   );
 }
+
+const Wrapper = styled.div`
+  width: 100%;
+  padding: 0 5vw;
+`;
+
+const ButtonWrapper = styled.div`
+  display: flex;
+  justify-content: space-between;
+`;
+
+const Button = styled.button`
+  background-color: ${({theme, buttonText})=> buttonText ? theme.colors.greenButton : theme.colors.green200};
+  height: 5.55vw;
+  border-radius: 1.5vw;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+
+const ButtonText = styled.span`
+  font-size: 2.5vw;
+  padding: 0 1vw;
+`;
 
 const Text = styled.div`
   display: flex;

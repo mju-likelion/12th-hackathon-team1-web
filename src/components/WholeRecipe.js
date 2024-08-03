@@ -75,10 +75,10 @@ const WholeRecipe = ({ type }) => {
   }
 
   return (
-    <WholeContainer id="recipe-container">
+      <WholeContainer id="recipe-container">
       <RecipeContainer>
         {recipes.map((recipe) => (
-          <BoxWrapper>
+          <div>
           <RecipeBox
             key={recipe.recipeId}
             recipeId={recipe.recipeId}
@@ -86,17 +86,13 @@ const WholeRecipe = ({ type }) => {
             likeCount={recipe.likeCount}
             recipeLikeId={likeRecipes}
           />
-          </BoxWrapper>
+          </div>
         ))}
       </RecipeContainer>
       {loading && <LoadingSpinner>Loading...</LoadingSpinner>}
     </WholeContainer>
   );
 };
-
-const BoxWrapper = styled.div`
-background-color: yellow;
-`;
 
 const RecipeContainer = styled.div`
   display: flex;
@@ -111,6 +107,13 @@ const RecipeContainer = styled.div`
     width: 61.4vw;
     gap: 4vw;
     margin-bottom: 0.7vw;
+  }
+
+  @media screen and (max-width: 480px) {
+    width: 85vw;
+    row-gap: 4vw;
+    column-gap: 7.2vw;
+    margin: 2vw 0;
   }
 `;
 
@@ -138,6 +141,13 @@ const WholeContainer = styled.div`
   @media screen and (max-width: 1200px) {
     width: 70vw;
     height: 48vw;
+  }
+
+  @media screen and (max-width: 480px) {
+    width: 90vw;
+    height: 145.8vw;
+    border-radius: 2vw;
+
   }
 `;
 

@@ -118,7 +118,7 @@ const SmallBox = styled.div`
     border-radius: 1vw;
   }
 
-  @media screen and (max-width: 1200px) {
+  @media screen and (max-width: 480px) {
     width: 90vw;
     height: 33.3vw;
     border-radius: 2vw;
@@ -185,7 +185,7 @@ const Img = styled.img`
     height: 2vw;
   }
 
-  @media screen and (max-width: 1200px) {
+  @media screen and (max-width: 480px) {
     height: 7vw;
     width: 7vw;
   }

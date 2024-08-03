@@ -226,7 +226,13 @@ const HeadContainer = styled.div`
     width: 17vw;
     height: 2vw;
     margin-bottom: 0.4vw;
-    font-size: 1.3vw;
+  }
+
+  @media screen and (max-width: 480px) {
+    width: 33vw;
+    height: 4vw;
+    margin-bottom: 1vw;
+    justify-content: center;
   }
 `;
 
@@ -254,6 +260,11 @@ const HeartContainer = styled.div`
 
 const Count = styled.p`
   ${({ theme }) => theme.fonts.default20};
+
+  @media screen and (max-width: 480px){
+    font-size: 4vw;
+    margin-bottom: 0.5vw;
+  }
 `;
 
 const MenuName = styled.p`
@@ -267,6 +278,12 @@ const MenuName = styled.p`
     font-size: 1.5vw;
     width: 11.3vw;
     margin-left: 2.8vw;
+  }
+
+  @media screen and (max-width: 480px) {
+    font-size: 3vw;
+    width: 30vw;
+    margin-left: 0;
   }
 `;
 
@@ -285,6 +302,12 @@ const Container = styled.div`
     width: 17.8vw;
     border-radius: 0.7vw;
   }
+
+  @media screen and (max-width: 480px) {
+    width: 38.88vw;
+    height: 44.44vw;
+    border-radius: 2vw;
+  }
 `;
 
 const PhotoWrapper = styled.div`
@@ -298,6 +321,12 @@ const PhotoWrapper = styled.div`
     width: 15.5vw;
     border-radius: 0.7vw;
   }
+
+  @media screen and (max-width: 480px) {
+    height: 27.77vw;
+    width: 33.33vw;
+    border-radius: 2vw;
+  }
 `;
 
 const HeartImg = styled.img`
@@ -310,6 +339,12 @@ const HeartImg = styled.img`
     height: 2vw;
     width: 2vw;
     margin: 0.625vw;
+  }
+
+  @media screen and (max-width: 480px) {
+    height: 5vw;
+    width: 5vw;
+    margin: 1vw;
   }
 `;
 

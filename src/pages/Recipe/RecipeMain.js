@@ -7,6 +7,19 @@ import Sidebar from "../../components/Sidebar";
 const RecipeMain = () => {
   const [type, setType] = useState("newest");
   const [isLoading, setIsLoading] = useState(true);
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+
+    useEffect(() => {
+        const handleResize = () => {
+            setWindowWidth(window.innerWidth);
+        };
+
+        window.addEventListener('resize', handleResize);
+
+        return () => {
+            window.removeEventListener('resize', handleResize);
+        };
+    }, []);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -16,6 +29,7 @@ const RecipeMain = () => {
     };
 
     fetchData();
+
 }, []);
 
 if (isLoading) {
@@ -33,15 +47,17 @@ if (isLoading) {
       </SidebarContainer>
       <Wrapper>
         <RecipeContainer>
+          {windowWidth > 480 && 
+            <div>
+              <TextContainer>
+                <BoxTitle>인기 레시피</BoxTitle>
+              </TextContainer>
+              <PopularRecipe />
+            </div>}
           <div>
             <TextContainer>
-              <BoxTitle>인기 레시피</BoxTitle>
-            </TextContainer>
-            <PopularRecipe />
-          </div>
-          <div>
-            <TextContainer>
-              <BoxTitle>전체 레시피</BoxTitle>
+            {windowWidth > 480 &&
+              <BoxTitle>전체 레시피</BoxTitle>}
               <TabContainer>
                 <TabText
                   $isActive={type === "newest"}
@@ -98,6 +114,12 @@ const SidebarContainer = styled.div`
   position: absolute;
   display: flex;
   position: fixed;
+
+  @media screen and (max-width: 480px){
+    position: static;
+    margin-top: 3vw;
+    margin-bottom: 1vw;
+  }
 `;
 
 const Wrapper = styled.div`
@@ -113,6 +135,10 @@ const RecipeContainer = styled.div`
   @media screen and (max-width: 1200px) {
     width: 70vw;
     margin-top: 2vw;
+  }
+
+  @media screen and (max-width: 480px) {
+    width: 90vw;
   }
 `;
 
@@ -140,6 +166,11 @@ const TabText = styled.p.attrs((props) => ({
 
   @media screen and (max-width: 1200px) {
     font-size: 1.3vw;
+  }
+
+  @media screen and (max-width: 480px) {
+    font-size: 2.5vw;
+    margin-bottom: 1.5vw;
   }
 `;
 
