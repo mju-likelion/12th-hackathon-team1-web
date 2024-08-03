@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback } from "react";
 import styled from "styled-components";
+import nextIcon from "../assets/images/next.svg";
 import { Axios } from "../api/Axios";
 import RecipeBox from "./RecipeBox";
 import { LikeAtom } from "../Recoil/Atom";
@@ -9,90 +10,103 @@ const WholeRecipe = ({ type }) => {
   const likeRecipes = useRecoilValue(LikeAtom);
   const [recipes, setRecipes] = useState([]);
   const [page, setPage] = useState(0);
-  const [totalPage, setTotalPage] = useState(1);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [hasMore, setHasMore] = useState(true);
 
-  const fetchRecipes = useCallback(async () => {
-    if (loading || page >= totalPage) return;
+  const fetchRecipes = useCallback(
+    async (pageToFetch) => {
+      setLoading(true);
 
-    setLoading(true);
-    try {
-      const token = localStorage.getItem("token");
-      const response = await Axios.get(`/recipes`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-        params: {
-          page: page,
-          size: 9,
-          type: type,
-        },
-      });
+      try {
+        const token = localStorage.getItem("token");
+        const response = await Axios.get(`/recipes`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          params: {
+            page: pageToFetch,
+            size: 12,
+            type: type,
+          },
+        });
 
-      if (response.data && response.data.data) {
-        const { recipeList, pagination } = response.data.data;
-        setRecipes((prevRecipes) => [...prevRecipes, ...recipeList]);
-        setTotalPage(pagination.totalPage);
-        setPage(pagination.currentPage + 1);
-      } else {
-        throw new Error("응답 데이터 형식이 올바르지 않습니다.");
-      }
-    } catch (error) {
-      console.error("레시피 데이터를 가져오는 데 실패했습니다.", error);
-      setError("레시피 데이터를 가져오는 데 실패했습니다.");
-    } finally {
-      setLoading(false);
-    }
-  }, [page, totalPage, loading, type]);
-
-  useEffect(() => {
-    fetchRecipes();
-  }, [fetchRecipes]);
-
-  const handleScroll = useCallback(
-    (event) => {
-      const { scrollTop, scrollHeight, clientHeight } = event.currentTarget;
-      if (scrollHeight - scrollTop === clientHeight && !loading) {
-        fetchRecipes();
+        if (response.data && response.data.data) {
+          const { recipeList } = response.data.data;
+          setRecipes((prevRecipes) => {
+            const existingRecipeIds = new Set(
+              prevRecipes.map((recipe) => recipe.recipeId)
+            );
+            const newRecipes = recipeList.filter(
+              (recipe) => !existingRecipeIds.has(recipe.recipeId)
+            );
+            return [...prevRecipes, ...newRecipes];
+          });
+          setPage(pageToFetch);
+        } else {
+          throw new Error("응답 데이터 형식이 올바르지 않습니다.");
+        }
+      } catch (error) {
+        if (error.response && error.response.data.errorCode === "4046") {
+          setHasMore(false);
+        } else {
+          console.error("레시피 데이터를 가져오는 데 실패했습니다.", error);
+          setError("레시피 데이터를 가져오는 데 실패했습니다.");
+        }
+      } finally {
+        setLoading(false);
       }
     },
-    [fetchRecipes, loading]
+    [type]
   );
 
   useEffect(() => {
-    const container = document.getElementById("recipe-container");
-    if (container) {
-      container.addEventListener("scroll", handleScroll);
-      return () => {
-        container.removeEventListener("scroll", handleScroll);
-      };
+    setRecipes([]);
+    setPage(0);
+    setHasMore(true);
+    fetchRecipes(0);
+  }, [type, fetchRecipes]);
+
+  const loadMoreRecipes = () => {
+    if (!loading && hasMore) {
+      fetchRecipes(page + 1);
     }
-  }, [handleScroll]);
+  };
 
   if (error) {
     return <div>{error}</div>;
   }
 
   return (
-      <WholeContainer id="recipe-container">
-      <RecipeContainer>
-        {recipes.map((recipe) => (
-          <div>
-          <RecipeBox
-            key={recipe.recipeId}
-            recipeId={recipe.recipeId}
-            name={recipe.name}
-            likeCount={recipe.likeCount}
-            recipeLikeId={likeRecipes}
-          />
-          </div>
-        ))}
-      </RecipeContainer>
-      {loading && <LoadingSpinner>Loading...</LoadingSpinner>}
+    <WholeContainer>
+      <WholeRecipeContainer>
+        <RecipeContainer>
+          {recipes.map((recipe) => (
+            <RecipeBox
+              key={recipe.recipeId}
+              recipeId={recipe.recipeId}
+              name={recipe.name}
+              likeCount={recipe.likeCount}
+              recipeLikeId={likeRecipes}
+            />
+          ))}
+        </RecipeContainer>
+        {loading && <LoadingSpinner>Loading...</LoadingSpinner>}
+        {!loading && hasMore && (
+          <LoadMoreButton onClick={loadMoreRecipes}>
+            <img src={nextIcon} alt="Load more" />
+          </LoadMoreButton>
+        )}
+      </WholeRecipeContainer>
     </WholeContainer>
   );
 };
+
+const WholeRecipeContainer = styled.div`
+  display: flex;
+  height: 570px;
+  flex-direction: column;
+`;
 
 const RecipeContainer = styled.div`
   display: flex;
@@ -121,12 +135,12 @@ const WholeContainer = styled.div`
   display: flex;
   background-color: ${({ theme }) => theme.colors.green200};
   width: 900px;
-  height: 650px;
-  overflow-y: scroll;
+  height: 600px;
+  overflow-y: auto;
   align-items: center;
   justify-content: center;
   border-radius: 1vw;
-  
+
   &::-webkit-scrollbar-button {
     display: none;
   }
@@ -140,14 +154,13 @@ const WholeContainer = styled.div`
 
   @media screen and (max-width: 1200px) {
     width: 70vw;
-    height: 48vw;
+    height: 43vw;
   }
 
   @media screen and (max-width: 480px) {
     width: 90vw;
     height: 145.8vw;
     border-radius: 2vw;
-
   }
 `;
 
@@ -156,6 +169,23 @@ const LoadingSpinner = styled.div`
   text-align: center;
   padding: 10px;
   color: ${({ theme }) => theme.colors.primary};
+`;
+
+const LoadMoreButton = styled.button`
+  margin-top: 20px;
+  background: none;
+  border: none;
+  cursor: pointer;
+
+  img {
+    width: 30px;
+    height: 30px;
+    transform: rotate(90deg);
+  }
+
+  &:hover {
+    opacity: 0.8;
+  }
 `;
 
 export default WholeRecipe;
