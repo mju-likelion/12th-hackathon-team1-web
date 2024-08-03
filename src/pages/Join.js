@@ -25,14 +25,14 @@ const Join = () => {
   const validateEmail = (value) => {
     const schema = Yup.string().matches(
       /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/,
-      "잘못된 아이디(이메일)입니다."
+      "잘못된 형식의 아이디(이메일)입니다."
     );
     schema
       .validate(value)
       .then(() => {
         setEmailError("");
         setIsEmailValid(true);
-        setEmailSuccess("사용가능한 아이디(이메일)입니다.");
+        setEmailSuccess("올바른 형식의 아이디(이메일)입니다.");
       })
       .catch((err) => {
         setEmailError(err.message);
@@ -44,14 +44,14 @@ const Join = () => {
   const validatePassword = (value) => {
     const schema = Yup.string().matches(
       /^(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[!@#$%^&*])(?=.{8,14})/,
-      "잘못된 비밀번호입니다."
+      "잘못된 형식의 비밀번호입니다."
     );
     schema
       .validate(value)
       .then(() => {
         setPasswordError("");
         setIsPasswordValid(true);
-        setPasswordSuccess("사용가능한 비밀번호입니다.");
+        setPasswordSuccess("올바른 형식의 비밀번호입니다.");
       })
       .catch((err) => {
         setPasswordError(err.message);
@@ -70,7 +70,7 @@ const Join = () => {
       .then(() => {
         setNameError("");
         setIsNameValid(true);
-        setNameSuccess("사용가능한 닉네임입니다.");
+        setNameSuccess("올바른 형식의 닉네임입니다.");
       })
       .catch((err) => {
         setNameError(err.message);
@@ -94,7 +94,11 @@ const Join = () => {
         console.error("회원가입 중 에러 발생:", error);
         if (error.response) {
           if (error.response.status === 409) {
-            console.error("이미 사용 중인 아이디나 비밀번호입니다.");
+            if (error.response.data.errorCode === "4090") {
+              alert(error.response.data.message);
+            } else {
+              console.error("서버에서 에러 응답:", error.response.data);
+            }
           } else {
             console.error("서버에서 에러 응답:", error.response.data);
           }
@@ -178,14 +182,14 @@ const Join = () => {
               error={nameError}
               success={nameSuccess}
             />
-            <Button>
+            <ButtonContainer>
               <BigButton
                 disabled={!isEmailValid || !isPasswordValid || !isNameValid}
                 onClick={handleSignup}
               >
                 회원가입
               </BigButton>
-            </Button>
+            </ButtonContainer>
           </FormContainer>
         </AllBox>
       </CenteredBox>
@@ -200,6 +204,10 @@ const Container = styled.div`
   align-items: center;
   min-height: 100vh;
   background-color: #f5f5f5;
+
+  @media screen and (max-width: 480px) {
+    padding: 4vw;
+  }
 `;
 
 const CenteredBox = styled.div`
@@ -207,6 +215,10 @@ const CenteredBox = styled.div`
   justify-content: center;
   align-items: center;
   width: 100%;
+
+  @media screen and (max-width: 480px) {
+    flex-direction: column;
+  }
 `;
 
 const AllBox = styled.div`
@@ -219,6 +231,12 @@ const AllBox = styled.div`
   border-radius: 10px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
   padding: 32px;
+
+  @media screen and (max-width: 480px) {
+    width: 90vw;
+    height: auto;
+    padding: 8vw;
+  }
 `;
 
 const FormContainer = styled.div`
@@ -227,16 +245,33 @@ const FormContainer = styled.div`
   align-items: center;
   width: 100%;
   gap: 20px;
+
+  @media screen and (max-width: 480px) {
+    gap: 4vw;
+  }
 `;
 
 const Title = styled.p`
   ${({ theme }) => theme.fonts.title32};
   margin-top: 30px;
   margin-bottom: 40px;
+
+  @media screen and (max-width: 480px) {
+    font-size: 6vw;
+    margin-top: 4vw;
+    margin-bottom: 8vw;
+  }
 `;
 
-const Button = styled.div`
+const ButtonContainer = styled.div`
+  width: 100%;
+  display: flex;
+  justify-content: center;
   margin-top: 25px;
+
+  @media screen and (max-width: 480px) {
+    margin-top: 5vw;
+  }
 `;
 
 export default Join;
