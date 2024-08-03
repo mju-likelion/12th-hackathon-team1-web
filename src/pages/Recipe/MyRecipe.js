@@ -1,7 +1,8 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import RecipeBox from "../../components/RecipeBox";
 import Plus from "../../assets/images/plus.svg";
+import Next from "../../assets/images/next.svg";
 import Sidebar from "../../components/Sidebar";
 import RecipeModal from "../../components/RecipeModal";
 import EditModal from "../../components/EditModal";
@@ -46,7 +47,15 @@ const MyRecipe = () => {
         });
         if (response.data && response.data.data) {
           const newRecipes = response.data.data.recipeList;
-          setRecipeData((prevData) => [...prevData, ...newRecipes]);
+          setRecipeData((prevData) => {
+            const existingRecipeIds = new Set(
+              prevData.map((recipe) => recipe.recipeId)
+            );
+            const filteredNewRecipes = newRecipes.filter(
+              (recipe) => !existingRecipeIds.has(recipe.recipeId)
+            );
+            return [...prevData, ...filteredNewRecipes];
+          });
           setHasMore(newRecipes.length === 12);
           setPage((prevPage) => prevPage + 1);
         } else {
@@ -126,25 +135,11 @@ const MyRecipe = () => {
     setShowEditModal(false);
   };
 
-  const handleScroll = useCallback(() => {
-    const container = document.getElementById("recipe-container");
-    if (
-      container.scrollTop + container.clientHeight >=
-      container.scrollHeight - 5
-    ) {
-      if (!loading && hasMore) {
-        setPage((prevPage) => prevPage + 1);
-      }
+  const loadMoreRecipes = () => {
+    if (!loading && hasMore) {
+      setPage((prevPage) => prevPage + 1);
     }
-  }, [loading, hasMore]);
-
-  useEffect(() => {
-    const container = document.getElementById("recipe-container");
-    container.addEventListener("scroll", handleScroll);
-    return () => {
-      container.removeEventListener("scroll", handleScroll);
-    };
-  }, [handleScroll]);
+  };
 
   return (
     <>
@@ -159,9 +154,9 @@ const MyRecipe = () => {
           </EditButton>
         </TitleEditContainer>
         <AddWrapper>
-          <MyRecipeContainer id="recipe-container">
-            {recipeData.map((recipeData) => (
-              <div>
+          <MyRecipeContainer>
+            <RecipeContainer>
+              {recipeData.map((recipeData) => (
                 <RecipeBox
                   key={recipeData.recipeId}
                   recipeId={recipeData.recipeId}
@@ -175,9 +170,14 @@ const MyRecipe = () => {
                   onSave={handleSave}
                   recipeLikeId={likeRecipes}
                 />
-              </div>
-            ))}
+              ))}
+            </RecipeContainer>
             {loading && <LoadingSpinner>Loading...</LoadingSpinner>}
+            {!loading && hasMore && (
+              <LoadMoreButton onClick={loadMoreRecipes}>
+                <img src={Next} alt="Load more" />
+              </LoadMoreButton>
+            )}
           </MyRecipeContainer>
           {isEditing && (
             <PlusButton
@@ -222,6 +222,15 @@ const MyRecipe = () => {
     </>
   );
 };
+
+const RecipeContainer = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: start;
+  gap: 50px;
+  width: 820px;
+  margin-bottom: 10px;
+`;
 
 const Overlay = styled.div`
   position: fixed;
@@ -361,6 +370,23 @@ const LoadingSpinner = styled.div`
   width: 100%;
   text-align: center;
   margin: 20px 0;
+`;
+
+const LoadMoreButton = styled.button`
+  margin-top: 20px;
+  background: none;
+  border: none;
+  cursor: pointer;
+
+  img {
+    width: 30px;
+    height: 30px;
+    transform: rotate(90deg);
+  }
+
+  &:hover {
+    opacity: 0.8;
+  }
 `;
 
 const Container = styled.div`
