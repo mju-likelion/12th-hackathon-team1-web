@@ -408,7 +408,6 @@ const UploadInput = styled.input`
 
 const TopContainer = styled.div`
   width: 100%;
-  height: 250px;
   display: flex;
   justify-content: space-between;
 
@@ -513,6 +512,7 @@ const ModalContentBox = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: start;
+  overflow-y: auto;
 
   @media screen and (max-width: 1200px) {
     width: 50vw;

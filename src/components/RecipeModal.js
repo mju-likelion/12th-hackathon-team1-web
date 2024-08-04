@@ -189,13 +189,8 @@ const LeftContainer = styled.div`
 
 const TopContainer = styled.div`
   width: 100%;
-  height: 250px;
   display: flex;
   justify-content: space-between;
-
-  @media screen and (max-width: 1200px) {
-    height: 17.36vw;
-  }
 `;
 
 const CountHeart = styled.p`
@@ -278,6 +273,7 @@ const ModalContentBox = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: start;
+  overflow-y: auto;
 
   @media screen and (max-width: 1200px) {
     width: 50vw;
