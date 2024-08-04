@@ -1,19 +1,19 @@
 import React, {useEffect, useState} from 'react';
 import styled from 'styled-components';
 import SmallButton from './SmallButton';
-import Modal from './ModifyModal';
 import { Axios } from '../api/Axios';
+import ModifyModal from './ModifyModal';
 
-const FoodBoxModal = ({isCloseShowFood, id, isDate, idName, location}) => {
+const FoodBoxModal = ({isCloseShowFood, id, isDate, location}) => {
   const [showModify, setShowModify] = useState(false);
-  const [foodData, setFoodData] = useState([null]);
+  const [foodData, setFoodData] = useState([]);
+  const [storage, setStorage] = useState('');
 
   useEffect(()=> {
     const ShowFood = async () => {
         try{
             const response = await Axios.get(`/fridge/ingredients/${id}`);
             setFoodData(response.data.data)
-      
         } catch (error) {
             console.log(error);
         }
@@ -22,8 +22,21 @@ const FoodBoxModal = ({isCloseShowFood, id, isDate, idName, location}) => {
     ShowFood();
 }, [id])
 
-  const stopPropagation = (e) => {
+  useEffect(() => {
+    if (foodData && foodData.storage) {
+      if (foodData.storage === "FROZEN") {
+        setStorage("냉동실");
+      } else if (foodData.storage === "REFRIGERATED") {
+        setStorage("냉장실");
+      } else if (foodData.storage === "STORE_AT_ROOM_TEMPERATURE") {
+        setStorage("상온");
+      }
+    }
+  }, [foodData]);
+
+  const handleClose = (e) => {
     e.stopPropagation();
+    isCloseShowFood();
   };
 
   const openModifyModal = () => {
@@ -33,9 +46,10 @@ const FoodBoxModal = ({isCloseShowFood, id, isDate, idName, location}) => {
   const closeModifyModal = () => {
     setShowModify(false);
   }
+
   return (
-        <div>
-        <WrapperBox onClick={stopPropagation}>
+        <AllWrapper onClick={handleClose}>
+        <WrapperBox onClick={(e) => e.stopPropagation()}>
             <Wrapper>
               <TitleBox>
                 <MainTitle>{foodData.ingredientName}</MainTitle>
@@ -55,19 +69,19 @@ const FoodBoxModal = ({isCloseShowFood, id, isDate, idName, location}) => {
                     <TextWrapper>
                       <Title>남은 재료 개수</Title>
                       <NameBox>
-                        <TextBox>{foodData.quantity}</TextBox>
+                      <TextBox>{foodData ? foodData.quantity : '정보 없음'}</TextBox>
                       </NameBox>
                     </TextWrapper>
                     <TextWrapper>
                       <Title>보관 방법</Title>
                       <NameBox>
-                        <TextBox>{foodData.storage}</TextBox>
+                        <TextBox>{storage}</TextBox>
                       </NameBox>
                     </TextWrapper>
                     <TextWrapper>
                       <Title>메모</Title>
                       <NameBox>
-                        <TextBox>{foodData.memo}</TextBox>
+                        <TextBox>{foodData ? foodData.memo : '정보 없음'}</TextBox>
                       </NameBox>
                     </TextWrapper>
                   </TextBoxWrapper>
@@ -76,21 +90,38 @@ const FoodBoxModal = ({isCloseShowFood, id, isDate, idName, location}) => {
                     <SmallButton text="닫기" onClick={isCloseShowFood}/>
                       {(!isDate && !location) && <SmallButton text="수정하기" onClick={openModifyModal}/>}
                     {showModify && (
-                    <Modal 
+                    <ModifyModal
                       name = {foodData.ingredientName}
-                      closeModifyModal={closeModifyModal}
                       id={id}
+                      year={foodData.expiredDate.split('-')[0]}
+                      month={foodData.expiredDate.split('-')[1]}
+                      date={foodData.expiredDate.split('-')[2]}
+                      count={foodData.quantity}
+                      storage = {storage}
+                      memo={foodData.memo}
+                      closeModifyModal={closeModifyModal}
                       isCloseShowFood={isCloseShowFood}
-                      modal = "수정"
-                      idName = {idName}
                     />
                     )}
                 </ButtonWrapper>
             </Wrapper>
         </WrapperBox>
-        </div>
+        </AllWrapper>
   );
 };
+
+const AllWrapper = styled.div`
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1200;
+`;
 
 const WrapperBox = styled.div`
     background-color: ${({theme}) => theme.colors.green200};

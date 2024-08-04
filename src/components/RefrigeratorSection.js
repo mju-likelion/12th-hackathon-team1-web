@@ -14,10 +14,12 @@ const RefrigeratorSection = ({title, ButtonText, dateRef, location}) => {
     const [roomTempData, setRoomTempData] = useState([]);
 
     const today = new Date();
+    const koreanToday = new Date(today.toLocaleString("en-US", { timeZone: "Asia/Seoul" }));
 
     const isDateDDay = (expirationDate) => {
         const expiryDate = new Date(expirationDate);
-        const diffTime = expiryDate - today;
+        const koreanExpiryDate = new Date(expiryDate.toLocaleString("en-US", { timeZone: "Asia/Seoul" }));
+        const diffTime = koreanExpiryDate - koreanToday;
         const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
         return diffDays;
     };
@@ -252,8 +254,8 @@ const VerticalLine = styled.div`
         margin-right: 3vw;
     }
 `;
-
 const FoodBoxWrapper = styled.div`
+    width: 890px;
     height: 118px;
     display: flex;
     flex-direction: row;
