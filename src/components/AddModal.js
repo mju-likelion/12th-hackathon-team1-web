@@ -33,7 +33,7 @@ const AddModal = ({closeAddModal, ingredientName, storageName, closeIngredientBo
   };
 
   const canSave = () => {
-    return year && month && date && quantity && memo;
+    return year && month && date && quantity;
   };
 
   const years = [
@@ -240,7 +240,7 @@ const TitleBox = styled.div`
     margin-bottom: 1.5vw;
   }
 
-  @media screen and (max-width: 1200px){
+  @media screen and (max-width: 480px){
     margin-top: 1.5vw;
   }
 `;
@@ -392,7 +392,7 @@ const Year = styled.p`
     margin-bottom: 0.7vw;
   }
 
-  @media screen and (max-width: 1200px){
+  @media screen and (max-width: 480px){
     font-size: 2.5vw;
     margin-left: 0.8vw;
   }
@@ -426,7 +426,7 @@ const LongText = styled.input`
     margin-left: 2vw;
   }
 
-  @media screen and (max-width: 1200px){
+  @media screen and (max-width: 480px){
     width: 40vw;
     height: 11vw;
     font-size: 2.5vw;
