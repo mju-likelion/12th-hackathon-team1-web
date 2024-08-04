@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import remove from '../assets/images/delateIcon.svg'
-import Modal from '../pages/Modal';
 import { Axios } from '../api/Axios';
+import FoodBoxModal from './FoodBoxModal';
 
 const FoodBox = ({ingredientName, ButtonText, year, month, date, isDate, id, expirationDate, location}) => {
     const [showFoodBox, setShowFoodBox] = useState(false);
@@ -61,10 +61,9 @@ const FoodBox = ({ingredientName, ButtonText, year, month, date, isDate, id, exp
         <Wrapper expirationDate={expirationDate}>
             <TextWrapper onClick={isOpenShowFood}>
                 {showFoodBox &&(
-                <Modal
+                <FoodBoxModal
                     id={id}
                     isCloseShowFood={isCloseShowFood}
-                    modal = "단건조회"
                     location = {location}
                     isDate={isDate}
                 />)}

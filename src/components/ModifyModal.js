@@ -3,30 +3,35 @@ import styled from 'styled-components';
 import SmallButton from './SmallButton';
 import { Axios } from '../api/Axios';
 
-const ModifyModal = ({ name, id, isCloseShowFood}) => {
+const ModifyModal = ({ name, id, year, month, date, count, storage, memo, closeModifyModal, isCloseShowFood}) => {
 
-  const [year, setYear] = useState('');
-  const [month, setMonth] = useState('');
-  const [date, setDate] = useState('');
-  const [count, setCount] = useState('');
-  const [storage, setStorage] = useState('');
-  const [memo, setMemo] = useState('');
+  const [changeYear, setChangeYear] = useState(year);
+  const [changeMonth, setChangeMonth] = useState(month);
+  const [changeDate, setChangeDate] = useState(date);
+  const [changeCount, setChangeCount] = useState(count);
+  const [changeStorage, setChangeStorage] = useState(storage);
+  const [changeMemo, setChangeMemo] = useState(memo);
 
   const handleSave = () => {
     Modify();
     isCloseShowFood();
   };
 
+  const handleClose = (e) => {
+    e.stopPropagation();
+    isCloseShowFood();
+  };
 
-  const years = [
-    { value: "", label: "년 선택" },
+
+  const changeYears = [
+    { value: "", label: changeYear },
     { value: "2024", label: "2024" },
     { value: "2025", label: "2025" },
     { value: "2026", label: "2026" },
     { value: "2027", label: "2027" },
   ];
-  const months = [
-    { value: "", label: "월 선택" },
+  const changeMonths = [
+    { value: "", label: changeMonth },
     { value: "01", label: "01" },
     { value: "02", label: "02" },
     { value: "03", label: "03" },
@@ -41,8 +46,8 @@ const ModifyModal = ({ name, id, isCloseShowFood}) => {
     { value: "12", label: "12" },
   ];
 
-  const dates = [
-    { value: "", label: "일 선택" },
+  const changeDates = [
+    { value: "", label: changeDate },
     { value: "01", label: "01" },
     { value: "02", label: "02" },
     { value: "03", label: "03" },
@@ -75,8 +80,8 @@ const ModifyModal = ({ name, id, isCloseShowFood}) => {
     { value: "30", label: "30" },
     { value: "31", label: "31" },
   ];
-  const numbers = [
-    { value: "", label: "횟수 선택" },
+  const changeCounts = [
+    { value: "", label: changeCount },
     { value: "01", label: "01" },
     { value: "02", label: "02" },
     { value: "03", label: "03" },
@@ -88,8 +93,8 @@ const ModifyModal = ({ name, id, isCloseShowFood}) => {
     { value: "09", label: "09" },
     { value: "10", label: "10" },
   ]
-  const methods = [
-    {value: "", label: "저장 방법"},
+  const changeStorages = [
+    {value: "", label: changeStorage},
     {value: "냉동", label: "냉동"},
     {value: "냉장", label: "냉장"},
     {value: "상온", label: "상온"},
@@ -97,23 +102,26 @@ const ModifyModal = ({ name, id, isCloseShowFood}) => {
 
   const Modify = async() => {
     try{
-      const response = await Axios.patch(`/fridge/ingredients/${id}`, {
+      await Axios.patch(`/fridge/ingredients/${id}`, {
         ingredientId: id,
-        expiredDate: `${year}-${month}-${date}`,
-        quantity: count,
-        storage: storage,
-        memo: memo,
+        expiredDate: `${changeYear}-${changeMonth}-${changeDate}`,
+        quantity: changeCount,
+        storage: changeStorage,
+        memo: changeMemo,
       });
       window.location.href = `/fridge`;
-      console.log("zz: ", response);
     }catch (error) {
       console.log(error)
     }
   } 
 
+  const close = () => {
+    isCloseShowFood();
+  }
+
   return (
-        <ModalWrapper>
-        <WrapperBox>
+        <ModalWrapper onClick={handleClose}>
+        <WrapperBox onClick={(e)=>e.stopPropagation()}>
             <Wrapper>
               <TitleBox>
                 <MainTitle>재료 수정하기</MainTitle>
@@ -130,30 +138,30 @@ const ModifyModal = ({ name, id, isCloseShowFood}) => {
                       <Title>남은 유통기한</Title>
                       <YearWrapper>
                         <YearBox>
-                        <Text value={year} onChange={(e) => setYear(e.target.value)}>
-                      {years.map((year, index) => (
-                        <option key={index} value={year.value} disabled={year.value === ""}>
-                          {year.label}
+                        <Text value={changeYear} onChange={(e) => setChangeYear(e.target.value)}>
+                      {changeYears.map((years, index) => (
+                        <option key={index} value={years.value} disabled={years.value === ""}>
+                          {years.label}
                         </option>
                       ))}
                     </Text>
                           <Year>년</Year>
                         </YearBox>
                         <YearBox>
-                        <Text value={month} onChange={(e) => setMonth(e.target.value)}>
-                      {months.map((month, index) => (
-                        <option key={index} value={month.value} disabled={month.value === ""}>
-                          {month.label}
+                        <Text value={changeMonth} onChange={(e) => setChangeMonth(e.target.value)}>
+                      {changeMonths.map((months, index) => (
+                        <option key={index} value={months.value} disabled={months.value === ""}>
+                          {months.label}
                         </option>
                       ))}
                     </Text>
                           <Year>월</Year>
                         </YearBox>
                         <YearBox>
-                        <Text value={date} onChange={(e) => setDate(e.target.value)}>
-                      {dates.map((date, index) => (
-                        <option key={index} value={date.value} disabled={date.value === ""}>
-                          {date.label}
+                        <Text value={changeDate} onChange={(e) => setChangeDate(e.target.value)}>
+                      {changeDates.map((dates, index) => (
+                        <option key={index} value={dates.value} disabled={dates.value === ""}>
+                          {dates.label}
                         </option>
                       ))}
                     </Text>
@@ -163,32 +171,32 @@ const ModifyModal = ({ name, id, isCloseShowFood}) => {
                     </TextWrapper>
                     <TextWrapper>
                       <Title>수량 설정</Title>
-                      <Text value={count} onChange={(e) => setCount(e.target.value)}>
-                  {numbers.map((num, index) => (
-                    <option key={index} value={num.value} disabled={num.value === ""}>
-                      {num.label}
+                      <Text value={changeCount} onChange={(e) => setChangeCount(e.target.value)}>
+                  {changeCounts.map((counts, index) => (
+                    <option key={index} value={counts.value} disabled={counts.value === ""}>
+                      {counts.label}
                     </option>
                   ))}
                 </Text>
                     </TextWrapper>
                     <TextWrapper>
                       <Title>보관 방법</Title>
-                      <Text value={storage} onChange={(e) => setStorage(e.target.value)}>
-                  {methods.map((method, index) => (
-                    <option key={index} value={method.value} disabled={method.value === ""}>
-                      {method.label}
+                      <Text value={changeStorage} onChange={(e) => setChangeStorage(e.target.value)}>
+                  {changeStorages.map((storages, index) => (
+                    <option key={index} value={storages.value} disabled={storages.value === ""}>
+                      {storages.label}
                     </option>
                   ))}
                 </Text>
                     </TextWrapper>
                     <TextWrapper>
                       <Title>메모</Title>
-                      <LongText value={memo} onChange={(e) => setMemo(e.target.value)} />
+                      <LongText value={changeMemo} onChange={(e) => setChangeMemo(e.target.value)} />
                     </TextWrapper>
                   </TextBoxWrapper>
                 </SmallWrapper>
                 <ButtonWrapper>
-                    <SmallButton text="닫기" onClick={isCloseShowFood}/>
+                    <SmallButton text="닫기" onClick={close}/>
                     <SmallButton text="수정 완료"onClick={handleSave}/>
                 </ButtonWrapper>
             </Wrapper>
@@ -258,7 +266,7 @@ const TitleBox = styled.div`
     margin-bottom: 1.5vw;
   }
 
-  @media screen and (max-width: 1200px){
+  @media screen and (max-width: 480px){
     margin-top: 1.5vw;
   }
 `;
@@ -410,7 +418,7 @@ const Year = styled.p`
     margin-bottom: 0.7vw;
   }
 
-  @media screen and (max-width: 1200px){
+  @media screen and (max-width: 480px){
     font-size: 2.5vw;
     margin-left: 0.8vw;
   }
@@ -444,7 +452,7 @@ const LongText = styled.input`
     margin-left: 2vw;
   }
 
-  @media screen and (max-width: 1200px){
+  @media screen and (max-width: 480px){
     width: 40vw;
     height: 11vw;
     font-size: 2.5vw;
