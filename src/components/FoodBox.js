@@ -9,6 +9,7 @@ const FoodBox = ({ingredientName, ButtonText, year, month, date, isDate, id, exp
     const [maxLength, setMaxLength] = useState(5);
     const [windowWidth, setWindowWidth] = useState(window.innerWidth);
 
+    console.log(expirationDate)
         const handleDelete = async () => {
             try {
                 await Axios.delete(`/fridge/ingredients/${id}`);
@@ -56,7 +57,7 @@ const FoodBox = ({ingredientName, ButtonText, year, month, date, isDate, id, exp
             {windowWidth > 480 && expirationDate<=3&&
             (expirationDate === 0 ?
                 <DdayText>D-DAY</DdayText>
-                : <DdayText>D-{ expirationDate }</DdayText>
+                : <DdayText>D-{ expirationDate}</DdayText>
                 )}
         <Wrapper expirationDate={expirationDate}>
             <TextWrapper onClick={isOpenShowFood}>
