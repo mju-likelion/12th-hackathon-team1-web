@@ -10,6 +10,7 @@ import MyRecipe from "./pages/Recipe/MyRecipe";
 import LikeRecipe from "./pages/Recipe/LikeRecipe";
 import RecipeRecommend from "./pages/Recipe/RecipeRecommend";
 import { useState, useEffect } from "react";
+import NotFound from "./pages/NotFound";
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -35,6 +36,7 @@ function App() {
         <Route path="/recipes/my_recipes" element={<MyRecipe />} />
         <Route path="/recipes/recommendations" element={<RecipeRecommend />} />
         <Route path="/auth/likes" element={<LikeRecipe />} />
+        <Route path="*" element={<NotFound />} />
       </Routes>
     </>
   );
