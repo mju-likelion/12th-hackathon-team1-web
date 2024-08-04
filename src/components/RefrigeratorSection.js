@@ -187,7 +187,6 @@ const AllTextWrapper = styled.div`
     flex-direction: row;
     width: 1058px;
     height: 118px;
-    background-color: red;
 
     @media screen and (max-width: 1200px){
         width: 73.5vw;
@@ -205,7 +204,6 @@ const TextBox = styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color: yellow;
 
     @media screen and (max-width: 1200px){
         width: 8.3vw;
@@ -230,7 +228,6 @@ const LineBox = styled.div`
     max-width: 935px;
     display: flex;
     align-items: center;
-    background-color: green;
 
     @media screen and (max-width: 1200px){
         width: 65vw;
@@ -269,7 +266,6 @@ const FoodBoxWrapper = styled.div`
     overflow-x: auto;
     overflow-y: hidden;
     white-space: nowrap;
-    background-color: blue;
 
     &::-webkit-scrollbar{
         display: none;
