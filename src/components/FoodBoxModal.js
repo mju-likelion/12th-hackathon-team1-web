@@ -22,7 +22,6 @@ const FoodBoxModal = ({isCloseShowFood, id, isDate, location}) => {
     ShowFood();
 }, [id])
 
-  const storageName = () => {
     if (foodData.storage === "FROZEN") {
       setStorage("냉동실");
     } else if (foodData.storage === "REFRIGERATED") {
@@ -30,11 +29,16 @@ const FoodBoxModal = ({isCloseShowFood, id, isDate, location}) => {
     } else if (foodData.storage === "STORE_AT_ROOM_TEMPERATURE") {
       setStorage("상온");
     }
-  };
 
   useEffect(() => {
     if (foodData && foodData.storage) {
-      storageName();
+      if (foodData.storage === "FROZEN") {
+        setStorage("냉동실");
+      } else if (foodData.storage === "REFRIGERATED") {
+        setStorage("냉장실");
+      } else if (foodData.storage === "STORE_AT_ROOM_TEMPERATURE") {
+        setStorage("상온");
+      }
     }
   }, [foodData]);
 
