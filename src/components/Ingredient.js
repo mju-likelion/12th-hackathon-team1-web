@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import Modal from '../pages/Modal';
 import { Axios } from '../api/Axios';
+import AddModal from './AddModal';
 
 const Ingredient = ({searchValue, storageName, closeIngredientBox}) => {
     const[addIngredient, setAddIngredient] = useState(false);
@@ -66,13 +66,12 @@ const Ingredient = ({searchValue, storageName, closeIngredientBox}) => {
         onClick={() =>openAddModal(ingredient.name, ingredient.id)}>{truncateText(ingredient.name, maxLength)}</IngredientBox>
         ))}
         {addIngredient && 
-        <Modal 
+        <AddModal 
         closeAddModal={closeAddModal} 
         ingredientName={ingredientName}
         ingredientId = {ingredientId}
         storageName={storageName}
         closeIngredientBox={closeIngredientBox}
-        modal= "등록"
         />}
         </IngredientWrapper>
         
