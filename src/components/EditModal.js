@@ -16,6 +16,7 @@ const EditModal = ({ recipeId, onSave, closeEditModal }) => {
   const [showIngredientBox, setShowIngredientBox] = useState(false);
   const [activeIngredientIndex, setActiveIngredientIndex] = useState(null);
   const [showIngredientOptions, setShowIngredientOptions] = useState(false);
+  const [pendingRequests, setPendingRequests] = useState([]);
 
   useEffect(() => {
     const fetchRecipe = async () => {
@@ -54,8 +55,6 @@ const EditModal = ({ recipeId, onSave, closeEditModal }) => {
   }, [recipeId]);
 
   const handleIngredientSelect = async (selectedIngredient) => {
-    const postIngredient = selectedIngredient;
-
     if (activeIngredientIndex !== null) {
       const newIngredients = [...ingredients];
       newIngredients[activeIngredientIndex] = selectedIngredient;
@@ -64,13 +63,13 @@ const EditModal = ({ recipeId, onSave, closeEditModal }) => {
       setIngredients([...ingredients, selectedIngredient]);
     }
 
-    try {
-      await Axios.post(`/recipes/${recipeId}/ingredients`, {
-        ingredientIds: [postIngredient.id],
-      });
-    } catch (error) {
-      console.error("재료를 추가하는 데 실패했습니다.", error);
-    }
+    const postRequest = {
+      method: "post",
+      url: `/recipes/${recipeId}/ingredients`,
+      data: { ingredientIds: [selectedIngredient.id] },
+    };
+
+    setPendingRequests((prev) => [...prev, postRequest]);
 
     setActiveIngredientIndex(null);
     setShowIngredientBox(false);
@@ -110,23 +109,22 @@ const EditModal = ({ recipeId, onSave, closeEditModal }) => {
       const formData = new FormData();
       formData.append("file", image);
 
-      try {
-        const response = await Axios.post("/recipes/images", formData, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        });
+      const postRequest = {
+        method: "post",
+        url: "/recipes/images",
+        data: formData,
+        headers: { "Content-Type": "multipart/form-data" },
+      };
 
-        console.log(response);
+      setPendingRequests((prev) => [...prev, postRequest]);
 
-        if (response.data.statusCode === "200") {
-          setImageId(response.data.data.id);
-          setImageUrl(response.data.data.url);
-        } else {
-          console.error("이미지 등록에 실패했습니다.");
-        }
-      } catch (error) {
-        console.error("이미지 등록 중 오류가 발생했습니다.", error);
+      const response = await Axios(postRequest);
+
+      if (response.data.statusCode === "200") {
+        setImageId(response.data.data.id);
+        setImageUrl(response.data.data.url);
+      } else {
+        console.error("이미지 등록에 실패했습니다.");
       }
     }
   };
@@ -134,15 +132,15 @@ const EditModal = ({ recipeId, onSave, closeEditModal }) => {
   const handleDeleteImage = async () => {
     if (!imageId) return;
 
-    console.log(imageId);
+    const deleteRequest = {
+      method: "delete",
+      url: `/recipes/images/${imageId}`,
+    };
 
-    try {
-      await Axios.delete(`/recipes/images/${imageId}`);
-      setImageId(null);
-      setImageUrl(null);
-    } catch (error) {
-      console.error("이미지 삭제에 실패했습니다.", error);
-    }
+    setPendingRequests((prev) => [...prev, deleteRequest]);
+
+    setImageId(null);
+    setImageUrl(null);
   };
 
   const handleSave = async () => {
@@ -152,8 +150,17 @@ const EditModal = ({ recipeId, onSave, closeEditModal }) => {
       imageId,
     };
 
+    const patchRequest = {
+      method: "patch",
+      url: `/recipes/${recipeId}`,
+      data: updatedRecipe,
+    };
+
     try {
-      await Axios.patch(`/recipes/${recipeId}`, updatedRecipe);
+      const allRequests = [...pendingRequests, patchRequest];
+
+      await Promise.all(allRequests.map((req) => Axios(req)));
+
       onSave({ updatedRecipe, id: recipeId });
       closeEditModal();
       window.location.reload();
@@ -162,7 +169,7 @@ const EditModal = ({ recipeId, onSave, closeEditModal }) => {
     }
   };
 
-  const handleIngredientClick = (index, event) => {
+  const handleIngredientClick = (index) => {
     setActiveIngredientIndex(index);
     setShowIngredientOptions(true);
   };
@@ -200,16 +207,15 @@ const EditModal = ({ recipeId, onSave, closeEditModal }) => {
       return;
     }
 
-    try {
-      await Axios.delete(`/recipes/${recipeId}/ingredients`, {
-        data: {
-          ingredientRecipeIds: [ingredientToDelete.id],
-        },
-      });
-      setIngredients((prev) => prev.filter((_, i) => i !== index));
-    } catch (error) {
-      console.error("재료 삭제에 실패했습니다.", error);
-    }
+    const deleteRequest = {
+      method: "delete",
+      url: `/recipes/${recipeId}/ingredients`,
+      data: { ingredientRecipeIds: [ingredientToDelete.id] },
+    };
+
+    setPendingRequests((prev) => [...prev, deleteRequest]);
+
+    setIngredients((prev) => prev.filter((_, i) => i !== index));
   };
 
   return (

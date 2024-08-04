@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import styled, {keyframes} from "styled-components";
+import styled, { keyframes } from "styled-components";
 import PopularRecipe from "../../components/PopularRecipe";
 import WholeRecipe from "../../components/WholeRecipe";
 import Sidebar from "../../components/Sidebar";
@@ -9,36 +9,35 @@ const RecipeMain = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
 
-    useEffect(() => {
-        const handleResize = () => {
-            setWindowWidth(window.innerWidth);
-        };
+  useEffect(() => {
+    const handleResize = () => {
+      setWindowWidth(window.innerWidth);
+    };
 
-        window.addEventListener('resize', handleResize);
+    window.addEventListener("resize", handleResize);
 
-        return () => {
-            window.removeEventListener('resize', handleResize);
-        };
-    }, []);
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
 
   useEffect(() => {
     const fetchData = async () => {
-        setIsLoading(true);
-        await new Promise((resolve) => setTimeout(resolve, 300));
-        setIsLoading(false);
+      setIsLoading(true);
+      await new Promise((resolve) => setTimeout(resolve, 300));
+      setIsLoading(false);
     };
 
     fetchData();
+  }, []);
 
-}, []);
-
-if (isLoading) {
+  if (isLoading) {
     return (
-        <LoadingWrapper>
-            <LoadingSpinner />
-        </LoadingWrapper>
+      <LoadingWrapper>
+        <LoadingSpinner />
+      </LoadingWrapper>
     );
-}
+  }
 
   return (
     <>
@@ -47,26 +46,26 @@ if (isLoading) {
       </SidebarContainer>
       <Wrapper>
         <RecipeContainer>
-          {windowWidth > 480 && 
+          {windowWidth > 480 && (
             <div>
               <TextContainer>
                 <BoxTitle>인기 레시피</BoxTitle>
               </TextContainer>
               <PopularRecipe />
-            </div>}
+            </div>
+          )}
           <div>
             <TextContainer>
-            {windowWidth > 480 &&
-              <BoxTitle>전체 레시피</BoxTitle>}
+              {windowWidth > 480 && <BoxTitle>전체 레시피</BoxTitle>}
               <TabContainer>
                 <TabText
-                  $isActive={type === "newest"}
+                  isActive={type === "newest"}
                   onClick={() => setType("newest")}
                 >
                   최신순
                 </TabText>
                 <TabText
-                  $isActive={type === "popularity"}
+                  isActive={type === "popularity"}
                   onClick={() => setType("popularity")}
                 >
                   인기순
@@ -82,14 +81,14 @@ if (isLoading) {
 };
 
 const LoadingWrapper = styled.div`
-    height: 70vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+  height: 70vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 
-    @media screen and (max-width: 1200px) {
-        height: 50vh;
-    }
+  @media screen and (max-width: 1200px) {
+    height: 50vh;
+  }
 `;
 
 const rotate = keyframes`
@@ -102,12 +101,12 @@ const rotate = keyframes`
 `;
 
 const LoadingSpinner = styled.div`
-    border: 16px solid #f3f3f3;
-    border-top: 16px solid ${({theme})=>theme.colors.green200};
-    border-radius: 50%;
-    width: 120px;
-    height: 120px;
-    animation: ${rotate} 2s linear infinite;
+  border: 16px solid #f3f3f3;
+  border-top: 16px solid ${({ theme }) => theme.colors.green200};
+  border-radius: 50%;
+  width: 120px;
+  height: 120px;
+  animation: ${rotate} 2s linear infinite;
 `;
 
 const SidebarContainer = styled.div`
@@ -115,7 +114,7 @@ const SidebarContainer = styled.div`
   display: flex;
   position: fixed;
 
-  @media screen and (max-width: 480px){
+  @media screen and (max-width: 480px) {
     position: static;
     margin-top: 3vw;
     margin-bottom: 1vw;
@@ -152,9 +151,7 @@ const TabContainer = styled.div`
   }
 `;
 
-const TabText = styled.p.attrs((props) => ({
-  isActive: props.isActive,
-}))`
+const TabText = styled.p.attrs((props) => ({}))`
   display: flex;
   font-size: ${({ theme }) => theme.fonts.default16};
   cursor: pointer;

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import RecipeBox from "../../components/RecipeBox";
 import Plus from "../../assets/images/plus.svg";
+import Next from "../../assets/images/next.svg";
 import Sidebar from "../../components/Sidebar";
 import RecipeModal from "../../components/RecipeModal";
 import EditModal from "../../components/EditModal";
@@ -9,14 +10,6 @@ import CreateModal from "../../components/CreateModal";
 import { Axios } from "../../api/Axios";
 import { LikeAtom } from "../../Recoil/Atom";
 import { useRecoilValue } from "recoil";
-
-const chunkArray = (array, size) => {
-  const chunked = [];
-  for (let i = 0; i < array.length; i += size) {
-    chunked.push(array.slice(i, i + size));
-  }
-  return chunked;
-};
 
 const MyRecipe = () => {
   const likeRecipes = useRecoilValue(LikeAtom);
@@ -26,38 +19,58 @@ const MyRecipe = () => {
   const [showEditModal, setShowEditModal] = useState(false);
   const [currentRecipeId, setCurrentRecipeId] = useState(null);
   const [recipeData, setRecipeData] = useState([]);
+  const [page, setPage] = useState(0);
+  const [hasMore, setHasMore] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
 
-    useEffect(() => {
-        const handleResize = () => {
-            setWindowWidth(window.innerWidth);
-        };
+  useEffect(() => {
+    const handleResize = () => {
+      setWindowWidth(window.innerWidth);
+    };
 
-        window.addEventListener('resize', handleResize);
+    window.addEventListener("resize", handleResize);
 
-        return () => {
-            window.removeEventListener('resize', handleResize);
-        };
-    }, []);
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
 
   useEffect(() => {
     const fetchRecipes = async () => {
+      if (loading || !hasMore) return;
+
+      setLoading(true);
       try {
         const response = await Axios.get("/users/me/recipes", {
-          params: { page: 0, size: 10, type: "newest" },
+          params: { page, size: 12, type: "newest" },
         });
         if (response.data && response.data.data) {
-          setRecipeData(response.data.data.recipeList);
+          const newRecipes = response.data.data.recipeList;
+          setRecipeData((prevData) => {
+            const existingRecipeIds = new Set(
+              prevData.map((recipe) => recipe.recipeId)
+            );
+            const filteredNewRecipes = newRecipes.filter(
+              (recipe) => !existingRecipeIds.has(recipe.recipeId)
+            );
+            return [...prevData, ...filteredNewRecipes];
+          });
+          setHasMore(newRecipes.length === 12);
+          setPage((prevPage) => prevPage + 1);
         } else {
           console.error("응답 데이터 형식이 올바르지 않습니다.");
+          setHasMore(false);
         }
       } catch (error) {
         console.error("레시피 데이터를 가져오는 데 실패했습니다.", error);
+      } finally {
+        setLoading(false);
       }
     };
 
     fetchRecipes();
-  }, []);
+  }, [page, loading, hasMore]);
 
   const handleEditClick = () => {
     setIsEditing((prev) => !prev);
@@ -122,7 +135,11 @@ const MyRecipe = () => {
     setShowEditModal(false);
   };
 
-  const chunkedData = chunkArray(recipeData || [], 3);
+  const loadMoreRecipes = () => {
+    if (!loading && hasMore) {
+      setPage((prevPage) => prevPage + 1);
+    }
+  };
 
   return (
     <>
@@ -138,29 +155,29 @@ const MyRecipe = () => {
         </TitleEditContainer>
         <AddWrapper>
           <MyRecipeContainer>
-            <div>
-            {chunkedData.map((chunk, index) => (
-              <Line key={index}>
-                {chunk.map((recipeData) => (
-                  <div>
-                    <RecipeBox
-                    key={recipeData.recipeId}
-                    recipeId={recipeData.recipeId}
-                    menuName={recipeData.name}
-                    countHeart={recipeData.likeCount}
-                    image={recipeData.image}
-                    isEditing={isEditing}
-                    removeRecipeBox={removeRecipeBox}
-                    onClick={openRecipeModal}
-                    onEdit={openEditModal}
-                    onSave={handleSave}
-                    recipeLikeId={likeRecipes}
-                  />
-                  </div>
-                ))}
-              </Line>
-            ))}
-            </div>
+            <RecipeContainer>
+              {recipeData.map((recipeData) => (
+                <RecipeBox
+                  key={recipeData.recipeId}
+                  recipeId={recipeData.recipeId}
+                  menuName={recipeData.name}
+                  countHeart={recipeData.likeCount}
+                  image={recipeData.image}
+                  isEditing={isEditing}
+                  removeRecipeBox={removeRecipeBox}
+                  onClick={openRecipeModal}
+                  onEdit={openEditModal}
+                  onSave={handleSave}
+                  recipeLikeId={likeRecipes}
+                />
+              ))}
+            </RecipeContainer>
+            {loading && <LoadingSpinner>Loading...</LoadingSpinner>}
+            {!loading && hasMore && (
+              <LoadMoreButton onClick={loadMoreRecipes}>
+                <img src={Next} alt="Load more" />
+              </LoadMoreButton>
+            )}
           </MyRecipeContainer>
           {isEditing && (
             <PlusButton
@@ -206,6 +223,15 @@ const MyRecipe = () => {
   );
 };
 
+const RecipeContainer = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: start;
+  gap: 50px;
+  width: 820px;
+  margin-bottom: 10px;
+`;
+
 const Overlay = styled.div`
   position: fixed;
   top: 0;
@@ -229,7 +255,7 @@ const SidebarContainer = styled.div`
   display: flex;
   position: fixed;
 
-  @media screen and (max-width: 480px){
+  @media screen and (max-width: 480px) {
     position: static;
     margin-top: 3vw;
     margin-bottom: 1vw;
@@ -305,29 +331,18 @@ const TitleEditContainer = styled.div`
   }
 `;
 
-const Line = styled.div`
-  display: flex;
-  width: 810px;
-  gap: 45px;
-  margin: 20px 0;
-
-  @media screen and (max-width: 1200px) {
-    width: 62.4vw;
-    gap: 4.5vw;
-    margin-top: 1.4vw;
-  }
-`;
-
 const MyRecipeContainer = styled.div`
   display: flex;
   flex-wrap: wrap;
   background-color: ${({ theme }) => theme.colors.green200};
   width: 900px;
   height: 850px;
+  padding: 20px 0;
   justify-content: center;
   overflow-y: scroll;
   align-items: start;
   border-radius: 1vw;
+  gap: 45px;
   &::-webkit-scrollbar-button {
     display: none;
   }
@@ -348,6 +363,29 @@ const MyRecipeContainer = styled.div`
     width: 90vw;
     height: 145.8vw;
     border-radius: 2vw;
+  }
+`;
+
+const LoadingSpinner = styled.div`
+  width: 100%;
+  text-align: center;
+  margin: 20px 0;
+`;
+
+const LoadMoreButton = styled.button`
+  margin-top: 20px;
+  background: none;
+  border: none;
+  cursor: pointer;
+
+  img {
+    width: 30px;
+    height: 30px;
+    transform: rotate(90deg);
+  }
+
+  &:hover {
+    opacity: 0.8;
   }
 `;
 
