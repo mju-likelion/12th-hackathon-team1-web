@@ -105,9 +105,12 @@ const Header = ({ isLoggedIn, setIsLoggedIn }) => {
             <Search placeholder="레시피 검색" />
             <img src={search} alt="검색 돋보기 이미지" />
           </SearchBox>
+          {isLoggedIn ? 
           <Link to="/auth/likes">
-            <HeartImg src={Heart} alt="마음에 드는 레시피 탭" />
-          </Link>
+          <HeartImg src={Heart} alt="마음에 드는 레시피 탭" />
+        </Link> : 
+        <HeartImg onClick={()=>alert("로그인 후 이용가능한 기능입니다. ")}
+          src={Heart} alt="마음에 드는 레시피 탭" />}
         </FunctionContainer>
       </FunctionHeader>
     </HeaderContent>

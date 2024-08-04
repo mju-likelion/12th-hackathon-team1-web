@@ -3,14 +3,8 @@ import styled, {keyframes} from "styled-components";
 import MainBigBox from "../components/MainBigBox";
 import MainSmallBox from "../components/MainSmallBox";
 
-const Main = () => {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+const Main = ({isLoggedIn}) => {
   const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    const loggedInStatus = localStorage.getItem("isLoggedIn") === "true";
-    setIsLoggedIn(loggedInStatus);
-  }, []);
 
   useEffect(() => {
     const fetchData = async () => {
