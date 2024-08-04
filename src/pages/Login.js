@@ -113,14 +113,14 @@ const Login = ({ setIsLoggedIn }) => {
               }
               error={passwordError}
             />
-            <Button>
+            <ButtonContainer>
               <BigButton
                 disabled={!isEmailValid || !isPasswordValid}
                 onClick={handleLogin}
               >
                 로그인
               </BigButton>
-            </Button>
+            </ButtonContainer>
             <SignUp>
               처음 방문이신가요?
               <Link to="/auth/signin">
@@ -141,6 +141,10 @@ const Container = styled.div`
   align-items: center;
   min-height: 100vh;
   background-color: #f5f5f5;
+
+  @media screen and (max-width: 480px) {
+    padding: 4vw;
+  }
 `;
 
 const CenteredBox = styled.div`
@@ -148,6 +152,10 @@ const CenteredBox = styled.div`
   justify-content: center;
   align-items: center;
   width: 100%;
+
+  @media screen and (max-width: 480px) {
+    flex-direction: column;
+  }
 `;
 
 const AllBox = styled.div`
@@ -160,6 +168,12 @@ const AllBox = styled.div`
   border-radius: 10px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
   padding: 32px;
+
+  @media screen and (max-width: 480px) {
+    width: 90vw;
+    height: auto;
+    padding: 8vw;
+  }
 `;
 
 const FormContainer = styled.div`
@@ -168,21 +182,41 @@ const FormContainer = styled.div`
   align-items: center;
   width: 100%;
   gap: 20px;
+
+  @media screen and (max-width: 480px) {
+    gap: 4vw;
+  }
 `;
 
 const Title = styled.p`
   ${({ theme }) => theme.fonts.title32};
   margin: 30px;
+
+  @media screen and (max-width: 480px) {
+    font-size: 6vw;
+    margin: 4vw;
+  }
 `;
 
-const Button = styled.div`
+const ButtonContainer = styled.div`
+  width: 100%;
+  display: flex;
+  justify-content: center;
   margin-top: 25px;
+
+  @media screen and (max-width: 480px) {
+    margin-top: 5vw;
+  }
 `;
 
 const SignUp = styled.div`
   margin-top: 20px;
   ${({ theme }) => theme.fonts.helpText14};
   color: ${({ theme }) => theme.colors.helperText};
+
+  @media screen and (max-width: 480px) {
+    font-size: 3.5vw;
+  }
 `;
 
 const SignUpLink = styled.p`
@@ -197,6 +231,10 @@ const SignUpLink = styled.p`
   }
   &:hover {
     text-decoration: underline;
+  }
+
+  @media screen and (max-width: 480px) {
+    font-size: 4vw;
   }
 `;
 
