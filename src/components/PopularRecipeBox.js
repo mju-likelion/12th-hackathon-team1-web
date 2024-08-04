@@ -114,7 +114,7 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  z-index: 1003;
+  z-index: 1000;
 `;
 
 const Overlay = styled.div`
@@ -228,7 +228,7 @@ const BackgroundImage = styled.div`
   background-size: cover;
   background-position: center;
   opacity: 0.4;
-  z-index: 1002;
+  z-index: 999;
 
   @media screen and (max-width: 1200px) {
     border-radius: 0.7vw;

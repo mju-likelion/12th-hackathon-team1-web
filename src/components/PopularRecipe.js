@@ -71,11 +71,11 @@ const PopularRecipe = () => {
         />
       </PrevButton>
       {recipeData.map((recipe) => (
-        <PopularRecipeBox 
-        key={recipe.recipeId} 
-        recipeId={recipe.recipeId} 
-        recipeLikeId={likeRecipes}
-        countHeart={recipe.likeCount}
+        <PopularRecipeBox
+          key={recipe.recipeId}
+          recipeId={recipe.recipeId}
+          recipeLikeId={likeRecipes}
+          countHeart={recipe.likeCount}
         />
       ))}
       <NextButton onClick={handleNextPage} disabled={page >= totalPage - 1}>
@@ -112,6 +112,7 @@ const PopularContainer = styled.div`
   align-items: center;
   gap: 80px;
   border-radius: 10px;
+  z-index: 999;
 
   @media screen and (max-width: 1200px) {
     width: 70vw;
