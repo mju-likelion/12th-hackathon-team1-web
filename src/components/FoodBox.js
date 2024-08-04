@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import remove from '../assets/images/delateIcon.svg'
-import Modal from '../pages/Modal';
 import { Axios } from '../api/Axios';
+import FoodBoxModal from './FoodBoxModal';
 
 const FoodBox = ({ingredientName, ButtonText, year, month, date, isDate, id, expirationDate, location}) => {
     const [showFoodBox, setShowFoodBox] = useState(false);
@@ -38,9 +38,9 @@ const FoodBox = ({ingredientName, ButtonText, year, month, date, isDate, id, exp
         const handleResize = () => {
             if (window.innerWidth <= 480) {
                 setMaxLength(6);
-                } else {
+            } else {
                 setMaxLength(7);
-                }
+            }
             setWindowWidth(window.innerWidth);
         };
         window.addEventListener("resize", handleResize);
@@ -48,23 +48,22 @@ const FoodBox = ({ingredientName, ButtonText, year, month, date, isDate, id, exp
 
         return () => {
             window.removeEventListener("resize", handleResize);
-        }
-    })
+        };
+    }, []);
 
     return (
         <AllWrapper>
-            {windowWidth > 480 && expirationDate<=3&&
+            {windowWidth > 480 && expirationDate <= 3 &&
             (expirationDate === 0 ?
                 <DdayText>D-DAY</DdayText>
-                : <DdayText>D-{ expirationDate }</DdayText>
-                )}
+                : <DdayText>D-{ expirationDate}</DdayText>
+            )}
         <Wrapper expirationDate={expirationDate}>
             <TextWrapper onClick={isOpenShowFood}>
                 {showFoodBox &&(
-                <Modal
+                    <FoodBoxModal
                     id={id}
                     isCloseShowFood={isCloseShowFood}
-                    modal = "단건조회"
                     location = {location}
                     isDate={isDate}
                 />)}
