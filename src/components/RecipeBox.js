@@ -261,7 +261,7 @@ const HeartContainer = styled.div`
 const Count = styled.p`
   ${({ theme }) => theme.fonts.default20};
 
-  @media screen and (max-width: 480px){
+  @media screen and (max-width: 480px) {
     font-size: 4vw;
     margin-bottom: 0.5vw;
   }
@@ -314,6 +314,7 @@ const PhotoWrapper = styled.div`
   height: 183px;
   width: 210px;
   background-color: ${({ theme }) => theme.colors.green200};
+  background-size: cover;
   border-radius: 10px;
 
   @media screen and (max-width: 1200px) {
