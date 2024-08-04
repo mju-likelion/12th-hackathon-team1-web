@@ -96,9 +96,13 @@ const NotFoundText = styled.div`
 
 const FirstText = styled.p`
   ${({theme})=> theme.fonts.title20}
-  margin-bottom: 5vw;
+  margin-bottom: 3vw;
   font-weight: 500;
   font-size: 2vw;
+
+  @media screen and (max-width: 800px){
+    font-size: 2.5vw;
+  }
 
   @media screen and (max-width: 480px){
     font-size: 3.5vw;
@@ -108,6 +112,10 @@ const FirstText = styled.p`
 const SecondText = styled.p`
   font-weight: 500;
   font-size: 1.5vw;
+
+  @media screen and (max-width: 800px){
+    font-size: 2vw;
+  }
 
   @media screen and (max-width: 480px){
     font-size: 3vw;
