@@ -17,7 +17,6 @@ const EditModal = ({ recipeId, onSave, closeEditModal }) => {
   const [imageUrl, setImageUrl] = useState(null);
   const [showIngredientBox, setShowIngredientBox] = useState(false);
   const [activeIngredientIndex, setActiveIngredientIndex] = useState(null);
-  const [imageFile, setImageFile] = useState(null);
 
   useEffect(() => {
     const fetchRecipe = async () => {
@@ -99,8 +98,6 @@ const EditModal = ({ recipeId, onSave, closeEditModal }) => {
   const handleImageChange = async (e) => {
     const image = e.target.files[0];
     if (image) {
-      setImageFile(image);
-
       const formData = new FormData();
       formData.append("file", image);
 
@@ -126,9 +123,11 @@ const EditModal = ({ recipeId, onSave, closeEditModal }) => {
 
     try {
       await Axios.delete(`/recipes/images/${imageId}`);
+
       setImageId(null);
       setImageUrl(null);
     } catch (error) {
+      console.log(imageId);
       console.error("이미지 삭제 중 오류 발생", error);
     }
   };
@@ -137,7 +136,7 @@ const EditModal = ({ recipeId, onSave, closeEditModal }) => {
     const updatedRecipe = {
       name: title,
       cookingStep: methods.join(". "),
-      imageId: imageId || undefined,
+      imageId,
     };
 
     const addedIngredients = ingredients.filter(
@@ -183,9 +182,11 @@ const EditModal = ({ recipeId, onSave, closeEditModal }) => {
     setShowIngredientBox(true);
   };
 
-  const handleDeleteIngredient = async (index) => {
+  const handleDeleteIngredient = async (index, e) => {
+    e.stopPropagation();
     const newIngredients = ingredients.filter((_, i) => i !== index);
     setIngredients(newIngredients);
+    setShowIngredientBox(false);
   };
 
   return (
@@ -222,7 +223,7 @@ const EditModal = ({ recipeId, onSave, closeEditModal }) => {
                       <CancelButton
                         src={Cancel}
                         alt="재료 삭제 버튼"
-                        onClick={() => handleDeleteIngredient(index)}
+                        onClick={(e) => handleDeleteIngredient(index, e)}
                       />
                     </IngredientInput>
                   ))}
@@ -258,15 +259,19 @@ const EditModal = ({ recipeId, onSave, closeEditModal }) => {
                   <DeleteButton src={DeleteIcon} onClick={handleDeleteImage} />
                 </ImageContainer>
               )}
-              <UploadLabel htmlFor="file-upload">
-                <FolderIcon src={Folder} alt="파일 불러오기" />
-              </UploadLabel>
-              <UploadInput
-                id="file-upload"
-                type="file"
-                accept="image/*"
-                onChange={handleImageChange}
-              />
+              {!imageId && (
+                <>
+                  <UploadLabel htmlFor="file-upload">
+                    <FolderIcon src={Folder} alt="파일 불러오기" />
+                  </UploadLabel>
+                  <UploadInput
+                    id="file-upload"
+                    type="file"
+                    accept="image/*"
+                    onChange={handleImageChange}
+                  />
+                </>
+              )}
             </UploadImg>
           </ContentContainer>
         </ModalContentBox>
@@ -290,6 +295,7 @@ const ImagePreview = styled.img`
   width: 210px;
   background-color: ${({ theme }) => theme.colors.green200};
   border-radius: 10px;
+  object-fit: cover;
 
   @media screen and (max-width: 1200px) {
     height: 12.8vw;
@@ -341,10 +347,10 @@ const FolderIcon = styled.img`
 const UploadImg = styled.div`
   display: flex;
   align-items: center;
-  width: 500px;
+  width: 400px;
   min-height: 37px;
   border-radius: 10px;
-  justify-content: space-between;
+  justify-content: center;
   border: none;
   ${({ theme }) => theme.fonts.default16}
   background-color: ${({ theme }) => theme.colors.white};
@@ -409,20 +415,20 @@ const MethodTextarea = styled.input`
 
 const IngredientContainer = styled.div`
   display: flex;
-  width: 75%;
+  width: 95%;
   flex-wrap: wrap;
 `;
 
 const IngredientInput = styled.p`
   ${({ theme }) => theme.fonts.default16}
   background-color: ${({ theme }) => theme.colors.white};
-  width: 80px;
+  width: 120px;
   height: 37px;
   border-radius: 10px;
   margin: 5px;
   cursor: pointer;
   display: flex;
-  justify-content: center;
+  justify-content: end;
   align-items: center;
 
   @media screen and (max-width: 1200px) {
@@ -556,7 +562,7 @@ const CancelButton = styled.img`
   width: 20px;
   height: 20px;
   cursor: pointer;
-  margin-left: 10px;
+  margin: 5px;
 `;
 
 export default EditModal;
