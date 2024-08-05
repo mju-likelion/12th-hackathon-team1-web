@@ -11,8 +11,9 @@ import { Axios } from "../api/Axios";
 const EditModal = ({ recipeId, onSave, closeEditModal }) => {
   const [title, setTitle] = useState("");
   const [originalIngredients, setOriginalIngredients] = useState([]);
+  const [originalImageId, setOriginalImageId] = useState(null);
   const [ingredients, setIngredients] = useState([{ name: "", id: null }]);
-  const [methods, setMethods] = useState([""]);
+  const [methods, setMethods] = useState("");
   const [imageId, setImageId] = useState(null);
   const [imageUrl, setImageUrl] = useState(null);
   const [showIngredientBox, setShowIngredientBox] = useState(false);
@@ -35,10 +36,11 @@ const EditModal = ({ recipeId, onSave, closeEditModal }) => {
           setOriginalIngredients(ingredientList);
           setIngredients(ingredientList);
           setMethods(
-            recipe.cookingStep ? recipe.cookingStep.split(". ") : [""]
+            recipe.cookingStep ? recipe.cookingStep.split(". ").join("\n") : ""
           );
           if (recipe.image && recipe.image.id) {
             setImageId(recipe.image.id);
+            setOriginalImageId(recipe.image.id);
             setImageUrl(recipe.image.url);
           }
         } else {
@@ -124,9 +126,12 @@ const EditModal = ({ recipeId, onSave, closeEditModal }) => {
   const handleSave = async () => {
     const updatedRecipe = {
       name: title,
-      cookingStep: methods.split("\n").join(". "),
-      imageId: imageId,
+      cookingStep: methods.join(". "),
     };
+
+    if (imageId !== originalImageId) {
+      updatedRecipe.imageId = imageId;
+    }
 
     const addedIngredients = ingredients.filter(
       (ingredient) =>
@@ -208,7 +213,9 @@ const EditModal = ({ recipeId, onSave, closeEditModal }) => {
                       }
                       placeholder={`재료 ${index + 1}`}
                     >
-                      {ingredient.name}
+                      {ingredient.name.length > 7
+                        ? ingredient.name.slice(0, 5) + "..."
+                        : ingredient.name}
                       <CancelButton
                         src={Cancel}
                         alt="재료 삭제 버튼"
@@ -416,6 +423,10 @@ const IngredientInput = styled.p`
   display: flex;
   justify-content: end;
   align-items: center;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  cursor: default;
 
   @media screen and (max-width: 1200px) {
     font-size: 1.1vw;

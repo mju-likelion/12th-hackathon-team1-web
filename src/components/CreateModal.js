@@ -10,7 +10,7 @@ const CreateModal = ({ onSave, saveCreateModal }) => {
   const [title, setTitle] = useState("");
   const [ingredients, setIngredients] = useState([]);
   const [ingredientIds, setIngredientIds] = useState([]);
-  const [methods, setMethods] = useState([""]);
+  const [methods, setMethods] = useState("");
   const [imageId, setImageId] = useState(null);
   const [imageUrl, setImageUrl] = useState(null);
   const [showIngredientBox, setShowIngredientBox] = useState(false);
