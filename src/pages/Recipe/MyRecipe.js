@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import RecipeBox from "../../components/RecipeBox";
-import Plus from "../../assets/images/plus.svg";
+import Plus from "../../assets/images/circlePlus.svg";
 import Next from "../../assets/images/next.svg";
 import Sidebar from "../../components/Sidebar";
 import RecipeModal from "../../components/RecipeModal";
@@ -171,6 +171,15 @@ const MyRecipe = () => {
                   recipeLikeId={likeRecipes}
                 />
               ))}
+              {isEditing && (
+                <AddContainer>
+                  <PlusButton
+                    src={Plus}
+                    alt="레시피 추가 버튼"
+                    onClick={openCreateModal}
+                  />
+                </AddContainer>
+              )}
             </RecipeContainer>
             {loading && <LoadingSpinner>Loading...</LoadingSpinner>}
             {!loading && hasMore && (
@@ -179,13 +188,6 @@ const MyRecipe = () => {
               </LoadMoreButton>
             )}
           </MyRecipeContainer>
-          {isEditing && (
-            <PlusButton
-              src={Plus}
-              alt="레시피 추가 버튼"
-              onClick={openCreateModal}
-            />
-          )}
         </AddWrapper>
         {showRecipeModal && (
           <>
@@ -223,12 +225,21 @@ const MyRecipe = () => {
   );
 };
 
+const AddContainer = styled.div`
+  display: flex;
+  height: 270px;
+  width: 240px;
+  justify-content: center;
+  align-items: center;
+`;
+
 const RecipeContainer = styled.div`
   display: flex;
   flex-wrap: wrap;
   justify-content: start;
+  align-items: center;
   gap: 50px;
-  width: 820px;
+  max-width: 820px;
   margin-bottom: 10px;
 `;
 
@@ -268,11 +279,8 @@ const AddWrapper = styled.div`
 `;
 
 const PlusButton = styled.img`
-  position: absolute;
-  width: 20px;
-  height: 20px;
-  margin-left: 920px;
-  margin-bottom: 5px;
+  width: 40px;
+  height: 40px;
   cursor: pointer;
 
   @media screen and (max-width: 1200px) {
@@ -333,11 +341,12 @@ const TitleEditContainer = styled.div`
 
 const MyRecipeContainer = styled.div`
   display: flex;
+  position: relative;
   flex-wrap: wrap;
   background-color: ${({ theme }) => theme.colors.green200};
   width: 900px;
   height: 850px;
-  padding: 20px 0;
+  padding: 20px;
   justify-content: center;
   overflow-y: scroll;
   align-items: start;
