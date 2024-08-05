@@ -92,22 +92,14 @@ const CreateModal = ({ onSave, saveCreateModal }) => {
     if (!validateForm()) return;
 
     try {
-      if (imageId) {
-        const formData = new FormData();
-        formData.append("file", imageId);
-        await Axios.post("/recipes/images", formData, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        });
-      }
-
       const newRecipe = {
         name: title,
         ingredientIds: ingredientIds,
         cookingStep: methods.split("\n").join(". "),
         imageId: imageId,
       };
+
+      console.log(newRecipe);
 
       await Axios.post("/recipes", newRecipe);
       onSave(newRecipe);
@@ -173,16 +165,22 @@ const CreateModal = ({ onSave, saveCreateModal }) => {
           <ContentContainer>
             <Title>사진</Title>
             <UploadImg>
-              {imageId && <img src={imageUrl} alt="Preview" />}
-              <UploadLabel htmlFor="file-upload">
-                <FolderIcon src={Folder} alt="Folder Icon" />
-              </UploadLabel>
-              <UploadButton
-                id="file-upload"
-                type="file"
-                accept="image/*"
-                onChange={handleImageChange}
-              />
+              <ImageContainer>
+                {imageId && <ImagePreview src={imageUrl} alt="Preview" />}
+              </ImageContainer>
+              {!imageId && (
+                <>
+                  <UploadLabel htmlFor="file-upload">
+                    <FolderIcon src={Folder} alt="파일 불러오기" />
+                  </UploadLabel>
+                  <UploadButton
+                    id="file-upload"
+                    type="file"
+                    accept="image/*"
+                    onChange={handleImageChange}
+                  />
+                </>
+              )}
             </UploadImg>
           </ContentContainer>
         </ModalContentBox>
@@ -194,11 +192,31 @@ const CreateModal = ({ onSave, saveCreateModal }) => {
     </CreateModalContainer>
   );
 };
+
+const ImageContainer = styled.div`
+  display: flex;
+  margin: 10px;
+  background-color: aquamarine;
+`;
+
 const ButtonContainer = styled.div`
   display: flex;
   justify-content: space-between;
   width: 50%;
   margin-left: auto;
+`;
+
+const ImagePreview = styled.img`
+  height: 300px;
+  width: 350px;
+  border-radius: 10px;
+  object-fit: cover;
+
+  @media screen and (max-width: 1200px) {
+    height: 15vw;
+    width: 18vw;
+    border-radius: 0.7vw;
+  }
 `;
 
 const UploadLabel = styled.label`
@@ -208,12 +226,12 @@ const UploadLabel = styled.label`
   justify-content: center;
   width: 30px;
   height: 30px;
-  margin: 5px;
+  margin: 30px;
 
   @media screen and (max-width: 1200px) {
     width: 2.08vw;
     height: 2.08vw;
-    margin: 0.35vw;
+    margin: 2.08vw;
   }
 `;
 
@@ -224,10 +242,11 @@ const FolderIcon = styled.img`
 
 const UploadImg = styled.div`
   display: flex;
+  align-items: center;
   width: 500px;
-  height: 37px;
+  min-height: 37px;
   border-radius: 10px;
-  justify-content: end;
+  justify-content: center;
   border: none;
   ${({ theme }) => theme.fonts.default16}
   background-color: ${({ theme }) => theme.colors.white};
@@ -235,7 +254,7 @@ const UploadImg = styled.div`
 
   @media screen and (max-width: 1200px) {
     width: 34.7vw;
-    height: 2.56vw;
+    min-height: 2.56vw;
     border-radius: 0.7vw;
     margin: 0.35vw;
   }

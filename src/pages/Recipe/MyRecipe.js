@@ -239,7 +239,7 @@ const RecipeContainer = styled.div`
   justify-content: start;
   align-items: center;
   gap: 50px;
-  max-width: 820px;
+  width: 820px;
   margin-bottom: 10px;
 `;
 

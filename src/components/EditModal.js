@@ -334,7 +334,7 @@ const UploadLabel = styled.label`
   @media screen and (max-width: 1200px) {
     width: 2.08vw;
     height: 2.08vw;
-    margin: 0.35vw;
+    margin: 2.08vw;
   }
 `;
 
