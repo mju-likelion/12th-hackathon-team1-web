@@ -131,16 +131,17 @@ const MethodItem = styled.p`
   ${({ theme }) => theme.fonts.default16}
   background-color: ${({ theme }) => theme.colors.white};
   width: 500px;
-  height: 37px;
+  min-height: 37px;
   border-radius: 10px;
   border: none;
   align-items: center;
+  line-height: 120%;
   margin: 5px;
-  padding: 0 10px;
+  padding: 10px;
 
   @media screen and (max-width: 1200px) {
     width: 35vw;
-    height: 2.56vw;
+    min-height: 2.56vw;
     font-size: 1.1vw;
     margin: 0.35vw;
     padding: 0 0.7vw;
