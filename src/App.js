@@ -1,4 +1,4 @@
-import { Navigate, Route, Routes, useNavigate } from "react-router-dom";
+import { Navigate, Route, Routes } from "react-router-dom";
 import "./App.css";
 import Layout from "./components/Layout";
 import Main from "./pages/Main";
@@ -11,7 +11,6 @@ import LikeRecipe from "./pages/Recipe/LikeRecipe";
 import RecipeRecommend from "./pages/Recipe/RecipeRecommend";
 import { useState, useEffect } from "react";
 import NotFound from "./pages/NotFound";
-import { Axios } from "./api/Axios";
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -19,21 +18,6 @@ function App() {
   useEffect(() => {
     const userLoggedIn = localStorage.getItem("isLoggedIn") === "true";
     setIsLoggedIn(userLoggedIn);
-
-    const interceptor = Axios.interceptors.response.use(
-      (response) => response,
-      (error) => {
-        if (error.response && error.response.status === 401) {
-          setIsLoggedIn(false);
-          localStorage.removeItem("isLoggedIn");
-          localStorage.removeItem("userToken");
-        }
-        return Promise.reject(error);
-      }
-    );
-    return () => {
-      Axios.interceptors.response.eject(interceptor);
-    };
   }, []);
 
   return (
