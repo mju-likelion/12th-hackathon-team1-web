@@ -68,6 +68,7 @@ const RecipeModal = ({ recipeId, closeRecipeModal }) => {
       <ModalBackground>
         <TitleBox>
           <MainTitle>{recipe.name}</MainTitle>
+          <WriterName>작성자 : {recipe.writer}</WriterName>
         </TitleBox>
         <ModalContentBox>
           <TopContainer>
@@ -115,6 +116,11 @@ const RecipeModal = ({ recipeId, closeRecipeModal }) => {
     </RecipeModalContainer>
   );
 };
+
+const WriterName = styled.p`
+  ${({ theme }) => theme.fonts.default16}
+  margin: 0 20px;
+`;
 
 const LoadingMessage = styled.p`
   text-align: center;
@@ -293,7 +299,8 @@ const ModalContentBox = styled.div`
 const TitleBox = styled.div`
   width: 100%;
   display: flex;
-  justify-content: start;
+  justify-content: space-between;
+  align-items: end;
   margin-bottom: 25px;
 
   @media screen and (max-width: 1200px) {
