@@ -3,20 +3,21 @@ import styled from "styled-components";
 import SmallButton from "./SmallButton";
 import Plus from "../assets/images/plus.svg";
 import Folder from "../assets/images/imageFolder.svg";
+import Cancel from "../assets/images/x.svg";
 import DeleteIcon from "../assets/images/x.svg";
 import RecipeIngredient from "./RecipeIngredient";
 import { Axios } from "../api/Axios";
 
 const EditModal = ({ recipeId, onSave, closeEditModal }) => {
   const [title, setTitle] = useState("");
+  const [originalIngredients, setOriginalIngredients] = useState([]);
   const [ingredients, setIngredients] = useState([{ name: "", id: null }]);
   const [methods, setMethods] = useState([""]);
   const [imageId, setImageId] = useState(null);
   const [imageUrl, setImageUrl] = useState(null);
   const [showIngredientBox, setShowIngredientBox] = useState(false);
   const [activeIngredientIndex, setActiveIngredientIndex] = useState(null);
-  const [showIngredientOptions, setShowIngredientOptions] = useState(false);
-  const [pendingRequests, setPendingRequests] = useState([]);
+  const [imageFile, setImageFile] = useState(null);
 
   useEffect(() => {
     const fetchRecipe = async () => {
@@ -26,14 +27,14 @@ const EditModal = ({ recipeId, onSave, closeEditModal }) => {
 
         if (recipe) {
           setTitle(recipe.name || "");
-          setIngredients(
-            recipe.ingredientRecipes
-              ? recipe.ingredientRecipes.map((ing) => ({
-                  name: ing.ingredient.name,
-                  id: ing.id,
-                }))
-              : []
-          );
+          const ingredientList = recipe.ingredientRecipes
+            ? recipe.ingredientRecipes.map((ing) => ({
+                name: ing.ingredient.name,
+                id: ing.id,
+              }))
+            : [];
+          setOriginalIngredients(ingredientList);
+          setIngredients(ingredientList);
           setMethods(
             recipe.cookingStep ? recipe.cookingStep.split(". ") : [""]
           );
@@ -62,14 +63,6 @@ const EditModal = ({ recipeId, onSave, closeEditModal }) => {
     } else {
       setIngredients([...ingredients, selectedIngredient]);
     }
-
-    const postRequest = {
-      method: "post",
-      url: `/recipes/${recipeId}/ingredients`,
-      data: { ingredientIds: [selectedIngredient.id] },
-    };
-
-    setPendingRequests((prev) => [...prev, postRequest]);
 
     setActiveIngredientIndex(null);
     setShowIngredientBox(false);
@@ -106,25 +99,24 @@ const EditModal = ({ recipeId, onSave, closeEditModal }) => {
   const handleImageChange = async (e) => {
     const image = e.target.files[0];
     if (image) {
+      setImageFile(image);
+
       const formData = new FormData();
       formData.append("file", image);
 
-      const postRequest = {
-        method: "post",
-        url: "/recipes/images",
-        data: formData,
-        headers: { "Content-Type": "multipart/form-data" },
-      };
+      try {
+        const response = await Axios.post("/recipes/images", formData, {
+          headers: { "Content-Type": "multipart/form-data" },
+        });
 
-      setPendingRequests((prev) => [...prev, postRequest]);
-
-      const response = await Axios(postRequest);
-
-      if (response.data.statusCode === "200") {
-        setImageId(response.data.data.id);
-        setImageUrl(response.data.data.url);
-      } else {
-        console.error("이미지 등록에 실패했습니다.");
+        if (response.data.statusCode === "200") {
+          setImageId(response.data.data.id);
+          setImageUrl(response.data.data.url);
+        } else {
+          console.error("이미지 등록에 실패했습니다.");
+        }
+      } catch (error) {
+        console.error("이미지 등록 중 오류 발생", error);
       }
     }
   };
@@ -132,34 +124,51 @@ const EditModal = ({ recipeId, onSave, closeEditModal }) => {
   const handleDeleteImage = async () => {
     if (!imageId) return;
 
-    const deleteRequest = {
-      method: "delete",
-      url: `/recipes/images/${imageId}`,
-    };
-
-    setPendingRequests((prev) => [...prev, deleteRequest]);
-
-    setImageId(null);
-    setImageUrl(null);
+    try {
+      await Axios.delete(`/recipes/images/${imageId}`);
+      setImageId(null);
+      setImageUrl(null);
+    } catch (error) {
+      console.error("이미지 삭제 중 오류 발생", error);
+    }
   };
 
   const handleSave = async () => {
     const updatedRecipe = {
       name: title,
       cookingStep: methods.join(". "),
-      imageId,
+      imageId: imageId || undefined,
     };
 
-    const patchRequest = {
-      method: "patch",
-      url: `/recipes/${recipeId}`,
-      data: updatedRecipe,
-    };
+    const addedIngredients = ingredients.filter(
+      (ingredient) =>
+        !originalIngredients.find((ori) => ori.id === ingredient.id)
+    );
+
+    const deletedIngredients = originalIngredients.filter(
+      (ingredient) => !ingredients.find((ing) => ing.id === ingredient.id)
+    );
+
+    const ingredientRequests = [
+      ...addedIngredients.map((ingredient) => ({
+        method: "post",
+        url: `/recipes/${recipeId}/ingredients`,
+        data: { ingredientIds: [ingredient.id] },
+      })),
+      ...deletedIngredients.map((ingredient) => ({
+        method: "delete",
+        url: `/recipes/${recipeId}/ingredients`,
+        data: { ingredientRecipeIds: [ingredient.id] },
+      })),
+    ];
 
     try {
-      const allRequests = [...pendingRequests, patchRequest];
+      const allRequests = [
+        ...ingredientRequests.map((req) => Axios(req)),
+        Axios.patch(`/recipes/${recipeId}`, updatedRecipe),
+      ];
 
-      await Promise.all(allRequests.map((req) => Axios(req)));
+      await Promise.all(allRequests);
 
       onSave({ updatedRecipe, id: recipeId });
       closeEditModal();
@@ -171,51 +180,12 @@ const EditModal = ({ recipeId, onSave, closeEditModal }) => {
 
   const handleIngredientClick = (index) => {
     setActiveIngredientIndex(index);
-    setShowIngredientOptions(true);
+    setShowIngredientBox(true);
   };
 
-  const IngredientOptionsDropdown = ({
-    onRegister,
-    onDelete,
-    closeOptions,
-  }) => (
-    <DropdownContainer>
-      <DropdownButton
-        onClick={() => {
-          onRegister();
-          closeOptions();
-        }}
-      >
-        등록
-      </DropdownButton>
-      <DropdownButton
-        onClick={() => {
-          onDelete();
-          closeOptions();
-        }}
-      >
-        삭제
-      </DropdownButton>
-    </DropdownContainer>
-  );
-
   const handleDeleteIngredient = async (index) => {
-    const ingredientToDelete = ingredients[index];
-
-    if (!ingredientToDelete || !ingredientToDelete.id) {
-      console.error("삭제할 재료의 ID가 없습니다.");
-      return;
-    }
-
-    const deleteRequest = {
-      method: "delete",
-      url: `/recipes/${recipeId}/ingredients`,
-      data: { ingredientRecipeIds: [ingredientToDelete.id] },
-    };
-
-    setPendingRequests((prev) => [...prev, deleteRequest]);
-
-    setIngredients((prev) => prev.filter((_, i) => i !== index));
+    const newIngredients = ingredients.filter((_, i) => i !== index);
+    setIngredients(newIngredients);
   };
 
   return (
@@ -234,15 +204,6 @@ const EditModal = ({ recipeId, onSave, closeEditModal }) => {
             <ContentContainer>
               <TitleContainer>
                 <Title>재료</Title>
-                {showIngredientOptions && (
-                  <IngredientOptionsDropdown
-                    onRegister={() => setShowIngredientBox(true)}
-                    onDelete={() =>
-                      handleDeleteIngredient(activeIngredientIndex)
-                    }
-                    closeOptions={() => setShowIngredientOptions(false)}
-                  />
-                )}
               </TitleContainer>
               <IngredientContainer>
                 {Array.isArray(ingredients) &&
@@ -251,13 +212,18 @@ const EditModal = ({ recipeId, onSave, closeEditModal }) => {
                       key={index}
                       type="text"
                       value={ingredient.name}
-                      onClick={(e) => handleIngredientClick(index, e)}
+                      onClick={() => handleIngredientClick(index)}
                       onChange={(e) =>
                         handleIngredientChange(index, e.target.value)
                       }
                       placeholder={`재료 ${index + 1}`}
                     >
                       {ingredient.name}
+                      <CancelButton
+                        src={Cancel}
+                        alt="재료 삭제 버튼"
+                        onClick={() => handleDeleteIngredient(index)}
+                      />
                     </IngredientInput>
                   ))}
                 {showIngredientBox && (
@@ -298,6 +264,7 @@ const EditModal = ({ recipeId, onSave, closeEditModal }) => {
               <UploadInput
                 id="file-upload"
                 type="file"
+                accept="image/*"
                 onChange={handleImageChange}
               />
             </UploadImg>
@@ -408,6 +375,7 @@ const UploadInput = styled.input`
 
 const TopContainer = styled.div`
   width: 100%;
+  height: 250px;
   display: flex;
   justify-content: space-between;
 
@@ -512,7 +480,6 @@ const ModalContentBox = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: start;
-  overflow-y: auto;
 
   @media screen and (max-width: 1200px) {
     width: 50vw;
@@ -585,25 +552,11 @@ const EditModalContainer = styled.div`
   }
 `;
 
-const DropdownContainer = styled.div`
-  display: flex;
-  justify-content: center;
-  background-color: ${({ theme }) => theme.colors.green100};
-  border: 1px solid ${({ theme }) => theme.colors.helperText};
-  border-radius: 7px;
-  z-index: 1000;
-`;
-
-const DropdownButton = styled.button`
-  background: none;
-  border: none;
-  padding: 5px 7px;
+const CancelButton = styled.img`
+  width: 20px;
+  height: 20px;
   cursor: pointer;
-  ${({ theme }) => theme.fonts.helpText14};
-
-  &:hover {
-    background-color: ${({ theme }) => theme.colors.green200};
-  }
+  margin-left: 10px;
 `;
 
 export default EditModal;

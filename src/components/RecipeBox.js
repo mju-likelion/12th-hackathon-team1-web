@@ -12,10 +12,8 @@ const RecipeBox = ({
   recipeLikeId,
   menuName,
   countHeart,
-  isClicked,
   isEditing,
   removeRecipeBox,
-  onClick,
 }) => {
   const [likeId, setLikeId] = useState([]);
 
