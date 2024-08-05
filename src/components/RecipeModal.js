@@ -85,8 +85,10 @@ const RecipeModal = ({ recipeId, closeRecipeModal }) => {
                   {recipe.ingredientRecipes &&
                   recipe.ingredientRecipes.length > 0 ? (
                     recipe.ingredientRecipes.map((item) => (
-                      <IngredientBox key={item.id}>
-                        {item.ingredient.name}
+                      <IngredientBox key={item.id} title={item.ingredient.name}>
+                        {item.ingredient.name.length > 7
+                          ? item.ingredient.name.slice(0, 7) + "..."
+                          : item.ingredient.name}
                       </IngredientBox>
                     ))
                   ) : (
@@ -95,7 +97,7 @@ const RecipeModal = ({ recipeId, closeRecipeModal }) => {
                 </IngredientContainer>
               </ContentContainer>
             </LeftContainer>
-            <MenuImg style={{ backgroundImage: `url(${imageUrl})` }} />
+            <MenuImg src={imageUrl} alt="메뉴 이미지" />
           </TopContainer>
           <ContentContainer>
             <Title>조리 방법</Title>
@@ -170,10 +172,11 @@ const ButtonContainer = styled.div`
   justify-content: end;
 `;
 
-const MenuImg = styled.div`
-  width: 332px;
-  height: 219px;
-  margin: 20px;
+const MenuImg = styled.img`
+  width: 300px;
+  height: 260px;
+  border-radius: 10px;
+  object-fit: cover;
   background-color: ${({ theme }) => theme.colors.white};
 
   @media screen and (max-width: 1200px) {
@@ -184,7 +187,7 @@ const MenuImg = styled.div`
 `;
 
 const LeftContainer = styled.div`
-  width: 60%;
+  width: 55%;
 `;
 
 const TopContainer = styled.div`
@@ -212,14 +215,16 @@ const IngredientBox = styled.p`
   display: flex;
   ${({ theme }) => theme.fonts.default16}
   background-color: ${({ theme }) => theme.colors.white};
-  width: 100px;
+  width: 105px;
   height: 37px;
   border-radius: 10px;
   align-items: center;
-  margin: 5px;
-  display: flex;
   justify-content: center;
-  align-items: center;
+  margin: 5px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  cursor: default;
 
   @media screen and (max-width: 1200px) {
     width: 7vw;
@@ -256,8 +261,8 @@ const HeartImg = styled.img`
 const ContentContainer = styled.div`
   width: 100%;
   display: flex;
+  margin-bottom: 20px;
   flex-direction: column;
-  padding: 20px;
 
   @media screen and (max-width: 1200px) {
     padding: 1.4vw;
@@ -270,6 +275,7 @@ const ModalContentBox = styled.div`
   height: 630px;
   border-radius: 10px;
   margin-bottom: 25px;
+  padding: 20px;
   display: flex;
   flex-direction: column;
   justify-content: start;
