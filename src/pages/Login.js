@@ -56,9 +56,10 @@ const Login = ({ setIsLoggedIn }) => {
           email,
           password,
         });
-        console.log(response.data);
+        console.log("로그인 응답:", response.data);
         localStorage.setItem("isLoggedIn", "true");
-        localStorage.setItem("userToken", response.data.token);
+        localStorage.setItem("accessToken", response.data.accessToken);
+        localStorage.setItem("refreshToken", response.data.refreshToken);
         setIsLoggedIn(true);
         navigate("/main");
       } catch (error) {
