@@ -80,19 +80,8 @@ const EditModal = ({ recipeId, onSave, closeEditModal }) => {
     setIngredients([...ingredients, { name: "", id: null }]);
   };
 
-  const handleMethodChange = (index, value) => {
-    const newMethods = [...methods];
-    newMethods[index] = value;
-    setMethods(newMethods);
-  };
-
-  const handleMethodKeyDown = (index, e) => {
-    if (e.key === "Enter") {
-      e.preventDefault();
-      const newMethods = [...methods];
-      newMethods.splice(index + 1, 0, "");
-      setMethods(newMethods);
-    }
+  const handleMethodChange = (e) => {
+    setMethods(e.target.value);
   };
 
   const handleImageChange = async (e) => {
@@ -135,8 +124,8 @@ const EditModal = ({ recipeId, onSave, closeEditModal }) => {
   const handleSave = async () => {
     const updatedRecipe = {
       name: title,
-      cookingStep: methods.join(". "),
-      imageId,
+      cookingStep: methods.split("\n").join(". "),
+      imageId: imageId,
     };
 
     const addedIngredients = ingredients.filter(
@@ -239,16 +228,11 @@ const EditModal = ({ recipeId, onSave, closeEditModal }) => {
           </TopContainer>
           <ContentContainer>
             <Title>조리 방법</Title>
-            {Array.isArray(methods) &&
-              methods.map((method, index) => (
-                <MethodTextarea
-                  key={index}
-                  value={method}
-                  onChange={(e) => handleMethodChange(index, e.target.value)}
-                  onKeyDown={(e) => handleMethodKeyDown(index, e)}
-                  placeholder="ex) 돼지고기는 핏물을 빼주세요"
-                />
-              ))}
+            <MethodTextarea
+              value={methods}
+              onChange={handleMethodChange}
+              placeholder="ex) 돼지고기는 핏물을 빼주세요"
+            />
           </ContentContainer>
           <ContentContainer>
             <Title>사진</Title>
@@ -390,15 +374,17 @@ const TopContainer = styled.div`
   }
 `;
 
-const MethodTextarea = styled.input`
+const MethodTextarea = styled.textarea`
   ${({ theme }) => theme.fonts.default16}
   background-color: ${({ theme }) => theme.colors.white};
   width: 500px;
-  height: 37px;
+  height: 100px;
   border-radius: 10px;
   border: none;
-  vertical-align: middle;
   margin: 5px;
+  padding: 10px;
+  resize: vertical;
+  overflow: auto;
 
   &:focus {
     outline: none;
