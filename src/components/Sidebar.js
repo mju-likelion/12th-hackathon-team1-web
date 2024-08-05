@@ -31,7 +31,7 @@ function Sidebar() {
                 <ItemContainer
                   $isSelected={location.pathname === "/recipes/my_recipes"}
                 >
-                  내 레시피 보기
+                  나의 레시피 보기
                   {location.pathname === "/recipes/my_recipes" && (
                     <ArrowImg src={Arrow} alt="화살표 아이콘" />
                   )}
@@ -51,7 +51,7 @@ function Sidebar() {
                 <ItemContainer
                   $isSelected={location.pathname === "/recipes/recommendations"}
                 >
-                  나의 냉장고 재료로 레시피 보기
+                  나의 냉장고 레시피 보기
                   {location.pathname === "/recipes/recommendations" && (
                     <ArrowImg src={Arrow} alt="화살표 아이콘" />
                   )}
@@ -70,7 +70,7 @@ function Sidebar() {
             </Link>
             <Link to="/recipes/my_recipes">
               <Button buttonText={location.pathname === "/recipes/my_recipes"}>
-                <ButtonText>내 레시피</ButtonText>
+                <ButtonText>나의 레시피</ButtonText>
               </Button>
             </Link>
             <Link to="/auth/likes">
@@ -82,7 +82,7 @@ function Sidebar() {
               <Button
                 buttonText={location.pathname === "/recipes/recommendations"}
               >
-                <ButtonText>나의 냉장고 재료 레시피</ButtonText>
+                <ButtonText>나의 냉장고 레시피</ButtonText>
               </Button>
             </Link>
           </ButtonWrapper>
