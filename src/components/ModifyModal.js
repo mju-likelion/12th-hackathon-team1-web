@@ -1,10 +1,20 @@
-import React, {useState} from 'react';
-import styled from 'styled-components';
-import SmallButton from './SmallButton';
-import { Axios } from '../api/Axios';
+import React, { useState } from "react";
+import styled from "styled-components";
+import SmallButton from "./SmallButton";
+import { Axios } from "../api/Axios";
 
-const ModifyModal = ({ name, id, year, month, date, count, storage, memo, closeModifyModal, isCloseShowFood}) => {
-
+const ModifyModal = ({
+  name,
+  id,
+  year,
+  month,
+  date,
+  count,
+  storage,
+  memo,
+  closeModifyModal,
+  isCloseShowFood,
+}) => {
   const [changeYear, setChangeYear] = useState(year);
   const [changeMonth, setChangeMonth] = useState(month);
   const [changeDate, setChangeDate] = useState(date);
@@ -21,7 +31,6 @@ const ModifyModal = ({ name, id, year, month, date, count, storage, memo, closeM
     e.stopPropagation();
     isCloseShowFood();
   };
-
 
   const changeYears = [
     { value: "", label: changeYear },
@@ -92,16 +101,16 @@ const ModifyModal = ({ name, id, year, month, date, count, storage, memo, closeM
     { value: "08", label: "08" },
     { value: "09", label: "09" },
     { value: "10", label: "10" },
-  ]
+  ];
   const changeStorages = [
-    {value: "", label: changeStorage},
-    {value: "냉동", label: "냉동"},
-    {value: "냉장", label: "냉장"},
-    {value: "상온", label: "상온"},
-  ]
+    { value: "", label: changeStorage },
+    { value: "냉동", label: "냉동" },
+    { value: "냉장", label: "냉장" },
+    { value: "상온", label: "상온" },
+  ];
 
-  const Modify = async() => {
-    try{
+  const Modify = async () => {
+    try {
       await Axios.patch(`/fridge/ingredients/${id}`, {
         ingredientId: id,
         expiredDate: `${changeYear}-${changeMonth}-${changeDate}`,
@@ -110,100 +119,136 @@ const ModifyModal = ({ name, id, year, month, date, count, storage, memo, closeM
         memo: changeMemo,
       });
       window.location.href = `/fridge`;
-    }catch (error) {
-      console.log(error)
+    } catch (error) {
+      console.error(error);
     }
-  } 
+  };
 
   const close = () => {
     isCloseShowFood();
-  }
+  };
 
   return (
-        <ModalWrapper onClick={handleClose}>
-        <WrapperBox onClick={(e)=>e.stopPropagation()}>
-            <Wrapper>
-              <TitleBox>
-                <MainTitle>재료 수정하기</MainTitle>
-              </TitleBox>
-                <SmallWrapper>
-                  <TextBoxWrapper>
-                    <TextWrapper>
-                      <Title>재료명</Title>
-                      <NameBox>
-                        <Name>{name}</Name>
-                      </NameBox>
-                    </TextWrapper>
-                    <TextWrapper>
-                      <Title>남은 유통기한</Title>
-                      <YearWrapper>
-                        <YearBox>
-                        <Text value={changeYear} onChange={(e) => setChangeYear(e.target.value)}>
+    <ModalWrapper onClick={handleClose}>
+      <WrapperBox onClick={(e) => e.stopPropagation()}>
+        <Wrapper>
+          <TitleBox>
+            <MainTitle>재료 수정하기</MainTitle>
+          </TitleBox>
+          <SmallWrapper>
+            <TextBoxWrapper>
+              <TextWrapper>
+                <Title>재료명</Title>
+                <NameBox>
+                  <Name>{name}</Name>
+                </NameBox>
+              </TextWrapper>
+              <TextWrapper>
+                <Title>남은 유통기한</Title>
+                <YearWrapper>
+                  <YearBox>
+                    <Text
+                      value={changeYear}
+                      onChange={(e) => setChangeYear(e.target.value)}
+                    >
                       {changeYears.map((years, index) => (
-                        <option key={index} value={years.value} disabled={years.value === ""}>
+                        <option
+                          key={index}
+                          value={years.value}
+                          disabled={years.value === ""}
+                        >
                           {years.label}
                         </option>
                       ))}
                     </Text>
-                          <Year>년</Year>
-                        </YearBox>
-                        <YearBox>
-                        <Text value={changeMonth} onChange={(e) => setChangeMonth(e.target.value)}>
+                    <Year>년</Year>
+                  </YearBox>
+                  <YearBox>
+                    <Text
+                      value={changeMonth}
+                      onChange={(e) => setChangeMonth(e.target.value)}
+                    >
                       {changeMonths.map((months, index) => (
-                        <option key={index} value={months.value} disabled={months.value === ""}>
+                        <option
+                          key={index}
+                          value={months.value}
+                          disabled={months.value === ""}
+                        >
                           {months.label}
                         </option>
                       ))}
                     </Text>
-                          <Year>월</Year>
-                        </YearBox>
-                        <YearBox>
-                        <Text value={changeDate} onChange={(e) => setChangeDate(e.target.value)}>
+                    <Year>월</Year>
+                  </YearBox>
+                  <YearBox>
+                    <Text
+                      value={changeDate}
+                      onChange={(e) => setChangeDate(e.target.value)}
+                    >
                       {changeDates.map((dates, index) => (
-                        <option key={index} value={dates.value} disabled={dates.value === ""}>
+                        <option
+                          key={index}
+                          value={dates.value}
+                          disabled={dates.value === ""}
+                        >
                           {dates.label}
                         </option>
                       ))}
                     </Text>
-                          <Year>일</Year>
-                        </YearBox>
-                      </YearWrapper>
-                    </TextWrapper>
-                    <TextWrapper>
-                      <Title>수량 설정</Title>
-                      <Text value={changeCount} onChange={(e) => setChangeCount(e.target.value)}>
+                    <Year>일</Year>
+                  </YearBox>
+                </YearWrapper>
+              </TextWrapper>
+              <TextWrapper>
+                <Title>수량 설정</Title>
+                <Text
+                  value={changeCount}
+                  onChange={(e) => setChangeCount(e.target.value)}
+                >
                   {changeCounts.map((counts, index) => (
-                    <option key={index} value={counts.value} disabled={counts.value === ""}>
+                    <option
+                      key={index}
+                      value={counts.value}
+                      disabled={counts.value === ""}
+                    >
                       {counts.label}
                     </option>
                   ))}
                 </Text>
-                    </TextWrapper>
-                    <TextWrapper>
-                      <Title>보관 방법</Title>
-                      <Text value={changeStorage} onChange={(e) => setChangeStorage(e.target.value)}>
+              </TextWrapper>
+              <TextWrapper>
+                <Title>보관 방법</Title>
+                <Text
+                  value={changeStorage}
+                  onChange={(e) => setChangeStorage(e.target.value)}
+                >
                   {changeStorages.map((storages, index) => (
-                    <option key={index} value={storages.value} disabled={storages.value === ""}>
+                    <option
+                      key={index}
+                      value={storages.value}
+                      disabled={storages.value === ""}
+                    >
                       {storages.label}
                     </option>
                   ))}
                 </Text>
-                    </TextWrapper>
-                    <TextWrapper>
-                      <Title>메모</Title>
-                      <LongText value={changeMemo} onChange={(e) => setChangeMemo(e.target.value)} />
-                    </TextWrapper>
-                  </TextBoxWrapper>
-                </SmallWrapper>
-                <ButtonWrapper>
-                    <SmallButton text="닫기" onClick={close}/>
-                    <SmallButton text="수정 완료"onClick={handleSave}/>
-                </ButtonWrapper>
-            </Wrapper>
-        </WrapperBox>
-        </ModalWrapper>
-
-
+              </TextWrapper>
+              <TextWrapper>
+                <Title>메모</Title>
+                <LongText
+                  value={changeMemo}
+                  onChange={(e) => setChangeMemo(e.target.value)}
+                />
+              </TextWrapper>
+            </TextBoxWrapper>
+          </SmallWrapper>
+          <ButtonWrapper>
+            <SmallButton text="닫기" onClick={close} />
+            <SmallButton text="수정 완료" onClick={handleSave} />
+          </ButtonWrapper>
+        </Wrapper>
+      </WrapperBox>
+    </ModalWrapper>
   );
 };
 
@@ -219,41 +264,40 @@ const ModalWrapper = styled.div`
 `;
 
 const WrapperBox = styled.div`
-    background-color: ${({theme}) => theme.colors.green200};
-    width: 650px;
-    height: 680px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 10px;
+  background-color: ${({ theme }) => theme.colors.green200};
+  width: 650px;
+  height: 680px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
 
-    @media screen and (max-width: 1200px){
-        width: 57.3vw;
-        height: 60vw;
-        border-radius: 1vw;
-    }
+  @media screen and (max-width: 1200px) {
+    width: 57.3vw;
+    height: 60vw;
+    border-radius: 1vw;
+  }
 
-    @media screen and (max-width: 480px){
-        width: 77.2vw;
-        height: 104vw;
-        border-radius: 2vw;
-    }
-    `;
-    
+  @media screen and (max-width: 480px) {
+    width: 77.2vw;
+    height: 104vw;
+    border-radius: 2vw;
+  }
+`;
 
 const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
   align-content: space-between;
 
-    @media screen and (max-width: 1200px){
-        height: 54.5vw;
-    }
+  @media screen and (max-width: 1200px) {
+    height: 54.5vw;
+  }
 
-    @media screen and (max-width: 480px){
-        height: 96vw;
-        justify-content: space-between;
-    }
+  @media screen and (max-width: 480px) {
+    height: 96vw;
+    justify-content: space-between;
+  }
 `;
 
 const TitleBox = styled.div`
@@ -262,49 +306,49 @@ const TitleBox = styled.div`
   justify-content: start;
   margin-bottom: 25px;
 
-  @media screen and (max-width: 1200px){
+  @media screen and (max-width: 1200px) {
     margin-bottom: 1.5vw;
   }
 
-  @media screen and (max-width: 480px){
+  @media screen and (max-width: 480px) {
     margin-top: 1.5vw;
   }
 `;
 
 const MainTitle = styled.p`
-  ${({theme})=>theme.fonts.title32}
+  ${({ theme }) => theme.fonts.title32}
 
-  @media screen and (max-width: 1200px){
+  @media screen and (max-width: 1200px) {
     font-size: 3vw;
   }
 
-  @media screen and (max-width: 480px){
+  @media screen and (max-width: 480px) {
     font-size: 4.8vw;
   }
 `;
 
 const SmallWrapper = styled.div`
-    background-color: ${({theme})=>theme.colors.green100};
-    width: 580px;
-    height: 500px;
-    border-radius: 10px;
-    margin-bottom: 25px;
-    display: flex;
-    align-items: center;
+  background-color: ${({ theme }) => theme.colors.green100};
+  width: 580px;
+  height: 500px;
+  border-radius: 10px;
+  margin-bottom: 25px;
+  display: flex;
+  align-items: center;
 
-    @media screen and (max-width: 1200px){
-        width: 50vw;
-        height: 45vw;
-        border-radius: 0.52vw;
-        margin-bottom: 1.5vw;
-    }
+  @media screen and (max-width: 1200px) {
+    width: 50vw;
+    height: 45vw;
+    border-radius: 0.52vw;
+    margin-bottom: 1.5vw;
+  }
 
-    @media screen and (max-width: 480px){
-        width: 70vw;
-        height: 78.6vw;
-        border-radius: 2vw;
-        margin-bottom: 0;
-    }
+  @media screen and (max-width: 480px) {
+    width: 70vw;
+    height: 78.6vw;
+    border-radius: 2vw;
+    margin-bottom: 0;
+  }
 `;
 
 const TextBoxWrapper = styled.div`
@@ -315,37 +359,36 @@ const TextBoxWrapper = styled.div`
   align-items: start;
   justify-content: space-between;
 
-  @media screen and (max-width: 1200px){
+  @media screen and (max-width: 1200px) {
     height: 42vw;
   }
 
-  @media screen and (max-width: 480px){
+  @media screen and (max-width: 480px) {
     height: 70vw;
   }
 `;
 
-const TextWrapper = styled.div`
-`;
+const TextWrapper = styled.div``;
 
 const Title = styled.p`
-  ${({theme})=>theme.fonts.default16}
+  ${({ theme }) => theme.fonts.default16}
   margin-left: 20px;
   margin-bottom: 10px;
   display: flex;
 
-  @media screen and (max-width: 1200px){
+  @media screen and (max-width: 1200px) {
     font-size: 1.5vw;
     margin-left: 2vw;
     margin-bottom: 1vw;
   }
 
-  @media screen and (max-width: 480px){
+  @media screen and (max-width: 480px) {
     font-size: 3vw;
   }
 `;
 
 const NameBox = styled.div`
-  background-color: ${({theme})=> theme.colors.white};
+  background-color: ${({ theme }) => theme.colors.white};
   width: auto;
   height: 35px;
   border-radius: 20px;
@@ -353,35 +396,34 @@ const NameBox = styled.div`
   align-items: center;
   margin-left: 20px;
 
-  @media screen and (max-width: 1200px){
+  @media screen and (max-width: 1200px) {
     height: 2.78vw;
     border-radius: 2vw;
     margin-left: 2vw;
   }
 
-  @media screen and (max-width: 480px){
+  @media screen and (max-width: 480px) {
     height: 5.5vw;
   }
-  
 `;
 
 const Name = styled.p`
-  ${({theme})=>theme.fonts.helpText14}
-  color: ${({theme})=>theme.colors.dateGray};
-  margin:0 15px;
+  ${({ theme }) => theme.fonts.helpText14}
+  color: ${({ theme }) => theme.colors.dateGray};
+  margin: 0 15px;
 
-  @media screen and (max-width: 1200px){
+  @media screen and (max-width: 1200px) {
     font-size: 1.2vw;
   }
 
-  @media screen and (max-width: 480px){
+  @media screen and (max-width: 480px) {
     font-size: 2.5vw;
   }
 `;
 
 const Text = styled.select`
-  background-color: ${({theme})=>theme.colors.white};
-  ${({theme})=>theme.fonts.helpText14}
+  background-color: ${({ theme }) => theme.colors.white};
+  ${({ theme }) => theme.fonts.helpText14}
   width: 90px;
   height: 35px;
   border: none;
@@ -391,7 +433,7 @@ const Text = styled.select`
     outline: none;
   }
 
-  @media screen and (max-width: 1200px){
+  @media screen and (max-width: 1200px) {
     width: 5.6vw;
     height: 2.78vw;
     font-size: 1.3vw;
@@ -399,7 +441,7 @@ const Text = styled.select`
     margin-left: 2vw;
   }
 
-  @media screen and (max-width: 480px){
+  @media screen and (max-width: 480px) {
     font-size: 2.5vw;
     height: 5.5vw;
     width: auto;
@@ -407,18 +449,18 @@ const Text = styled.select`
 `;
 
 const Year = styled.p`
-  ${({theme})=>theme.fonts.default16}
+  ${({ theme }) => theme.fonts.default16}
   margin-left: 5px;
   margin-bottom: 10px;
   display: flex;
 
-  @media screen and (max-width: 1200px){
+  @media screen and (max-width: 1200px) {
     font-size: 1.5vw;
     margin-left: 0.35vw;
     margin-bottom: 0.7vw;
   }
 
-  @media screen and (max-width: 480px){
+  @media screen and (max-width: 480px) {
     font-size: 2.5vw;
     margin-left: 0.8vw;
   }
@@ -431,11 +473,10 @@ const YearWrapper = styled.div`
 const YearBox = styled.div`
   display: flex;
   align-items: end;
-
 `;
 
 const LongText = styled.input`
-  background-color: ${({theme})=>theme.colors.white};
+  background-color: ${({ theme }) => theme.colors.white};
   width: 350px;
   height: 120px;
   border: none;
@@ -445,14 +486,14 @@ const LongText = styled.input`
     outline: none;
   }
 
-  @media screen and (max-width: 1200px){
+  @media screen and (max-width: 1200px) {
     width: 31.25vw;
     height: 10.41vw;
     font-size: 1.5vw;
     margin-left: 2vw;
   }
 
-  @media screen and (max-width: 480px){
+  @media screen and (max-width: 480px) {
     width: 40vw;
     height: 11vw;
     font-size: 2.5vw;
@@ -465,6 +506,5 @@ const ButtonWrapper = styled.div`
   justify-content: end;
   gap: 1.3vw;
 `;
-
 
 export default ModifyModal;

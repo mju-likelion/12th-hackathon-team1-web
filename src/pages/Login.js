@@ -58,8 +58,6 @@ const Login = ({ setIsLoggedIn }) => {
         });
         console.log("로그인 응답:", response.data);
         localStorage.setItem("isLoggedIn", "true");
-        localStorage.setItem("accessToken", response.data.accessToken);
-        localStorage.setItem("refreshToken", response.data.refreshToken);
         setIsLoggedIn(true);
         navigate("/main");
       } catch (error) {
@@ -211,6 +209,7 @@ const ButtonContainer = styled.div`
 `;
 
 const SignUp = styled.div`
+  display: flex;
   margin-top: 20px;
   ${({ theme }) => theme.fonts.helpText14};
   color: ${({ theme }) => theme.colors.helperText};
@@ -223,6 +222,7 @@ const SignUp = styled.div`
 const SignUpLink = styled.p`
   ${({ theme }) => theme.fonts.default16};
   color: ${({ theme }) => theme.colors.black};
+  margin: 0 0.5vw;
   text-decoration: none;
   &:visited {
     color: ${({ theme }) => theme.colors.black};

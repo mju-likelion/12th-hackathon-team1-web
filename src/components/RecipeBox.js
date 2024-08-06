@@ -274,6 +274,9 @@ const DeleteIcon = styled.img`
 
 const HeartContainer = styled.div`
   display: flex;
+  justify-content: space-between;
+  width: 2vw;
+  margin: 5px 0;
   align-items: center;
 `;
 
@@ -281,7 +284,7 @@ const Count = styled.p`
   ${({ theme }) => theme.fonts.default20};
 
   @media screen and (max-width: 480px) {
-    font-size: 1.5vw;
+    font-size: 2.5vw;
     margin-bottom: 0.5vw;
   }
 `;
@@ -351,7 +354,6 @@ const PhotoWrapper = styled.div`
 const HeartImg = styled.img`
   height: 26px;
   width: 26px;
-  margin: 12px 11px;
   cursor: pointer;
 
   @media screen and (max-width: 1200px) {

@@ -14,7 +14,7 @@ const Header = ({ isLoggedIn, setIsLoggedIn }) => {
   const handleLogout = async () => {
     try {
       const token = localStorage.getItem("userToken");
-      const response = await Axios.post(
+      await Axios.post(
         "/auth/logout",
         {},
         {
@@ -23,7 +23,6 @@ const Header = ({ isLoggedIn, setIsLoggedIn }) => {
           },
         }
       );
-      console.log(response.data);
       localStorage.removeItem("isLoggedIn");
       localStorage.removeItem("userToken");
       setIsLoggedIn(false);
@@ -37,7 +36,7 @@ const Header = ({ isLoggedIn, setIsLoggedIn }) => {
     if (window.confirm("회원 탈퇴 하시겠습니까?")) {
       try {
         const token = localStorage.getItem("userToken");
-        const response = await Axios.delete(
+        await Axios.delete(
           "/auth/leave",
           {},
           {
@@ -46,7 +45,6 @@ const Header = ({ isLoggedIn, setIsLoggedIn }) => {
             },
           }
         );
-        console.log(response.data);
         localStorage.removeItem("isLoggedIn");
         localStorage.removeItem("userToken");
         setIsLoggedIn(false);
@@ -127,12 +125,17 @@ const Header = ({ isLoggedIn, setIsLoggedIn }) => {
             />
             <img src={search} alt="돋보기 검색 버튼" onClick={handleSearch} />
           </SearchBox>
-          {isLoggedIn ? 
-          <Link to="/auth/likes">
-          <HeartImg src={Heart} alt="마음에 드는 레시피 탭" />
-        </Link> : 
-        <HeartImg onClick={()=>alert("로그인 후 이용가능한 기능입니다. ")}
-          src={Heart} alt="마음에 드는 레시피 탭" />}
+          {isLoggedIn ? (
+            <Link to="/auth/likes">
+              <HeartImg src={Heart} alt="마음에 드는 레시피 탭" />
+            </Link>
+          ) : (
+            <HeartImg
+              onClick={() => alert("로그인 후 이용가능한 기능입니다. ")}
+              src={Heart}
+              alt="마음에 드는 레시피 탭"
+            />
+          )}
         </FunctionContainer>
       </FunctionHeader>
     </HeaderContent>
@@ -147,7 +150,6 @@ const HeartImg = styled.img`
 
 const MenuImg = styled.img`
   height: 4vh;
-  cursor: pointer;
 `;
 
 const SearchBox = styled.div`

@@ -231,6 +231,18 @@ const AddContainer = styled.div`
   width: 240px;
   justify-content: center;
   align-items: center;
+
+  @media screen and (max-width: 1200px) {
+    height: 20vw;
+    width: 17.8vw;
+    border-radius: 0.7vw;
+  }
+
+  @media screen and (max-width: 480px) {
+    width: 38.88vw;
+    height: 40vw;
+    border-radius: 2vw;
+  }
 `;
 
 const RecipeContainer = styled.div`
@@ -265,8 +277,19 @@ const SidebarContainer = styled.div`
   position: absolute;
   display: flex;
   position: fixed;
+  width: 20vw;
+  height: 15vw;
+  justify-content: end;
+  align-items: end;
+
+  @media screen and (max-width: 1200px) {
+    width: 14vw;
+    height: 20vw;
+  }
 
   @media screen and (max-width: 480px) {
+    width: 90vw;
+    height: 13vw;
     position: static;
     margin-top: 3vw;
     margin-bottom: 1vw;
@@ -283,10 +306,9 @@ const PlusButton = styled.img`
   height: 40px;
   cursor: pointer;
 
-  @media screen and (max-width: 1200px) {
-    margin-left: 71vw;
-    width: 2vw;
-    height: 2vw;
+  @media screen and (max-width: 480px) {
+    width: 7vw;
+    height: 7vw;
   }
 `;
 
@@ -371,6 +393,7 @@ const MyRecipeContainer = styled.div`
   @media screen and (max-width: 480px) {
     width: 90vw;
     height: 145.8vw;
+    padding: 2vw 4.1vw;
     border-radius: 2vw;
   }
 `;

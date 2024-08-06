@@ -39,7 +39,7 @@ const RefrigeratorSection = ({title, ButtonText, dateRef, location}) => {
                 setFridgeData(response.data.data.coldStorage);
                 setRoomTempData(response.data.data.ambient);
             } catch (error) {
-                console.log(error);
+                console.error(error);
             }
         };
 

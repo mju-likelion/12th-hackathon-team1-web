@@ -1,63 +1,46 @@
-import React, {useEffect, useState} from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import RecipeBox from "../../components/RecipeBox";
 import Sidebar from "../../components/Sidebar";
 import { LikeAtom } from "../../Recoil/Atom";
 import { useRecoilValue } from "recoil";
 
-const chunkArray = (array, size) => {
-  const result = [];
-  for (let i = 0; i < array.length; i += size) {
-    result.push(array.slice(i, i + size));
-  }
-  return result;
-};
-
-
 const LikeRecipe = () => {
   const likeRecipes = useRecoilValue(LikeAtom);
-  const groupedLikes = chunkArray(likeRecipes, 3);
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
 
+  useEffect(() => {
+    const handleResize = () => {
+      setWindowWidth(window.innerWidth);
+    };
 
-console.log("dafad: ", likeRecipes);
+    window.addEventListener("resize", handleResize);
 
-    useEffect(() => {
-        const handleResize = () => {
-            setWindowWidth(window.innerWidth);
-        };
-
-        window.addEventListener('resize', handleResize);
-
-        return () => {
-            window.removeEventListener('resize', handleResize);
-        };
-    }, []);
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
 
   return (
     <>
       <SidebarContainer>
-        <Sidebar/>
+        <Sidebar />
       </SidebarContainer>
       <Container>
         <TitleEditContainer>
-          {windowWidth > 480 &&<BoxTitle>좋아요 누른 레시피</BoxTitle>}
+          {windowWidth > 480 && <BoxTitle>좋아요 누른 레시피</BoxTitle>}
         </TitleEditContainer>
         <MyRecipeContainer>
           <Wrapper>
-            {groupedLikes.map((group, index) => (
-              <Line key={index}>
-                {group.map((box) => (
-                  <RecipeBox
-                    key={box.recipeId}
-                    recipeLikeId={box.recipeId}
-                    recipeId={box.recipeId}
-                    menuName={box.name}
-                    countHeart={box.likeCount}
-                    location="좋아요"
-                  />
-                ))}
-              </Line>
+            {likeRecipes.map((box) => (
+              <RecipeBox
+                key={box.recipeId}
+                recipeLikeId={box.recipeId}
+                recipeId={box.recipeId}
+                menuName={box.name}
+                countHeart={box.likeCount}
+                location="좋아요"
+              />
             ))}
           </Wrapper>
         </MyRecipeContainer>
@@ -70,8 +53,19 @@ const SidebarContainer = styled.div`
   position: absolute;
   display: flex;
   position: fixed;
+  width: 20vw;
+  height: 15vw;
+  justify-content: end;
+  align-items: end;
 
-  @media screen and (max-width: 480px){
+  @media screen and (max-width: 1200px) {
+    width: 14vw;
+    height: 20vw;
+  }
+
+  @media screen and (max-width: 480px) {
+    width: 90vw;
+    height: 13vw;
     position: static;
     margin-top: 3vw;
     margin-bottom: 1vw;
@@ -90,35 +84,44 @@ const TitleEditContainer = styled.div`
   }
 `;
 
-const Line = styled.div`
-  display: flex;
-  width: auto;
-  gap: 45px;
-  justify-content: start;
-  margin: 20px 0;
-  width: 810px;
-
-  @media screen and (max-width: 1200px) {
-    width: 62.4vw;
-    gap: 4.5vw;
-    margin: 1.4vw 0;
-    
-  }
-`;
 const Wrapper = styled.div`
   display: flex;
-  flex-direction: column;
+  flex-wrap: wrap;
+  justify-content: start;
   align-items: center;
+  gap: 50px;
+  width: 820px;
+  margin-bottom: 10px;
+
+  @media screen and (max-width: 480px) {
+    gap: 10px;
+    width: 90vw;
+  }
 `;
 
 const MyRecipeContainer = styled.div`
+  display: flex;
+  position: relative;
+  flex-wrap: wrap;
   background-color: ${({ theme }) => theme.colors.green200};
   width: 900px;
-  min-height: 900px;
-  height: auto;
-  justify-content: space-evenly;
-  align-items: center;
+  height: 850px;
+  padding: 20px;
+  justify-content: center;
+  overflow-y: scroll;
+  align-items: start;
   border-radius: 1vw;
+  gap: 45px;
+  &::-webkit-scrollbar-button {
+    display: none;
+  }
+  &::-webkit-scrollbar {
+    width: 5px;
+  }
+  &::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    background: #ccc;
+  }
 
   @media screen and (max-width: 1200px) {
     width: 70vw;
@@ -128,8 +131,8 @@ const MyRecipeContainer = styled.div`
   @media screen and (max-width: 480px) {
     width: 90vw;
     height: 145.8vw;
+    padding: 2vw 4.1vw;
     border-radius: 2vw;
-    margin-top: 5vw;
   }
 `;
 

@@ -106,7 +106,6 @@ const CreateModal = ({ onSave, saveCreateModal }) => {
           headers: { "Content-Type": "multipart/form-data" },
         });
 
-        console.log(response);
         if (response.data.statusCode === "200") {
           newRecipe.imageId = response.data.data.id;
         } else {
@@ -494,8 +493,8 @@ const ModalBackground = styled.div`
 
 const CreateModalContainer = styled.div`
   background-color: ${({ theme }) => theme.colors.green200};
-  width: 800px;
-  height: 850px;
+  width: 41.6vw;
+  height: 44.27vw;
   display: flex;
   align-items: center;
   justify-content: center;

@@ -41,7 +41,7 @@ function Sidebar() {
                 <ItemContainer
                   $isSelected={location.pathname === "/auth/likes"}
                 >
-                  좋아요 누른 레시피 보기
+                  좋아요 레시피 보기
                   {location.pathname === "/auth/likes" && (
                     <ArrowImg src={Arrow} alt="화살표 아이콘" />
                   )}
@@ -51,7 +51,7 @@ function Sidebar() {
                 <ItemContainer
                   $isSelected={location.pathname === "/recipes/recommendations"}
                 >
-                  내 냉장고 재료로 레시피 보기
+                  나의 냉장고 레시피 보기
                   {location.pathname === "/recipes/recommendations" && (
                     <ArrowImg src={Arrow} alt="화살표 아이콘" />
                   )}
@@ -82,7 +82,7 @@ function Sidebar() {
               <Button
                 buttonText={location.pathname === "/recipes/recommendations"}
               >
-                <ButtonText>내 냉장고 재료 레시피</ButtonText>
+                <ButtonText>나의 냉장고 재료 레시피</ButtonText>
               </Button>
             </Link>
           </ButtonWrapper>
@@ -144,18 +144,16 @@ const Grayline = styled.div`
 const SidebarContainer = styled.div`
   display: flex;
   flex-direction: column;
-  height: 224px;
-  width: 300px;
-  padding: 23px;
-  border-radius: 10px;
+  width: 13vw;
+  height: 37vh;
+  max-height: 224px;
+  padding: 1.6vw;
+  border-radius: 0.7vw;
   border: 1px solid ${({ theme }) => theme.colors.lineGray};
   background-color: ${({ theme }) => theme.colors.white};
 
   @media screen and (max-width: 1200px) {
-    width: 13vw;
-    height: 17vw;
-    padding: 1.6vw;
-    border-radius: 0.7vw;
+    height: 18vw;
   }
 `;
 

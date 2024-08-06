@@ -7,7 +7,7 @@ import { LikeAtom } from "../Recoil/Atom";
 import { useRecoilValue } from "recoil";
 
 const MainSmallBox = ({ isLoggedIn, type }) => {
-  const likeRecipes = useRecoilValue(LikeAtom)
+  const likeRecipes = useRecoilValue(LikeAtom);
   const [recipeData, setRecipeData] = useState([]);
   const [page, setPage] = useState(0);
   const [totalPage, setTotalPage] = useState(1);
@@ -78,25 +78,32 @@ const MainSmallBox = ({ isLoggedIn, type }) => {
       <AllWrapper>
         {isLoggedIn ? (
           <>
-          <ArrowButton onClick={handlePreviousPage} disabled={page === 0}>
-            <Img src={arrow} alt="이전" style={{ transform: "rotate(180deg)" }} />
-          </ArrowButton>
-          <RecipeBoxWrapper>
-            {recipeData.map((recipe) => (
+            <ArrowButton onClick={handlePreviousPage} disabled={page === 0}>
+              <Img
+                src={arrow}
+                alt="이전"
+                style={{ transform: "rotate(180deg)" }}
+              />
+            </ArrowButton>
+            <RecipeBoxWrapper>
+              {recipeData.map((recipe) => (
                 <PopularRecipeBox
                   key={recipe.recipeId}
                   recipeId={recipe.recipeId}
                   recipeLikeId={likeRecipes}
                 />
               ))}
-          </RecipeBoxWrapper>
-          <ArrowButton onClick={handleNextPage} disabled={page >= totalPage - 1}>
-        <Img src={arrow} alt="다음" />
-      </ArrowButton>
+            </RecipeBoxWrapper>
+            <ArrowButton
+              onClick={handleNextPage}
+              disabled={page >= totalPage - 1}
+            >
+              <Img src={arrow} alt="다음" />
+            </ArrowButton>
           </>
-        ):(
+        ) : (
           <LoginPrompt>
-            나만의 좋아요 레시피를 추가해주세요! (로그인 후 이용가능합니다.)
+            나의 냉장고 레시피를 추가해주세요! (로그인 후 이용가능합니다.)
           </LoginPrompt>
         )}
       </AllWrapper>
@@ -132,10 +139,10 @@ const AllWrapper = styled.div`
   justify-content: center;
   align-items: center;
 
-  @media screen and (max-width: 1200px){
+  @media screen and (max-width: 1200px) {
     height: 15.3vw;
   }
-  `;
+`;
 
 const RecipeBoxWrapper = styled.div`
   width: 500px;
@@ -144,13 +151,13 @@ const RecipeBoxWrapper = styled.div`
   gap: 35px;
   align-items: center;
 
-  @media screen and (max-width: 1200px){
+  @media screen and (max-width: 1200px) {
     width: 34.7vw;
     height: 15.3vw;
     gap: 1vw;
   }
 
-  @media screen and (max-width: 480px){
+  @media screen and (max-width: 480px) {
     width: 85vw;
     height: 30vw;
     gap: 3vw;
@@ -173,7 +180,6 @@ const ArrowButton = styled.div`
     height: 7vw;
     width: 7vw;
   }
-
 `;
 
 const Img = styled.img`
