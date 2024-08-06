@@ -4,7 +4,7 @@ import PopularRecipe from "../../components/PopularRecipe";
 import WholeRecipe from "../../components/WholeRecipe";
 import Sidebar from "../../components/Sidebar";
 
-const RecipeMain = ({isLoggedIn}) => {
+const RecipeMain = () => {
   const [type, setType] = useState("newest");
   const [isLoading, setIsLoading] = useState(true);
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
@@ -42,9 +42,7 @@ const RecipeMain = ({isLoggedIn}) => {
   return (
     <>
       <SidebarContainer>
-        <Sidebar 
-        isLoggedIn={isLoggedIn}
-        text="로그인 후 이용가능한 기능입니다. "/>
+        <Sidebar/>
       </SidebarContainer>
       <Wrapper>
         <RecipeContainer>

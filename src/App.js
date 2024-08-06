@@ -32,12 +32,12 @@ function App() {
         />
         <Route path="/auth/signin" element={<Join />} />
         {isLoggedIn && <Route path="/fridge" element={<Refrigerator />} />}
-        <Route path="/recipes" element={<Recipe />} />
+        <Route path="/recipes" element={<Recipe/>} />
         {isLoggedIn && 
         <>
-        <Route path="/recipes/my_recipes" element={<MyRecipe isLoggedIn={isLoggedIn}/>} />
-        <Route path="/recipes/recommendations" element={<RecipeRecommend isLoggedIn={isLoggedIn}/>} />
-        <Route path="/auth/likes" element={<LikeRecipe isLoggedIn={isLoggedIn} />} />
+        <Route path="/recipes/my_recipes" element={<MyRecipe/>} />
+        <Route path="/recipes/recommendations" element={<RecipeRecommend/>} />
+        <Route path="/auth/likes" element={<LikeRecipe/>} />
         </>}
         <Route path="*" element={<NotFound />} />
       </Routes>

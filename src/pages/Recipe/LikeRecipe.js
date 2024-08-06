@@ -33,7 +33,7 @@ const LikeRecipe = () => {
   return (
     <>
       <SidebarContainer>
-        <Sidebar />
+        <Sidebar/>
       </SidebarContainer>
       <Container>
         <TitleEditContainer>
