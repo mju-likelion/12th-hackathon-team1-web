@@ -61,7 +61,7 @@ const RecipeRecommend = () => {
   return (
     <>
       <SidebarContainer>
-        <Sidebar />
+        <Sidebar/>
       </SidebarContainer>
       <Container>
         <TitleEditContainer>
