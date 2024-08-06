@@ -13,10 +13,14 @@ const chunkArray = (array, size) => {
   return result;
 };
 
+
 const LikeRecipe = () => {
   const likeRecipes = useRecoilValue(LikeAtom);
   const groupedLikes = chunkArray(likeRecipes, 3);
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+
+
+console.log("dafad: ", likeRecipes);
 
     useEffect(() => {
         const handleResize = () => {
@@ -47,8 +51,10 @@ const LikeRecipe = () => {
                   <RecipeBox
                     key={box.recipeId}
                     recipeLikeId={box.recipeId}
+                    recipeId={box.recipeId}
                     menuName={box.name}
                     countHeart={box.likeCount}
+                    location="좋아요"
                   />
                 ))}
               </Line>
