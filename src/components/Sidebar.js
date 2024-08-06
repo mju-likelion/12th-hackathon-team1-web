@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import styled, { css } from "styled-components";
 import Arrow from "../assets/images/next.svg";
@@ -7,22 +7,21 @@ function Sidebar({isLoggedIn, text}) {
   const location = useLocation();
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
 
-    useEffect(() => {
-        const handleResize = () => {
-            setWindowWidth(window.innerWidth);
-        };
+  useEffect(() => {
+    const handleResize = () => {
+      setWindowWidth(window.innerWidth);
+    };
 
-        window.addEventListener('resize', handleResize);
+    window.addEventListener("resize", handleResize);
 
-        return () => {
-            window.removeEventListener('resize', handleResize);
-        };
-    }, []);
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
 
   return (
     <>
-    {windowWidth > 480 ?
-      (
+      {windowWidth > 480 ? (
         <SidebarContainer>
         <MenuText>Menu</MenuText>
         <Grayline />
@@ -105,6 +104,58 @@ function Sidebar({isLoggedIn, text}) {
             <Link to="/auth/likes">
               <Button 
               buttonText={location.pathname === "/auth/likes"}>
+          <MenuText>Menu</MenuText>
+          <Grayline />
+          <Text>
+            <>
+              <Link to="/recipes/my_recipes">
+                <ItemContainer
+                  $isSelected={location.pathname === "/recipes/my_recipes"}
+                >
+                  나의 레시피 보기
+                  {location.pathname === "/recipes/my_recipes" && (
+                    <ArrowImg src={Arrow} alt="화살표 아이콘" />
+                  )}
+                </ItemContainer>
+              </Link>
+              <Link to="/auth/likes">
+                <ItemContainer
+                  $isSelected={location.pathname === "/auth/likes"}
+                >
+                  좋아요 누른 레시피 보기
+                  {location.pathname === "/auth/likes" && (
+                    <ArrowImg src={Arrow} alt="화살표 아이콘" />
+                  )}
+                </ItemContainer>
+              </Link>
+              <Link to="/recipes/recommendations">
+                <ItemContainer
+                  $isSelected={location.pathname === "/recipes/recommendations"}
+                >
+                  나의 냉장고 레시피 보기
+                  {location.pathname === "/recipes/recommendations" && (
+                    <ArrowImg src={Arrow} alt="화살표 아이콘" />
+                  )}
+                </ItemContainer>
+              </Link>
+            </>
+          </Text>
+        </SidebarContainer>
+      ) : (
+        <Wrapper>
+          <ButtonWrapper>
+            <Link to="/recipes">
+              <Button buttonText={location.pathname === "/recipes"}>
+                <ButtonText>전체 레시피</ButtonText>
+              </Button>
+            </Link>
+            <Link to="/recipes/my_recipes">
+              <Button buttonText={location.pathname === "/recipes/my_recipes"}>
+                <ButtonText>나의 레시피</ButtonText>
+              </Button>
+            </Link>
+            <Link to="/auth/likes">
+              <Button buttonText={location.pathname === "/auth/likes"}>
                 <ButtonText>좋아요 누른 레시피</ButtonText>
               </Button>
             </Link>
@@ -118,6 +169,15 @@ function Sidebar({isLoggedIn, text}) {
           </Wrapper>
       )
     }
+              <Button
+                buttonText={location.pathname === "/recipes/recommendations"}
+              >
+                <ButtonText>나의 냉장고 레시피</ButtonText>
+              </Button>
+            </Link>
+          </ButtonWrapper>
+        </Wrapper>
+      )}
     </>
   );
 }
@@ -133,7 +193,8 @@ const ButtonWrapper = styled.div`
 `;
 
 const Button = styled.button`
-  background-color: ${({theme, buttonText})=> buttonText ? theme.colors.greenButton : theme.colors.green200};
+  background-color: ${({ theme, buttonText }) =>
+    buttonText ? theme.colors.greenButton : theme.colors.green200};
   height: 5.55vw;
   border-radius: 1.5vw;
   display: flex;

@@ -115,6 +115,7 @@ const SidebarContainer = styled.div`
   position: absolute;
   display: flex;
   position: fixed;
+  z-index: 1000;
 
   @media screen and (max-width: 480px) {
     position: static;
