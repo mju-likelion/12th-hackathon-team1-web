@@ -260,7 +260,7 @@ const Count = styled.p`
   ${({ theme }) => theme.fonts.default20};
 
   @media screen and (max-width: 480px) {
-    font-size: 4vw;
+    font-size: 1.5vw;
     margin-bottom: 0.5vw;
   }
 `;
@@ -303,7 +303,7 @@ const Container = styled.div`
 
   @media screen and (max-width: 480px) {
     width: 38.88vw;
-    height: 44.44vw;
+    height: 40vw;
     border-radius: 2vw;
   }
 `;
@@ -312,7 +312,6 @@ const PhotoWrapper = styled.div`
   height: 183px;
   width: 210px;
   background-color: ${({ theme }) => theme.colors.green200};
-  background-size: cover;
   border-radius: 10px;
 
   @media screen and (max-width: 1200px) {
@@ -323,7 +322,7 @@ const PhotoWrapper = styled.div`
 
   @media screen and (max-width: 480px) {
     height: 27.77vw;
-    width: 33.33vw;
+    width: 30vw;
     border-radius: 2vw;
   }
 `;
@@ -341,8 +340,8 @@ const HeartImg = styled.img`
   }
 
   @media screen and (max-width: 480px) {
-    height: 5vw;
-    width: 5vw;
+    height: 3vw;
+    width: 3vw;
     margin: 1vw;
   }
 `;

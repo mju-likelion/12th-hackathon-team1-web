@@ -27,36 +27,36 @@ function Sidebar() {
           <Grayline />
           <Text>
             <>
-                <Link to="/recipes/my_recipes">
-                  <ItemContainer
-                    $isSelected={location.pathname === "/recipes/my_recipes"}
-                  >
-                    내 레시피 보기
-                    {location.pathname === "/recipes/my_recipes" && (
-                      <ArrowImg src={Arrow} alt="화살표 아이콘" />
-                    )}
-                  </ItemContainer>
-                </Link>
-                <Link to="/auth/likes">
-                  <ItemContainer
-                    $isSelected={location.pathname === "/auth/likes"}
-                  >
-                    좋아요 누른 레시피 보기
-                    {location.pathname === "/auth/likes" && (
-                      <ArrowImg src={Arrow} alt="화살표 아이콘" />
-                    )}
-                  </ItemContainer>
-                </Link>
-                <Link to="/recipes/recommendations">
-                  <ItemContainer
-                    $isSelected={location.pathname === "/recipes/recommendations"}
-                  >
-                    내 냉장고 재료로 레시피 보기
-                    {location.pathname === "/recipes/recommendations" && (
-                      <ArrowImg src={Arrow} alt="화살표 아이콘" />
-                    )}
-                  </ItemContainer>
-                </Link>
+              <Link to="/recipes/my_recipes">
+                <ItemContainer
+                  $isSelected={location.pathname === "/recipes/my_recipes"}
+                >
+                  내 레시피 보기
+                  {location.pathname === "/recipes/my_recipes" && (
+                    <ArrowImg src={Arrow} alt="화살표 아이콘" />
+                  )}
+                </ItemContainer>
+              </Link>
+              <Link to="/auth/likes">
+                <ItemContainer
+                  $isSelected={location.pathname === "/auth/likes"}
+                >
+                  좋아요 누른 레시피 보기
+                  {location.pathname === "/auth/likes" && (
+                    <ArrowImg src={Arrow} alt="화살표 아이콘" />
+                  )}
+                </ItemContainer>
+              </Link>
+              <Link to="/recipes/recommendations">
+                <ItemContainer
+                  $isSelected={location.pathname === "/recipes/recommendations"}
+                >
+                  내 냉장고 재료로 레시피 보기
+                  {location.pathname === "/recipes/recommendations" && (
+                    <ArrowImg src={Arrow} alt="화살표 아이콘" />
+                  )}
+                </ItemContainer>
+              </Link>
             </>
           </Text>
         </SidebarContainer>
@@ -79,7 +79,9 @@ function Sidebar() {
               </Button>
             </Link>
             <Link to="/recipes/recommendations">
-              <Button buttonText={location.pathname === "/recipes/recommendations"}>
+              <Button
+                buttonText={location.pathname === "/recipes/recommendations"}
+              >
                 <ButtonText>내 냉장고 재료 레시피</ButtonText>
               </Button>
             </Link>
@@ -98,6 +100,7 @@ const Wrapper = styled.div`
 const ButtonWrapper = styled.div`
   display: flex;
   justify-content: space-between;
+  width: 90vw;
 `;
 
 const Button = styled.button`
@@ -149,7 +152,7 @@ const SidebarContainer = styled.div`
   background-color: ${({ theme }) => theme.colors.white};
 
   @media screen and (max-width: 1200px) {
-    width: 22vw;
+    width: 13vw;
     height: 17vw;
     padding: 1.6vw;
     border-radius: 0.7vw;
