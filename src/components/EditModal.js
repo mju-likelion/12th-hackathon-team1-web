@@ -18,6 +18,7 @@ const EditModal = ({ recipeId, onSave, closeEditModal }) => {
   const [imageUrl, setImageUrl] = useState(null);
   const [showIngredientBox, setShowIngredientBox] = useState(false);
   const [activeIngredientIndex, setActiveIngredientIndex] = useState(null);
+  const [imageFile, setImageFile] = useState(null);
 
   useEffect(() => {
     const fetchRecipe = async () => {
@@ -89,38 +90,12 @@ const EditModal = ({ recipeId, onSave, closeEditModal }) => {
   const handleImageChange = async (e) => {
     const image = e.target.files[0];
     if (image) {
-      const formData = new FormData();
-      formData.append("file", image);
-
-      try {
-        const response = await Axios.post("/recipes/images", formData, {
-          headers: { "Content-Type": "multipart/form-data" },
-        });
-
-        if (response.data.statusCode === "200") {
-          setImageId(response.data.data.id);
-          setImageUrl(response.data.data.url);
-        } else {
-          console.error("이미지 등록에 실패했습니다.");
-        }
-      } catch (error) {
-        console.error("이미지 등록 중 오류 발생", error);
-      }
+      setImageFile(image);
     }
   };
 
   const handleDeleteImage = async () => {
-    if (!imageId) return;
-
-    try {
-      await Axios.delete(`/recipes/images/${imageId}`);
-
-      setImageId(null);
-      setImageUrl(null);
-    } catch (error) {
-      console.log(imageId);
-      console.error("이미지 삭제 중 오류 발생", error);
-    }
+    setImageFile(null);
   };
 
   const handleSave = async () => {
@@ -130,7 +105,27 @@ const EditModal = ({ recipeId, onSave, closeEditModal }) => {
       cookingStep: methods.split("\n").join(". "),
     };
 
-    if (imageId !== originalImageId) {
+    if (imageFile) {
+      const formData = new FormData();
+      formData.append("file", imageFile);
+
+      try {
+        const response = await Axios.post("recipes/images", formData, {
+          headers: { "Content-Type": "multipart/form-data" },
+        });
+
+        console.log(response);
+        if (response.data.statusCode === "200") {
+          updatedRecipe.imageId = response.data.data.id;
+        } else {
+          console.error("이미지 등록에 실패했습니다.");
+          return;
+        }
+      } catch (error) {
+        console.error("이미지 등록 중 오류 발생", error);
+        return;
+      }
+    } else if (imageId !== originalImageId) {
       updatedRecipe.imageId = imageId;
     }
 
