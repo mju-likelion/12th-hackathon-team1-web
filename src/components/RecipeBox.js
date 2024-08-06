@@ -14,21 +14,29 @@ const RecipeBox = ({
   countHeart,
   isEditing,
   removeRecipeBox,
+  location,
+  likePageId
 }) => {
   const [likeId, setLikeId] = useState([]);
+  const [page, setPage] = useState(true);
 
   useEffect(() => {
-    const findLikeId = () => {
-      for (let i = 0; i < recipeLikeId.length; i++) {
-        if (recipeLikeId[i].recipeId === recipeId) {
-          setLikeId(recipeLikeId[i].recipeId);
-          return;
+    if(location === "좋아요") {
+      setLikeId(recipeId)
+    }
+    else{
+      const findLikeId = () => {
+        for (let i = 0; i < recipeLikeId.length; i++) {
+          if (recipeLikeId[i].recipeId === recipeId) {
+            setLikeId(recipeLikeId[i].recipeId);
+            return;
+          }
         }
-      }
-      setLikeId(null);
-    };
-
-    findLikeId();
+        setLikeId(null);
+      };
+  
+      findLikeId(); 
+    }
   }, [recipeId, recipeLikeId]);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -107,15 +115,7 @@ const RecipeBox = ({
   const onClickHeart = async (e) => {
     e.stopPropagation();
 
-    if (likeId !== recipeId) {
-      try {
-        await Axios.post(`/recipes/${recipeId}/likes`);
-        setLikeId(recipeId);
-        setLikeCount((prevCount) => prevCount + 1);
-      } catch (error) {
-        console.error("좋아요 클릭 에러:", error);
-      }
-    } else {
+    if(location === "좋아요") {
       try {
         await Axios.delete(`/recipes/${recipeId}/likes`);
         setLikeId(null);
@@ -123,8 +123,26 @@ const RecipeBox = ({
       } catch (error) {
         console.error("좋아요 취소 에러:", error);
       }
+    } else {
+      if ((likeId !== recipeId)) {
+        try {
+          await Axios.post(`/recipes/${recipeId}/likes`);
+          setLikeId(recipeId);
+          setLikeCount((prevCount) => prevCount + 1);
+        } catch (error) {
+          console.error("좋아요 클릭 에러:", error);
+        }
+      } else {
+        try {
+          await Axios.delete(`/recipes/${recipeId}/likes`);
+          setLikeId(null);
+          setLikeCount((prevCount) => prevCount - 1);
+        } catch (error) {
+          console.error("좋아요 취소 에러:", error);
+        }
+      }
+    };
     }
-  };
 
   const handleDelete = async (e) => {
     e.stopPropagation();
@@ -160,11 +178,18 @@ const RecipeBox = ({
       </HeadContainer>
       <PhotoWrapper style={{ backgroundImage: `url(${recipeImage})` }} />
       <HeartContainer>
+        {page === false ?  
+        <HeartImg
+          onClick={onClickHeart}
+          src={Heart}
+          alt="좋아요 버튼"
+        /> : 
         <HeartImg
           onClick={onClickHeart}
           src={likeId === recipeId ? FullHeart : Heart}
           alt="좋아요 버튼"
         />
+        }
         <Count>{likeCount}</Count>
       </HeartContainer>
       {isModalOpen && (
