@@ -15,16 +15,14 @@ const RecipeBox = ({
   isEditing,
   removeRecipeBox,
   location,
-  likePageId
 }) => {
   const [likeId, setLikeId] = useState([]);
   const page = true;
 
   useEffect(() => {
-    if(location === "좋아요") {
-      setLikeId(recipeId)
-    }
-    else{
+    if (location === "좋아요") {
+      setLikeId(recipeId);
+    } else {
       const findLikeId = () => {
         for (let i = 0; i < recipeLikeId.length; i++) {
           if (recipeLikeId[i].recipeId === recipeId) {
@@ -34,8 +32,8 @@ const RecipeBox = ({
         }
         setLikeId(null);
       };
-  
-      findLikeId(); 
+
+      findLikeId();
     }
   }, [recipeId, recipeLikeId, location]);
 
@@ -115,7 +113,7 @@ const RecipeBox = ({
   const onClickHeart = async (e) => {
     e.stopPropagation();
 
-    if(location === "좋아요") {
+    if (location === "좋아요") {
       try {
         await Axios.delete(`/recipes/${recipeId}/likes`);
         setLikeId(null);
@@ -125,7 +123,7 @@ const RecipeBox = ({
         console.error("좋아요 취소 에러:", error);
       }
     } else {
-      if ((likeId !== recipeId)) {
+      if (likeId !== recipeId) {
         try {
           await Axios.post(`/recipes/${recipeId}/likes`);
           setLikeId(recipeId);
@@ -142,8 +140,8 @@ const RecipeBox = ({
           console.error("좋아요 취소 에러:", error);
         }
       }
-    };
     }
+  };
 
   const handleDelete = async (e) => {
     e.stopPropagation();
@@ -179,18 +177,15 @@ const RecipeBox = ({
       </HeadContainer>
       <PhotoWrapper style={{ backgroundImage: `url(${recipeImage})` }} />
       <HeartContainer>
-        {page === false ?  
-        <HeartImg
-          onClick={onClickHeart}
-          src={Heart}
-          alt="좋아요 버튼"
-        /> : 
-        <HeartImg
-          onClick={onClickHeart}
-          src={likeId === recipeId ? FullHeart : Heart}
-          alt="좋아요 버튼"
-        />
-        }
+        {page === false ? (
+          <HeartImg onClick={onClickHeart} src={Heart} alt="좋아요 버튼" />
+        ) : (
+          <HeartImg
+            onClick={onClickHeart}
+            src={likeId === recipeId ? FullHeart : Heart}
+            alt="좋아요 버튼"
+          />
+        )}
         <Count>{likeCount}</Count>
       </HeartContainer>
       {isModalOpen && (
