@@ -15,16 +15,14 @@ const RecipeBox = ({
   isEditing,
   removeRecipeBox,
   location,
-  likePageId
 }) => {
   const [likeId, setLikeId] = useState([]);
   const page = true;
 
   useEffect(() => {
-    if(location === "좋아요") {
-      setLikeId(recipeId)
-    }
-    else{
+    if (location === "좋아요") {
+      setLikeId(recipeId);
+    } else {
       const findLikeId = () => {
         for (let i = 0; i < recipeLikeId.length; i++) {
           if (recipeLikeId[i].recipeId === recipeId) {
@@ -34,8 +32,8 @@ const RecipeBox = ({
         }
         setLikeId(null);
       };
-  
-      findLikeId(); 
+
+      findLikeId();
     }
   }, [recipeId, recipeLikeId, location]);
 
@@ -115,7 +113,7 @@ const RecipeBox = ({
   const onClickHeart = async (e) => {
     e.stopPropagation();
 
-    if(location === "좋아요") {
+    if (location === "좋아요") {
       try {
         await Axios.delete(`/recipes/${recipeId}/likes`);
         setLikeId(null);
@@ -125,7 +123,7 @@ const RecipeBox = ({
         console.error("좋아요 취소 에러:", error);
       }
     } else {
-      if ((likeId !== recipeId)) {
+      if (likeId !== recipeId) {
         try {
           await Axios.post(`/recipes/${recipeId}/likes`);
           setLikeId(recipeId);
@@ -142,8 +140,8 @@ const RecipeBox = ({
           console.error("좋아요 취소 에러:", error);
         }
       }
-    };
     }
+  };
 
   const handleDelete = async (e) => {
     e.stopPropagation();
@@ -179,18 +177,15 @@ const RecipeBox = ({
       </HeadContainer>
       <PhotoWrapper style={{ backgroundImage: `url(${recipeImage})` }} />
       <HeartContainer>
-        {page === false ?  
-        <HeartImg
-          onClick={onClickHeart}
-          src={Heart}
-          alt="좋아요 버튼"
-        /> : 
-        <HeartImg
-          onClick={onClickHeart}
-          src={likeId === recipeId ? FullHeart : Heart}
-          alt="좋아요 버튼"
-        />
-        }
+        {page === false ? (
+          <HeartImg onClick={onClickHeart} src={Heart} alt="좋아요 버튼" />
+        ) : (
+          <HeartImg
+            onClick={onClickHeart}
+            src={likeId === recipeId ? FullHeart : Heart}
+            alt="좋아요 버튼"
+          />
+        )}
         <Count>{likeCount}</Count>
       </HeartContainer>
       {isModalOpen && (
@@ -279,6 +274,9 @@ const DeleteIcon = styled.img`
 
 const HeartContainer = styled.div`
   display: flex;
+  justify-content: space-between;
+  width: 2vw;
+  margin: 5px 0;
   align-items: center;
 `;
 
@@ -286,7 +284,7 @@ const Count = styled.p`
   ${({ theme }) => theme.fonts.default20};
 
   @media screen and (max-width: 480px) {
-    font-size: 4vw;
+    font-size: 2.5vw;
     margin-bottom: 0.5vw;
   }
 `;
@@ -329,7 +327,7 @@ const Container = styled.div`
 
   @media screen and (max-width: 480px) {
     width: 38.88vw;
-    height: 44.44vw;
+    height: 40vw;
     border-radius: 2vw;
   }
 `;
@@ -338,7 +336,6 @@ const PhotoWrapper = styled.div`
   height: 183px;
   width: 210px;
   background-color: ${({ theme }) => theme.colors.green200};
-  background-size: cover;
   border-radius: 10px;
 
   @media screen and (max-width: 1200px) {
@@ -349,7 +346,7 @@ const PhotoWrapper = styled.div`
 
   @media screen and (max-width: 480px) {
     height: 27.77vw;
-    width: 33.33vw;
+    width: 30vw;
     border-radius: 2vw;
   }
 `;
@@ -357,7 +354,6 @@ const PhotoWrapper = styled.div`
 const HeartImg = styled.img`
   height: 26px;
   width: 26px;
-  margin: 12px 11px;
   cursor: pointer;
 
   @media screen and (max-width: 1200px) {
@@ -367,8 +363,8 @@ const HeartImg = styled.img`
   }
 
   @media screen and (max-width: 480px) {
-    height: 5vw;
-    width: 5vw;
+    height: 3vw;
+    width: 3vw;
     margin: 1vw;
   }
 `;

@@ -23,7 +23,7 @@ const RecipeIngredient = ({ closeIngredientBox, onIngredientSelect }) => {
   }, [searchValue]);
 
   const handleIngredientSelect = (ingredients) => {
-    onIngredientSelect({ name: ingredients.name, id: ingredients.id }); // ID를 함께 전달
+    onIngredientSelect({ name: ingredients.name, id: ingredients.id });
     closeIngredientBox();
   };
 

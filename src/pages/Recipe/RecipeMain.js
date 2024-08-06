@@ -42,7 +42,7 @@ const RecipeMain = () => {
   return (
     <>
       <SidebarContainer>
-        <Sidebar/>
+        <Sidebar />
       </SidebarContainer>
       <Wrapper>
         <RecipeContainer>
@@ -113,9 +113,19 @@ const SidebarContainer = styled.div`
   position: absolute;
   display: flex;
   position: fixed;
-  z-index: 1000;
+  width: 20vw;
+  height: 15vw;
+  justify-content: end;
+  align-items: end;
+
+  @media screen and (max-width: 1200px) {
+    width: 14vw;
+    height: 20vw;
+  }
 
   @media screen and (max-width: 480px) {
+    width: 90vw;
+    height: 13vw;
     position: static;
     margin-top: 3vw;
     margin-bottom: 1vw;

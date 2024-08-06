@@ -111,7 +111,6 @@ const EditModal = ({ recipeId, onSave, closeEditModal }) => {
           headers: { "Content-Type": "multipart/form-data" },
         });
 
-        console.log(response);
         if (response.data.statusCode === "200") {
           updatedRecipe.imageId = response.data.data.id;
         } else {

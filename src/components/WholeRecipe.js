@@ -133,9 +133,9 @@ const RecipeContainer = styled.div`
   }
 
   @media screen and (max-width: 480px) {
-    width: 85vw;
+    width: 84vw;
     row-gap: 4vw;
-    column-gap: 7.2vw;
+    column-gap: 4vw;
     margin: 2vw 0;
   }
 `;
@@ -194,6 +194,10 @@ const LoadMoreButton = styled.button`
 
   &:hover {
     opacity: 0.8;
+  }
+
+  @media screen and (max-width: 480px) {
+    width: 85vw;
   }
 `;
 

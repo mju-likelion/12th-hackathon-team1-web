@@ -6,30 +6,22 @@ import { Axios } from "../../api/Axios";
 import { LikeAtom } from "../../Recoil/Atom";
 import { useRecoilValue } from "recoil";
 
-const chunkArray = (array, size) => {
-  const result = [];
-  for (let i = 0; i < array.length; i += size) {
-    result.push(array.slice(i, i + size));
-  }
-  return result;
-};
-
 const RecipeRecommend = () => {
-  const likeRecipes = useRecoilValue(LikeAtom)
+  const likeRecipes = useRecoilValue(LikeAtom);
   const [recipes, setRecipes] = useState([]);
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
 
-    useEffect(() => {
-        const handleResize = () => {
-            setWindowWidth(window.innerWidth);
-        };
+  useEffect(() => {
+    const handleResize = () => {
+      setWindowWidth(window.innerWidth);
+    };
 
-        window.addEventListener('resize', handleResize);
+    window.addEventListener("resize", handleResize);
 
-        return () => {
-            window.removeEventListener('resize', handleResize);
-        };
-    }, []);
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
 
   useEffect(() => {
     const fetchRecipes = async () => {
@@ -56,31 +48,25 @@ const RecipeRecommend = () => {
     fetchRecipes();
   }, []);
 
-  const groupedRecipes = chunkArray(recipes, 3);
-
   return (
     <>
       <SidebarContainer>
-        <Sidebar/>
+        <Sidebar />
       </SidebarContainer>
       <Container>
         <TitleEditContainer>
-          {windowWidth > 480 &&<BoxTitle>나의 냉장고 레시피</BoxTitle>}
+          {windowWidth > 480 && <BoxTitle>나의 냉장고 레시피</BoxTitle>}
         </TitleEditContainer>
         <RecommendContainer>
           <Wrapper>
-            {groupedRecipes.map((group, index) => (
-              <Line key={index}>
-                {group.map((recipe) => (
-                  <RecipeBox
-                    key={recipe.recipeId}
-                    recipeId={recipe.recipeId}
-                    menuName={recipe.name}
-                    countHeart={recipe.likeCount}
-                    recipeLikeId={likeRecipes}
-                  />
-                ))}
-              </Line>
+            {recipes.map((recipe) => (
+              <RecipeBox
+                key={recipe.recipeId}
+                recipeId={recipe.recipeId}
+                menuName={recipe.name}
+                countHeart={recipe.likeCount}
+                recipeLikeId={likeRecipes}
+              />
             ))}
           </Wrapper>
         </RecommendContainer>
@@ -93,8 +79,19 @@ const SidebarContainer = styled.div`
   position: absolute;
   display: flex;
   position: fixed;
+  width: 20vw;
+  height: 15vw;
+  justify-content: end;
+  align-items: end;
 
-  @media screen and (max-width: 480px){
+  @media screen and (max-width: 1200px) {
+    width: 14vw;
+    height: 20vw;
+  }
+
+  @media screen and (max-width: 480px) {
+    width: 90vw;
+    height: 13vw;
     position: static;
     margin-top: 3vw;
     margin-bottom: 1vw;
@@ -113,34 +110,39 @@ const TitleEditContainer = styled.div`
   }
 `;
 
-const Line = styled.div`
-  display: flex;
-  width: 810px;
-  justify-content: start;
-  gap: 45px;
-  margin: 20px 0;
-
-  @media screen and (max-width: 1200px) {
-    width: 62.4vw;
-    gap: 4.5vw;
-    margin: 1.4vw 0;
-  }
-`;
-
 const Wrapper = styled.div`
   display: flex;
-  flex-direction: column;
+  flex-wrap: wrap;
+  justify-content: start;
   align-items: center;
+  gap: 50px;
+  width: 820px;
+  margin-bottom: 10px;
 `;
 
 const RecommendContainer = styled.div`
+  display: flex;
+  position: relative;
+  flex-wrap: wrap;
   background-color: ${({ theme }) => theme.colors.green200};
   width: 900px;
-  min-height: 900px;
-  height: auto;
-  justify-content: space-evenly;
-  align-items: center;
+  height: 850px;
+  padding: 20px;
+  justify-content: center;
+  overflow-y: scroll;
+  align-items: start;
   border-radius: 1vw;
+  gap: 45px;
+  &::-webkit-scrollbar-button {
+    display: none;
+  }
+  &::-webkit-scrollbar {
+    width: 5px;
+  }
+  &::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    background: #ccc;
+  }
 
   @media screen and (max-width: 1200px) {
     width: 70vw;
@@ -151,7 +153,6 @@ const RecommendContainer = styled.div`
     width: 90vw;
     height: 145.8vw;
     border-radius: 2vw;
-    margin-top: 5vw;
   }
 `;
 
