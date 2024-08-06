@@ -18,7 +18,7 @@ const RecipeBox = ({
   likePageId
 }) => {
   const [likeId, setLikeId] = useState([]);
-  const [page, setPage] = useState(true);
+  const page = true;
 
   useEffect(() => {
     if(location === "좋아요") {
@@ -37,7 +37,7 @@ const RecipeBox = ({
   
       findLikeId(); 
     }
-  }, [recipeId, recipeLikeId]);
+  }, [recipeId, recipeLikeId, location]);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [recipeData, setRecipeData] = useState(null);
@@ -120,6 +120,7 @@ const RecipeBox = ({
         await Axios.delete(`/recipes/${recipeId}/likes`);
         setLikeId(null);
         setLikeCount((prevCount) => prevCount - 1);
+        window.location.href = `/auth/likes`;
       } catch (error) {
         console.error("좋아요 취소 에러:", error);
       }
