@@ -124,9 +124,10 @@ const EditModal = ({ recipeId, onSave, closeEditModal }) => {
   };
 
   const handleSave = async () => {
+    console.log(methods);
     const updatedRecipe = {
       name: title,
-      cookingStep: methods.join(". "),
+      cookingStep: methods.split("\n").join(". "),
     };
 
     if (imageId !== originalImageId) {
@@ -213,9 +214,11 @@ const EditModal = ({ recipeId, onSave, closeEditModal }) => {
                       }
                       placeholder={`재료 ${index + 1}`}
                     >
-                      {ingredient.name.length > 7
-                        ? ingredient.name.slice(0, 5) + "..."
-                        : ingredient.name}
+                      <IngredientName>
+                        {ingredient.name.length > 6
+                          ? ingredient.name.slice(0, 6) + "..."
+                          : ingredient.name}
+                      </IngredientName>
                       <CancelButton
                         src={Cancel}
                         alt="재료 삭제 버튼"
@@ -412,8 +415,12 @@ const IngredientContainer = styled.div`
   flex-wrap: wrap;
 `;
 
-const IngredientInput = styled.p`
-  ${({ theme }) => theme.fonts.default16}
+const IngredientName = styled.p`
+  ${({ theme }) => theme.fonts.default16};
+  margin: 5px;
+`;
+
+const IngredientInput = styled.div`
   background-color: ${({ theme }) => theme.colors.white};
   width: 120px;
   height: 37px;
