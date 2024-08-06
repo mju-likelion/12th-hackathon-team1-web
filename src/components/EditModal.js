@@ -15,7 +15,6 @@ const EditModal = ({ recipeId, onSave, closeEditModal }) => {
   const [ingredients, setIngredients] = useState([{ name: "", id: null }]);
   const [methods, setMethods] = useState("");
   const [imageId, setImageId] = useState(null);
-  const [imageUrl, setImageUrl] = useState(null);
   const [showIngredientBox, setShowIngredientBox] = useState(false);
   const [activeIngredientIndex, setActiveIngredientIndex] = useState(null);
   const [imageFile, setImageFile] = useState(null);
@@ -42,7 +41,6 @@ const EditModal = ({ recipeId, onSave, closeEditModal }) => {
           if (recipe.image && recipe.image.id) {
             setImageId(recipe.image.id);
             setOriginalImageId(recipe.image.id);
-            setImageUrl(recipe.image.url);
           }
         } else {
           console.error("레시피 데이터가 없습니다.");
@@ -99,7 +97,6 @@ const EditModal = ({ recipeId, onSave, closeEditModal }) => {
   };
 
   const handleSave = async () => {
-    console.log(methods);
     const updatedRecipe = {
       name: title,
       cookingStep: methods.split("\n").join(". "),
@@ -242,13 +239,16 @@ const EditModal = ({ recipeId, onSave, closeEditModal }) => {
           <ContentContainer>
             <Title>사진</Title>
             <UploadImg>
-              {imageId && (
+              {imageFile && (
                 <ImageContainer>
-                  <ImagePreview src={imageUrl} alt="업로드한 이미지" />
+                  <ImagePreview
+                    src={URL.createObjectURL(imageFile)}
+                    alt="업로드한 이미지"
+                  />
                   <DeleteButton src={DeleteIcon} onClick={handleDeleteImage} />
                 </ImageContainer>
               )}
-              {!imageId && (
+              {!imageFile && (
                 <>
                   <UploadLabel htmlFor="file-upload">
                     <FolderIcon src={Folder} alt="파일 불러오기" />
