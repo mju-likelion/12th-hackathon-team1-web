@@ -10,8 +10,9 @@ const CreateModal = ({ onSave, saveCreateModal }) => {
   const [title, setTitle] = useState("");
   const [ingredients, setIngredients] = useState([]);
   const [ingredientIds, setIngredientIds] = useState([]);
-  const [methods, setMethods] = useState([""]);
-  const [image, setImage] = useState(null);
+  const [methods, setMethods] = useState("");
+  const [imageId, setImageId] = useState(null);
+  const [imageUrl, setImageUrl] = useState(null);
   const [showIngredientBox, setShowIngredientBox] = useState(false);
   const [activeIngredientIndex, setActiveIngredientIndex] = useState(null);
 
@@ -41,25 +42,30 @@ const CreateModal = ({ onSave, saveCreateModal }) => {
     setIngredients([...ingredients, ""]);
   };
 
-  const handleMethodChange = (index, value) => {
-    const newMethods = [...methods];
-    newMethods[index] = value;
-    setMethods(newMethods);
+  const handleMethodChange = (e) => {
+    setMethods(e.target.value);
   };
 
-  const handleMethodKeyDown = (index, e) => {
-    if (e.key === "Enter") {
-      e.preventDefault();
-      const newMethods = [...methods];
-      newMethods.splice(index + 1, 0, "");
-      setMethods(newMethods);
-    }
-  };
+  const handleImageChange = async (e) => {
+    const image = e.target.files[0];
+    if (image) {
+      const formData = new FormData();
+      formData.append("file", image);
 
-  const handleImageChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      setImage(file);
+      try {
+        const response = await Axios.post("/recipes/images", formData, {
+          headers: { "Content-Type": "multipart/form-data" },
+        });
+
+        if (response.data.statusCode === "200") {
+          setImageId(response.data.data.id);
+          setImageUrl(response.data.data.url);
+        } else {
+          console.error("이미지 등록에 실패했습니다.");
+        }
+      } catch (error) {
+        console.error("이미지 등록 중 오류 발생", error);
+      }
     }
   };
 
@@ -75,7 +81,7 @@ const CreateModal = ({ onSave, saveCreateModal }) => {
       alert("재료를 입력하세요.");
       return false;
     }
-    if (methods.length === 0 || methods.some((method) => !method.trim())) {
+    if (!methods.trim()) {
       alert("조리 방법을 입력하세요.");
       return false;
     }
@@ -85,29 +91,24 @@ const CreateModal = ({ onSave, saveCreateModal }) => {
   const handleSave = async () => {
     if (!validateForm()) return;
 
-    let imageId = null;
-    if (image) {
-      const formData = new FormData();
-      formData.append("file", image);
-      const imageResponse = await Axios.post("/recipes/images", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
-      imageId = imageResponse.data.id;
+    try {
+      const newRecipe = {
+        name: title,
+        ingredientIds: ingredientIds,
+        cookingStep: methods.split("\n").join(". "),
+        imageId: imageId,
+      };
+
+      console.log(newRecipe);
+
+      await Axios.post("/recipes", newRecipe);
+      onSave(newRecipe);
+      saveCreateModal();
+      window.location.reload();
+    } catch (error) {
+      console.error("Error saving recipe:", error);
+      alert("레시피를 저장하는 중에 오류가 발생했습니다. 다시 시도해주세요.");
     }
-
-    const newRecipe = {
-      name: title,
-      ingredientIds: ingredientIds,
-      cookingStep: methods.join("+"),
-      imageId: imageId,
-    };
-
-    await Axios.post("/recipes", newRecipe);
-    onSave(newRecipe);
-    saveCreateModal();
-    window.location.reload();
   };
 
   return (
@@ -155,29 +156,31 @@ const CreateModal = ({ onSave, saveCreateModal }) => {
           </TopContainer>
           <ContentContainer>
             <Title>조리 방법</Title>
-            {methods.map((method, index) => (
-              <MethodTextarea
-                key={index}
-                value={method}
-                onChange={(e) => handleMethodChange(index, e.target.value)}
-                onKeyDown={(e) => handleMethodKeyDown(index, e)}
-                placeholder="ex) 돼지고기는 핏물을 빼주세요"
-              />
-            ))}
+            <MethodTextarea
+              value={methods}
+              onChange={handleMethodChange}
+              placeholder="ex) 돼지고기는 핏물을 빼주세요"
+            />
           </ContentContainer>
           <ContentContainer>
             <Title>사진</Title>
             <UploadImg>
-              {image && <img src={image} alt="Preview" />}
-              <UploadLabel htmlFor="file-upload">
-                <FolderIcon src={Folder} alt="Folder Icon" />
-              </UploadLabel>
-              <UploadButton
-                id="file-upload"
-                type="file"
-                accept="image/*"
-                onChange={handleImageChange}
-              />
+              <ImageContainer>
+                {imageId && <ImagePreview src={imageUrl} alt="Preview" />}
+              </ImageContainer>
+              {!imageId && (
+                <>
+                  <UploadLabel htmlFor="file-upload">
+                    <FolderIcon src={Folder} alt="파일 불러오기" />
+                  </UploadLabel>
+                  <UploadButton
+                    id="file-upload"
+                    type="file"
+                    accept="image/*"
+                    onChange={handleImageChange}
+                  />
+                </>
+              )}
             </UploadImg>
           </ContentContainer>
         </ModalContentBox>
@@ -189,11 +192,31 @@ const CreateModal = ({ onSave, saveCreateModal }) => {
     </CreateModalContainer>
   );
 };
+
+const ImageContainer = styled.div`
+  display: flex;
+  margin: 10px;
+  background-color: aquamarine;
+`;
+
 const ButtonContainer = styled.div`
   display: flex;
   justify-content: space-between;
   width: 50%;
   margin-left: auto;
+`;
+
+const ImagePreview = styled.img`
+  height: 300px;
+  width: 350px;
+  border-radius: 10px;
+  object-fit: cover;
+
+  @media screen and (max-width: 1200px) {
+    height: 15vw;
+    width: 18vw;
+    border-radius: 0.7vw;
+  }
 `;
 
 const UploadLabel = styled.label`
@@ -203,12 +226,12 @@ const UploadLabel = styled.label`
   justify-content: center;
   width: 30px;
   height: 30px;
-  margin: 5px;
+  margin: 30px;
 
   @media screen and (max-width: 1200px) {
     width: 2.08vw;
     height: 2.08vw;
-    margin: 0.35vw;
+    margin: 2.08vw;
   }
 `;
 
@@ -219,10 +242,11 @@ const FolderIcon = styled.img`
 
 const UploadImg = styled.div`
   display: flex;
+  align-items: center;
   width: 500px;
-  height: 37px;
+  min-height: 37px;
   border-radius: 10px;
-  justify-content: end;
+  justify-content: center;
   border: none;
   ${({ theme }) => theme.fonts.default16}
   background-color: ${({ theme }) => theme.colors.white};
@@ -230,7 +254,7 @@ const UploadImg = styled.div`
 
   @media screen and (max-width: 1200px) {
     width: 34.7vw;
-    height: 2.56vw;
+    min-height: 2.56vw;
     border-radius: 0.7vw;
     margin: 0.35vw;
   }
@@ -253,7 +277,6 @@ const UploadButton = styled.input`
 
 const TopContainer = styled.div`
   width: 100%;
-  height: 250px;
   display: flex;
   justify-content: space-between;
 
@@ -262,15 +285,17 @@ const TopContainer = styled.div`
   }
 `;
 
-const MethodTextarea = styled.input`
+const MethodTextarea = styled.textarea`
   ${({ theme }) => theme.fonts.default16}
   background-color: ${({ theme }) => theme.colors.white};
   width: 500px;
-  height: 37px;
+  height: 100px;
   border-radius: 10px;
   border: none;
-  vertical-align: middle;
   margin: 5px;
+  padding: 10px;
+  resize: vertical;
+  overflow: auto;
 
   &:focus {
     outline: none;
@@ -279,7 +304,7 @@ const MethodTextarea = styled.input`
   @media screen and (max-width: 1200px) {
     font-size: 1.3vw;
     width: 34.7vw;
-    height: 2.56vw;
+    height: 7vw;
     border-radius: 0.7vw;
     margin: 0.35vw;
   }
@@ -358,6 +383,7 @@ const ModalContentBox = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: start;
+  overflow-y: auto;
 
   @media screen and (max-width: 1200px) {
     width: 50vw;

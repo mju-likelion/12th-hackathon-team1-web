@@ -5,13 +5,18 @@ import PopularRecipeBox from "./PopularRecipeBox";
 import Next from "../assets/images/next.svg";
 import { LikeAtom } from "../Recoil/Atom";
 import { useRecoilValue } from "recoil";
+import { useLocation } from "react-router-dom";
 
 const PopularRecipe = () => {
+  const location = useLocation();
   const likeRecipes = useRecoilValue(LikeAtom);
   const [recipeData, setRecipeData] = useState([]);
   const [page, setPage] = useState(0);
   const [totalPage, setTotalPage] = useState(1);
   const [error, setError] = useState(null);
+
+  const query = new URLSearchParams(location.search);
+  const keyword = query.get("keyword") || "";
 
   useEffect(() => {
     const fetchRecipeData = async () => {
@@ -25,6 +30,7 @@ const PopularRecipe = () => {
             page: page,
             size: 3,
             type: "popularity",
+            keyword: keyword,
           },
         });
 
@@ -43,7 +49,12 @@ const PopularRecipe = () => {
     };
 
     fetchRecipeData();
-  }, [page]);
+  }, [page, keyword]);
+
+  useEffect(() => {
+    setRecipeData([]);
+    setPage(0);
+  }, [keyword]);
 
   const handleNextPage = () => {
     if (page < totalPage - 1) {
@@ -71,11 +82,11 @@ const PopularRecipe = () => {
         />
       </PrevButton>
       {recipeData.map((recipe) => (
-        <PopularRecipeBox 
-        key={recipe.recipeId} 
-        recipeId={recipe.recipeId} 
-        recipeLikeId={likeRecipes}
-        countHeart={recipe.likeCount}
+        <PopularRecipeBox
+          key={recipe.recipeId}
+          recipeId={recipe.recipeId}
+          recipeLikeId={likeRecipes}
+          countHeart={recipe.likeCount}
         />
       ))}
       <NextButton onClick={handleNextPage} disabled={page >= totalPage - 1}>
@@ -112,6 +123,7 @@ const PopularContainer = styled.div`
   align-items: center;
   gap: 80px;
   border-radius: 10px;
+  z-index: 999;
 
   @media screen and (max-width: 1200px) {
     width: 70vw;

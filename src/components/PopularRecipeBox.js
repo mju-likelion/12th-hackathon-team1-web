@@ -9,7 +9,7 @@ const PopularRecipeBox = ({ recipeId, recipeLikeId, countHeart }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [recipeData, setRecipeData] = useState(null);
   const [likeId, setLikeId] = useState([]);
-  const [likeCount, setLikeCount] = useState(countHeart); 
+  const [likeCount, setLikeCount] = useState(countHeart);
 
   useEffect(() => {
     const findLikeId = () => {
@@ -44,7 +44,7 @@ const PopularRecipeBox = ({ recipeId, recipeLikeId, countHeart }) => {
   }, [recipeId]);
 
   const onClickHeart = async (e) => {
-    e.stopPropagation(); 
+    e.stopPropagation();
 
     if (likeId !== recipeId) {
       try {
@@ -81,19 +81,19 @@ const PopularRecipeBox = ({ recipeId, recipeLikeId, countHeart }) => {
 
   return (
     <>
-      <PopularContainer
-        onClick={handleOpenModal}
-        style={{ backgroundImage: `url(${imageUrl})` }}
-      >
-        <MenuName>{recipeData.name}</MenuName>
-        <HeartContainer>
-          <HeartImg
-            onClick={onClickHeart}
-            src={likeId === recipeId ? FullHeart : Heart}
-            alt="좋아요 버튼"
-          />
-          <CountHeart>{likeCount}</CountHeart>
-        </HeartContainer>
+      <PopularContainer onClick={handleOpenModal}>
+        <BackgroundImage style={{ backgroundImage: `url(${imageUrl})` }} />
+        <Container>
+          <MenuName>{recipeData.name}</MenuName>
+          <HeartContainer>
+            <HeartImg
+              onClick={onClickHeart}
+              src={likeId === recipeId ? FullHeart : Heart}
+              alt="좋아요 버튼"
+            />
+            <CountHeart>{likeCount}</CountHeart>
+          </HeartContainer>
+        </Container>
       </PopularContainer>
       {isModalOpen && (
         <>
@@ -109,6 +109,13 @@ const PopularRecipeBox = ({ recipeId, recipeLikeId, countHeart }) => {
     </>
   );
 };
+
+const Container = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  z-index: 1000;
+`;
 
 const Overlay = styled.div`
   position: fixed;
@@ -160,6 +167,7 @@ const HeartImg = styled.img`
 
 const MenuName = styled.p`
   ${({ theme }) => theme.fonts.default16};
+  font-weight: 500;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -192,12 +200,11 @@ const PopularContainer = styled.div`
   height: 170px;
   background-color: ${({ theme }) => theme.colors.white};
   border-radius: 10px;
-  flex-direction: column;
+  position: relative;
   align-items: center;
   justify-content: center;
   background-size: cover;
   background-position: center;
-
   @media screen and (max-width: 1200px) {
     width: 11.3vw;
     height: 13.8vw;
@@ -207,6 +214,27 @@ const PopularContainer = styled.div`
   @media screen and (max-width: 480px) {
     width: 22.2vw;
     height: 27.7vw;
+    border-radius: 2vw;
+  }
+`;
+
+const BackgroundImage = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 10px;
+  background-size: cover;
+  background-position: center;
+  opacity: 0.4;
+  z-index: 999;
+
+  @media screen and (max-width: 1200px) {
+    border-radius: 0.7vw;
+  }
+
+  @media screen and (max-width: 480px) {
     border-radius: 2vw;
   }
 `;

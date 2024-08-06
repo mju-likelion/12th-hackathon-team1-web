@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback } from "react";
 import styled from "styled-components";
+import { useLocation } from "react-router-dom";
 import nextIcon from "../assets/images/next.svg";
 import { Axios } from "../api/Axios";
 import RecipeBox from "./RecipeBox";
@@ -7,12 +8,16 @@ import { LikeAtom } from "../Recoil/Atom";
 import { useRecoilValue } from "recoil";
 
 const WholeRecipe = ({ type }) => {
+  const location = useLocation();
   const likeRecipes = useRecoilValue(LikeAtom);
   const [recipes, setRecipes] = useState([]);
   const [page, setPage] = useState(0);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [hasMore, setHasMore] = useState(true);
+
+  const query = new URLSearchParams(location.search);
+  const keyword = query.get("keyword") || "";
 
   const fetchRecipes = useCallback(
     async (pageToFetch) => {
@@ -28,6 +33,7 @@ const WholeRecipe = ({ type }) => {
             page: pageToFetch,
             size: 12,
             type: type,
+            keyword: keyword,
           },
         });
 
@@ -57,7 +63,7 @@ const WholeRecipe = ({ type }) => {
         setLoading(false);
       }
     },
-    [type]
+    [type, keyword]
   );
 
   useEffect(() => {
@@ -65,7 +71,7 @@ const WholeRecipe = ({ type }) => {
     setPage(0);
     setHasMore(true);
     fetchRecipes(0);
-  }, [type, fetchRecipes]);
+  }, [type, keyword, fetchRecipes]);
 
   const loadMoreRecipes = () => {
     if (!loading && hasMore) {
@@ -104,7 +110,10 @@ const WholeRecipe = ({ type }) => {
 
 const WholeRecipeContainer = styled.div`
   display: flex;
-  height: 570px;
+  height: 100%;
+  align-items: center;
+  justify-content: start;
+  padding: 20px;
   flex-direction: column;
 `;
 
@@ -114,7 +123,7 @@ const RecipeContainer = styled.div`
   justify-content: start;
   gap: 50px;
   width: 820px;
-  margin-bottom: 10px;
+  margin-bottom: 20px;
 
   @media screen and (max-width: 1200px) {
     width: auto;
