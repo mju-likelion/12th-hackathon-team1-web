@@ -3,7 +3,7 @@ import { Link, useLocation } from "react-router-dom";
 import styled, { css } from "styled-components";
 import Arrow from "../assets/images/next.svg";
 
-function Sidebar() {
+function Sidebar({isLoggedIn, text}) {
   const location = useLocation();
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
 
@@ -23,6 +23,87 @@ function Sidebar() {
     <>
       {windowWidth > 480 ? (
         <SidebarContainer>
+        <MenuText>Menu</MenuText>
+        <Grayline />
+        <Text>
+          <>
+          {isLoggedIn ? (
+            <Link to="/recipes/my_recipes">
+              <ItemContainer
+              $isSelected={location.pathname === "/recipes/my_recipes"}>
+              내 레시피 보기
+                {location.pathname === "/recipes/my_recipes" && (
+                  <ArrowImg src={Arrow} alt="화살표 아이콘" />
+                )}
+              </ItemContainer>
+          </Link>
+          ) : 
+          <ItemContainer
+            onClick={()=>alert(text)}
+            $isSelected={location.pathname === "/recipes/my_recipes"}>
+            내 레시피 보기
+              {location.pathname === "/recipes/my_recipes" && (
+                <ArrowImg src={Arrow} alt="화살표 아이콘" />
+              )}
+          </ItemContainer>}
+        {isLoggedIn ?
+        <Link to="/auth/likes">
+          <ItemContainer $isSelected={location.pathname === "/auth/likes"}>
+            좋아요 누른 레시피 보기
+            {location.pathname === "/auth/likes" && (
+              <ArrowImg src={Arrow} alt="화살표 아이콘" />
+            )}
+          </ItemContainer>
+        </Link> : 
+          <ItemContainer 
+          onClick={()=>alert(text)}
+          $isSelected={location.pathname === "/auth/likes"}>
+            좋아요 누른 레시피 보기
+            {location.pathname === "/auth/likes" && (
+              <ArrowImg src={Arrow} alt="화살표 아이콘" />
+            )}
+          </ItemContainer>}
+        {isLoggedIn ?
+        <Link to="/recipes/recommendations">
+          <ItemContainer
+            $isSelected={location.pathname === "/recipes/recommendations"}
+          >
+            내 냉장고 재료로 레시피 보기
+            {location.pathname === "/recipes/recommendations" && (
+              <ArrowImg src={Arrow} alt="화살표 아이콘" />
+            )}
+          </ItemContainer>
+        </Link> : 
+        <ItemContainer
+        onClick={()=>alert(text)}
+          $isSelected={location.pathname === "/recipes/recommendations"}
+        >
+          내 냉장고 재료로 레시피 보기
+          {location.pathname === "/recipes/recommendations" && (
+            <ArrowImg src={Arrow} alt="화살표 아이콘" />
+          )}
+        </ItemContainer>}
+          </>
+        </Text>
+      </SidebarContainer>
+        ) : (
+          <Wrapper>
+            <ButtonWrapper>
+            <Link to="/recipes">
+              <Button 
+              buttonText={location.pathname === "/recipes"}>
+                <ButtonText>전체 레시피</ButtonText>
+                </Button>
+            </Link>
+            <Link to="/recipes/my_recipes">
+              <Button
+              buttonText={location.pathname === "/recipes/my_recipes"}>
+                <ButtonText>내 레시피</ButtonText>
+              </Button>
+            </Link>
+            <Link to="/auth/likes">
+              <Button 
+              buttonText={location.pathname === "/auth/likes"}>
           <MenuText>Menu</MenuText>
           <Grayline />
           <Text>
@@ -79,6 +160,15 @@ function Sidebar() {
               </Button>
             </Link>
             <Link to="/recipes/recommendations">
+              <Button 
+              buttonText={location.pathname === "/recipes/recommendations"}>
+                <ButtonText>내 냉장고 재료 레시피</ButtonText>
+              </Button>
+            </Link>
+            </ButtonWrapper>
+          </Wrapper>
+      )
+    }
               <Button
                 buttonText={location.pathname === "/recipes/recommendations"}
               >

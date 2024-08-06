@@ -25,17 +25,20 @@ function App() {
       <Layout isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />
       <Routes>
         <Route path="/" element={<Navigate to="/main" />} />
-        <Route path="/main" element={<Main />} />
+        <Route path="/main" element={<Main isLoggedIn={isLoggedIn}/>} />
         <Route
           path="/auth/login"
           element={<Login setIsLoggedIn={setIsLoggedIn} />}
         />
         <Route path="/auth/signin" element={<Join />} />
-        <Route path="/fridge" element={<Refrigerator />} />
+        {isLoggedIn && <Route path="/fridge" element={<Refrigerator />} />}
         <Route path="/recipes" element={<Recipe />} />
-        <Route path="/recipes/my_recipes" element={<MyRecipe />} />
-        <Route path="/recipes/recommendations" element={<RecipeRecommend />} />
-        <Route path="/auth/likes" element={<LikeRecipe />} />
+        {isLoggedIn && 
+        <>
+        <Route path="/recipes/my_recipes" element={<MyRecipe isLoggedIn={isLoggedIn}/>} />
+        <Route path="/recipes/recommendations" element={<RecipeRecommend isLoggedIn={isLoggedIn}/>} />
+        <Route path="/auth/likes" element={<LikeRecipe isLoggedIn={isLoggedIn} />} />
+        </>}
         <Route path="*" element={<NotFound />} />
       </Routes>
     </>

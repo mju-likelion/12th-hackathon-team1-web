@@ -13,13 +13,14 @@ const RefrigeratorSection = ({title, ButtonText, dateRef, location}) => {
     const [fridgeData, setFridgeData] = useState([]);
     const [roomTempData, setRoomTempData] = useState([]);
 
-    const today = new Date();
-    const koreanToday = new Date(today.toLocaleString("en-US", { timeZone: "Asia/Seoul" }));
-
     const isDateDDay = (expirationDate) => {
+        const today = new Date();
         const expiryDate = new Date(expirationDate);
-        const koreanExpiryDate = new Date(expiryDate.toLocaleString("en-US", { timeZone: "Asia/Seoul" }));
-        const diffTime = koreanExpiryDate - koreanToday;
+
+        today.setHours(0, 0, 0, 0);
+        expiryDate.setHours(0, 0, 0, 0);
+
+        const diffTime = expiryDate - today;
         const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
         return diffDays;
     };
