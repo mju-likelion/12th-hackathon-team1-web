@@ -3,6 +3,8 @@ import styled from "styled-components";
 import SmallButton from "./SmallButton";
 import Plus from "../assets/images/plus.svg";
 import Folder from "../assets/images/imageFolder.svg";
+import Cancel from "../assets/images/x.svg";
+import DeleteIcon from "../assets/images/x.svg";
 import RecipeIngredient from "./RecipeIngredient";
 import { Axios } from "../api/Axios";
 
@@ -11,10 +13,9 @@ const CreateModal = ({ onSave, saveCreateModal }) => {
   const [ingredients, setIngredients] = useState([]);
   const [ingredientIds, setIngredientIds] = useState([]);
   const [methods, setMethods] = useState("");
-  const [imageId, setImageId] = useState(null);
-  const [imageUrl, setImageUrl] = useState(null);
   const [showIngredientBox, setShowIngredientBox] = useState(false);
   const [activeIngredientIndex, setActiveIngredientIndex] = useState(null);
+  const [imageFile, setImageFile] = useState(null);
 
   const handleIngredientSelect = (ingredient) => {
     if (activeIngredientIndex !== null) {
@@ -49,24 +50,23 @@ const CreateModal = ({ onSave, saveCreateModal }) => {
   const handleImageChange = async (e) => {
     const image = e.target.files[0];
     if (image) {
-      const formData = new FormData();
-      formData.append("file", image);
-
-      try {
-        const response = await Axios.post("/recipes/images", formData, {
-          headers: { "Content-Type": "multipart/form-data" },
-        });
-
-        if (response.data.statusCode === "200") {
-          setImageId(response.data.data.id);
-          setImageUrl(response.data.data.url);
-        } else {
-          console.error("이미지 등록에 실패했습니다.");
-        }
-      } catch (error) {
-        console.error("이미지 등록 중 오류 발생", error);
-      }
+      setImageFile(image);
     }
+  };
+
+  const handleDeleteImage = async () => {
+    setImageFile(null);
+  };
+
+  const handleIngredientDelete = (index, e) => {
+    e.stopPropagation();
+    const newIngredients = ingredients.filter((_, i) => i !== index);
+    const newIngredientIds = [...ingredientIds];
+    newIngredients.splice(index, 1);
+    newIngredientIds.splice(index, 1);
+    setIngredients(newIngredients);
+    setIngredientIds(newIngredientIds);
+    setShowIngredientBox(false);
   };
 
   const validateForm = () => {
@@ -91,16 +91,35 @@ const CreateModal = ({ onSave, saveCreateModal }) => {
   const handleSave = async () => {
     if (!validateForm()) return;
 
+    const newRecipe = {
+      name: title,
+      ingredientIds: ingredientIds,
+      cookingStep: methods.split("\n").join(". "),
+    };
+
+    if (imageFile) {
+      const formData = new FormData();
+      formData.append("file", imageFile);
+
+      try {
+        const response = await Axios.post("recipes/images", formData, {
+          headers: { "Content-Type": "multipart/form-data" },
+        });
+
+        console.log(response);
+        if (response.data.statusCode === "200") {
+          newRecipe.imageId = response.data.data.id;
+        } else {
+          console.error("이미지 등록에 실패했습니다.");
+          return;
+        }
+      } catch (error) {
+        console.error("이미지 등록 중 오류 발생", error);
+        return;
+      }
+    }
+
     try {
-      const newRecipe = {
-        name: title,
-        ingredientIds: ingredientIds,
-        cookingStep: methods.split("\n").join(". "),
-        imageId: imageId,
-      };
-
-      console.log(newRecipe);
-
       await Axios.post("/recipes", newRecipe);
       onSave(newRecipe);
       saveCreateModal();
@@ -141,7 +160,16 @@ const CreateModal = ({ onSave, saveCreateModal }) => {
                     }
                     placeholder={`재료 ${index + 1}`}
                   >
-                    {ingredient}
+                    <IngredientName>
+                      {ingredient.length > 6
+                        ? ingredient.slice(0, 6) + "..."
+                        : ingredient}
+                    </IngredientName>
+                    <CancelButton
+                      src={Cancel}
+                      alt="재료 삭제 버튼"
+                      onClick={handleIngredientDelete}
+                    />
                   </IngredientInput>
                 ))}
                 {showIngredientBox && (
@@ -166,9 +194,20 @@ const CreateModal = ({ onSave, saveCreateModal }) => {
             <Title>사진</Title>
             <UploadImg>
               <ImageContainer>
-                {imageId && <ImagePreview src={imageUrl} alt="Preview" />}
+                {imageFile && (
+                  <ImageContainer>
+                    <ImagePreview
+                      src={URL.createObjectURL(imageFile)}
+                      alt="업로드한 이미지"
+                    />
+                    <DeleteButton
+                      src={DeleteIcon}
+                      onClick={handleDeleteImage}
+                    />
+                  </ImageContainer>
+                )}
               </ImageContainer>
-              {!imageId && (
+              {!imageFile && (
                 <>
                   <UploadLabel htmlFor="file-upload">
                     <FolderIcon src={Folder} alt="파일 불러오기" />
@@ -196,7 +235,6 @@ const CreateModal = ({ onSave, saveCreateModal }) => {
 const ImageContainer = styled.div`
   display: flex;
   margin: 10px;
-  background-color: aquamarine;
 `;
 
 const ButtonContainer = styled.div`
@@ -217,6 +255,13 @@ const ImagePreview = styled.img`
     width: 18vw;
     border-radius: 0.7vw;
   }
+`;
+
+const DeleteButton = styled.img`
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  margin-left: 10px;
 `;
 
 const UploadLabel = styled.label`
@@ -316,17 +361,25 @@ const IngredientContainer = styled.div`
   flex-wrap: wrap;
 `;
 
-const IngredientInput = styled.p`
-  ${({ theme }) => theme.fonts.default16}
+const IngredientName = styled.p`
+  ${({ theme }) => theme.fonts.default16};
+  margin: 5px;
+`;
+
+const IngredientInput = styled.div`
   background-color: ${({ theme }) => theme.colors.white};
-  width: 80px;
+  width: 120px;
   height: 37px;
   border-radius: 10px;
   margin: 5px;
   cursor: pointer;
   display: flex;
-  justify-content: center;
+  justify-content: end;
   align-items: center;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  cursor: default;
 
   @media screen and (max-width: 1200px) {
     font-size: 1.1vw;
@@ -454,6 +507,13 @@ const CreateModalContainer = styled.div`
     height: 60vw;
     border-radius: 1vw;
   }
+`;
+
+const CancelButton = styled.img`
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  margin: 5px;
 `;
 
 export default CreateModal;

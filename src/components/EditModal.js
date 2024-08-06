@@ -15,9 +15,9 @@ const EditModal = ({ recipeId, onSave, closeEditModal }) => {
   const [ingredients, setIngredients] = useState([{ name: "", id: null }]);
   const [methods, setMethods] = useState("");
   const [imageId, setImageId] = useState(null);
-  const [imageUrl, setImageUrl] = useState(null);
   const [showIngredientBox, setShowIngredientBox] = useState(false);
   const [activeIngredientIndex, setActiveIngredientIndex] = useState(null);
+  const [imageFile, setImageFile] = useState(null);
 
   useEffect(() => {
     const fetchRecipe = async () => {
@@ -41,7 +41,6 @@ const EditModal = ({ recipeId, onSave, closeEditModal }) => {
           if (recipe.image && recipe.image.id) {
             setImageId(recipe.image.id);
             setOriginalImageId(recipe.image.id);
-            setImageUrl(recipe.image.url);
           }
         } else {
           console.error("레시피 데이터가 없습니다.");
@@ -89,47 +88,41 @@ const EditModal = ({ recipeId, onSave, closeEditModal }) => {
   const handleImageChange = async (e) => {
     const image = e.target.files[0];
     if (image) {
-      const formData = new FormData();
-      formData.append("file", image);
-
-      try {
-        const response = await Axios.post("/recipes/images", formData, {
-          headers: { "Content-Type": "multipart/form-data" },
-        });
-
-        if (response.data.statusCode === "200") {
-          setImageId(response.data.data.id);
-          setImageUrl(response.data.data.url);
-        } else {
-          console.error("이미지 등록에 실패했습니다.");
-        }
-      } catch (error) {
-        console.error("이미지 등록 중 오류 발생", error);
-      }
+      setImageFile(image);
     }
   };
 
   const handleDeleteImage = async () => {
-    if (!imageId) return;
-
-    try {
-      await Axios.delete(`/recipes/images/${imageId}`);
-
-      setImageId(null);
-      setImageUrl(null);
-    } catch (error) {
-      console.log(imageId);
-      console.error("이미지 삭제 중 오류 발생", error);
-    }
+    setImageFile(null);
   };
 
   const handleSave = async () => {
     const updatedRecipe = {
       name: title,
-      cookingStep: methods.join(". "),
+      cookingStep: methods.split("\n").join(". "),
     };
 
-    if (imageId !== originalImageId) {
+    if (imageFile) {
+      const formData = new FormData();
+      formData.append("file", imageFile);
+
+      try {
+        const response = await Axios.post("recipes/images", formData, {
+          headers: { "Content-Type": "multipart/form-data" },
+        });
+
+        console.log(response);
+        if (response.data.statusCode === "200") {
+          updatedRecipe.imageId = response.data.data.id;
+        } else {
+          console.error("이미지 등록에 실패했습니다.");
+          return;
+        }
+      } catch (error) {
+        console.error("이미지 등록 중 오류 발생", error);
+        return;
+      }
+    } else if (imageId !== originalImageId) {
       updatedRecipe.imageId = imageId;
     }
 
@@ -213,9 +206,11 @@ const EditModal = ({ recipeId, onSave, closeEditModal }) => {
                       }
                       placeholder={`재료 ${index + 1}`}
                     >
-                      {ingredient.name.length > 7
-                        ? ingredient.name.slice(0, 5) + "..."
-                        : ingredient.name}
+                      <IngredientName>
+                        {ingredient.name.length > 6
+                          ? ingredient.name.slice(0, 6) + "..."
+                          : ingredient.name}
+                      </IngredientName>
                       <CancelButton
                         src={Cancel}
                         alt="재료 삭제 버튼"
@@ -244,13 +239,16 @@ const EditModal = ({ recipeId, onSave, closeEditModal }) => {
           <ContentContainer>
             <Title>사진</Title>
             <UploadImg>
-              {imageId && (
+              {imageFile && (
                 <ImageContainer>
-                  <ImagePreview src={imageUrl} alt="업로드한 이미지" />
+                  <ImagePreview
+                    src={URL.createObjectURL(imageFile)}
+                    alt="업로드한 이미지"
+                  />
                   <DeleteButton src={DeleteIcon} onClick={handleDeleteImage} />
                 </ImageContainer>
               )}
-              {!imageId && (
+              {!imageFile && (
                 <>
                   <UploadLabel htmlFor="file-upload">
                     <FolderIcon src={Folder} alt="파일 불러오기" />
@@ -412,8 +410,12 @@ const IngredientContainer = styled.div`
   flex-wrap: wrap;
 `;
 
-const IngredientInput = styled.p`
-  ${({ theme }) => theme.fonts.default16}
+const IngredientName = styled.p`
+  ${({ theme }) => theme.fonts.default16};
+  margin: 5px;
+`;
+
+const IngredientInput = styled.div`
   background-color: ${({ theme }) => theme.colors.white};
   width: 120px;
   height: 37px;
