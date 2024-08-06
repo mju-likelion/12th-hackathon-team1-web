@@ -25,9 +25,9 @@ const FoodBoxModal = ({isCloseShowFood, id, isDate, location}) => {
   useEffect(() => {
     if (foodData && foodData.storage) {
       if (foodData.storage === "FROZEN") {
-        setStorage("냉동실");
+        setStorage("냉동");
       } else if (foodData.storage === "REFRIGERATED") {
-        setStorage("냉장실");
+        setStorage("냉장");
       } else if (foodData.storage === "STORE_AT_ROOM_TEMPERATURE") {
         setStorage("상온");
       }
