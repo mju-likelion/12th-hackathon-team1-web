@@ -5,13 +5,18 @@ import PopularRecipeBox from "./PopularRecipeBox";
 import Next from "../assets/images/next.svg";
 import { LikeAtom } from "../Recoil/Atom";
 import { useRecoilValue } from "recoil";
+import { useLocation } from "react-router-dom";
 
 const PopularRecipe = () => {
+  const location = useLocation();
   const likeRecipes = useRecoilValue(LikeAtom);
   const [recipeData, setRecipeData] = useState([]);
   const [page, setPage] = useState(0);
   const [totalPage, setTotalPage] = useState(1);
   const [error, setError] = useState(null);
+
+  const query = new URLSearchParams(location.search);
+  const keyword = query.get("keyword") || "";
 
   useEffect(() => {
     const fetchRecipeData = async () => {
@@ -25,6 +30,7 @@ const PopularRecipe = () => {
             page: page,
             size: 3,
             type: "popularity",
+            keyword: keyword,
           },
         });
 
@@ -43,7 +49,12 @@ const PopularRecipe = () => {
     };
 
     fetchRecipeData();
-  }, [page]);
+  }, [page, keyword]);
+
+  useEffect(() => {
+    setRecipeData([]);
+    setPage(0);
+  }, [keyword]);
 
   const handleNextPage = () => {
     if (page < totalPage - 1) {

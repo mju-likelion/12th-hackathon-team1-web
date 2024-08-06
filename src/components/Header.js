@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import logo from "../assets/images/logo.svg";
 import menu from "../assets/images/Menu.svg";
@@ -9,6 +9,7 @@ import { Axios } from "../api/Axios";
 
 const Header = ({ isLoggedIn, setIsLoggedIn }) => {
   const navigate = useNavigate();
+  const [searchKeyword, setSearchKeyword] = useState("");
 
   const handleLogout = async () => {
     try {
@@ -53,6 +54,22 @@ const Header = ({ isLoggedIn, setIsLoggedIn }) => {
       } catch (error) {
         console.error("회원 탈퇴 실패", error);
       }
+    }
+  };
+
+  const handleSearchChange = (e) => {
+    setSearchKeyword(e.target.value);
+  };
+
+  const handleSearch = () => {
+    if (searchKeyword.trim() !== "") {
+      navigate(`/recipes?keyword=${searchKeyword}`);
+    }
+  };
+
+  const handleKeyPress = (e) => {
+    if (e.key === "Enter") {
+      handleSearch();
     }
   };
 
@@ -102,8 +119,13 @@ const Header = ({ isLoggedIn, setIsLoggedIn }) => {
         </FunctionContainer>
         <FunctionContainer>
           <SearchBox>
-            <Search placeholder="레시피 검색" />
-            <img src={search} alt="검색 돋보기 이미지" />
+            <Search
+              placeholder="레시피 검색"
+              value={searchKeyword}
+              onChange={handleSearchChange}
+              onKeyPress={handleKeyPress}
+            />
+            <img src={search} alt="돋보기 검색 버튼" onClick={handleSearch} />
           </SearchBox>
           <Link to="/auth/likes">
             <HeartImg src={Heart} alt="마음에 드는 레시피 탭" />
@@ -140,7 +162,6 @@ const SearchBox = styled.div`
 const Search = styled.input`
   font-size: ${({ theme }) => theme.fonts.helpText14};
   width: 15vw;
-  color: ${({ theme }) => theme.colors.helperText};
   margin: 10px 15px;
   border: none;
   outline: none;
@@ -183,7 +204,7 @@ const HeaderContent = styled.div`
   border: 1px solid ${({ theme }) => theme.colors.headerLine};
   z-index: 1000;
 
-  @media screen and (max-width: 480px){
+  @media screen and (max-width: 480px) {
     padding: 0 6vw;
   }
 `;
