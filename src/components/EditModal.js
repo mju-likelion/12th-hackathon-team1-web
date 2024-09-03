@@ -410,7 +410,10 @@ const IngredientContainer = styled.div`
 `;
 
 const IngredientName = styled.p`
+  display: flex;
   ${({ theme }) => theme.fonts.default16};
+  width: 75px;
+  text-align: left;
   margin: 5px;
 `;
 
