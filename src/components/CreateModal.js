@@ -60,12 +60,15 @@ const CreateModal = ({ onSave, saveCreateModal }) => {
 
   const handleIngredientDelete = (index, e) => {
     e.stopPropagation();
-    const newIngredients = ingredients.filter((_, i) => i !== index);
-    const newIngredientIds = [...ingredientIds];
-    newIngredients.splice(index, 1);
-    newIngredientIds.splice(index, 1);
-    setIngredients(newIngredients);
-    setIngredientIds(newIngredientIds);
+    if (ingredients[index].trim() !== "") {
+      const newIngredients = ingredients.filter((_, i) => i !== index);
+      const newIngredientIds = ingredients.filter((_, i) => i !== index);
+      setIngredients(newIngredients);
+      setIngredientIds(newIngredientIds);
+    } else {
+      const newIngredients = ingredients.filter((_, i) => i !== index);
+      setIngredients(newIngredients);
+    }
     setShowIngredientBox(false);
   };
 
@@ -167,7 +170,7 @@ const CreateModal = ({ onSave, saveCreateModal }) => {
                     <CancelButton
                       src={Cancel}
                       alt="재료 삭제 버튼"
-                      onClick={handleIngredientDelete}
+                      onClick={(e) => handleIngredientDelete(index, e)}
                     />
                   </IngredientInput>
                 ))}
