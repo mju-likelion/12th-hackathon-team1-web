@@ -223,7 +223,7 @@ const Overlay = styled.div`
   right: 0;
   bottom: 0;
   background-color: rgba(0, 0, 0, 0.5);
-  z-index: 1000;
+  z-index: 1150;
 `;
 
 const ModalContainer = styled.div`
@@ -231,7 +231,7 @@ const ModalContainer = styled.div`
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  z-index: 1001;
+  z-index: 1200;
 `;
 
 const HeadContainer = styled.div`

@@ -207,7 +207,7 @@ const HeaderContent = styled.div`
   padding: 0 12vw;
   background-color: ${({ theme }) => theme.colors.white};
   border: 1px solid ${({ theme }) => theme.colors.headerLine};
-  z-index: 2000;
+  z-index: 1100;
 
   @media screen and (max-width: 480px) {
     padding: 0 6vw;
